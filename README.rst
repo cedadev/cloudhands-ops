@@ -1,4 +1,7 @@
-:author:    D Haynes
-:contact:   david.e.haynes@stfc.ac.uk
+..  Titling
+    ##++::==~~--''``
 
 `Cloudhands` PaaS.
+
+:author:    D Haynes
+:contact:   david.e.haynes@stfc.ac.uk
