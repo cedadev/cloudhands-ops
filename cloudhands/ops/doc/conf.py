@@ -44,7 +44,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Cloudhands'
-copyright = '2013, D Haynes'
+copyright = "2013 UK Science and Technology Facilities Council"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -106,7 +106,7 @@ html_theme = "haiku"
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = "Cloudhands Guide {}".format(release)
+html_title = "Cloudhands guide {}".format(release)
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = "Cloudhands Ops"

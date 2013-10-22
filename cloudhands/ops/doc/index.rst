@@ -6,17 +6,29 @@
 ..  Titling
     ##++::==~~--''``
 
-About the project
-::::::::::::::::::::::::::::
+Top level
++++++++++
 
-Contents:
+Python packages
+:::::::::::::::
+
+cloudhands-ops
+    Contains user guide, operations scripts and experimental code.
+
+Documentation
+:::::::::::::
 
 .. toctree::
    :maxdepth: 2
 
+   story_jap
 
-Indices and tables
-==================
+References
+::::::::::
+
+
+Indexes
+=======
 
 * :ref:`genindex`
 * :ref:`modindex`

@@ -61,6 +61,8 @@ Can you help?
 
 :author:    D Haynes
 :contact:   david.e.haynes@stfc.ac.uk
+:copyright: 2013 UK Science and Technology Facilities Council
+:licence:   BSD
 
 .. _setuptools: https://pypi.python.org/pypi/setuptools
 .. _compile Python 3.4: http://www.python.org/download/source/
