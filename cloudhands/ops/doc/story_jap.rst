@@ -19,9 +19,14 @@ Elaboration
 Tasks
 ~~~~~
 
+* `Discoverable permissions`_
+* Multiple authorization protocols
+* Cross-domain identity mapping
 * Hands-on JASMIN AP
 * Hands-on example analytics code
 * Explore deploy code
 * Explore data access
 * Explore process control and events
 * Identify indicators
+
+.. _discoverable permissions: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/urldispatch.html#using-pyramid-security-with-url-dispatch

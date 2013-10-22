@@ -27,6 +27,8 @@ References
 ::::::::::
 
 
+.. Pyramid security model: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/security.html#security
+
 Indexes
 =======
 
