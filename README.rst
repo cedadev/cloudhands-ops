@@ -67,4 +67,3 @@ Can you help?
 .. _setuptools: https://pypi.python.org/pypi/setuptools
 .. _compile Python 3.4: http://www.python.org/download/source/
 .. _BSD licence: http://opensource.org/licenses/BSD-3-Clause
-.. _GNU Affero General Public License: http://www.gnu.org/licenses/agpl-3.0.html
