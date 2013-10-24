@@ -26,9 +26,13 @@ Download and unpack the source distribution::
     $ tar -xzvf cloudhands-ops-0.001.tar.gz
     $ cd cloudhands-ops-0.001
 
-Run the tests::
+Run the `check` script to establish a working environment::
 
-    $ python3.4 -m unittest discover cloudhands
+    $ check.sh --nopep8 --notest
+
+Run the `build` script to create the documentation::
+
+    $ build.sh --novenv --nopush --nosign
 
 Consult the documentation::
 

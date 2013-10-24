@@ -28,7 +28,9 @@ References
 
 * `Pyramid security model`_
 * `Multiple authentication methods`_
+* `Persona policy configuration`_
 
+.. _Persona policy configuration: http://douglatornell.ca/blog/category/persona-authentication/
 .. _Pyramid security model: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/security.html#security
 .. _multiple authentication methods: http://www.rfk.id.au/blog/entry/securing-pyramid-persona-macauth/
 
