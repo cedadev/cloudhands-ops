@@ -56,7 +56,7 @@ for i in cloudhands-common cloudhands-web; do
     if [[ "$*" != *--nopep8* ]];
     then
         $PYENV/bin/pep8 \
-        --exclude='.svn,CVS,.bzr,.hg,.git,__pycache__,setup.py' .
+        --exclude='.svn,CVS,.bzr,.hg,.git,__pycache__,build,dist' .
     fi
 
     if [[ "$*" != *--notest* ]];
