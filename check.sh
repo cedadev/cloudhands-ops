@@ -6,7 +6,7 @@
 
 PYTHON=/usr/local/bin/python3.4
 PYENV=~/pyops-3.4
-SETUPTOOLS=setuptools-1.1.6
+SETUPTOOLS=setuptools-1.1.7
 PIP=pip-1.4.1
 
 DIR=$( cd "$( dirname "$0" )" && pwd )
@@ -39,7 +39,7 @@ then
     pep8
 
     #for i in docutils SQLAlchemy pyramid_persona WebTest; do
-    for i in docutils pyramid; do
+    for i in docutils SQLAlchemy pyramid; do
         $PYENV/bin/pip install \
         --no-index -f file://$PARENT/cloudhands-ops/vendor/ \
         $i
