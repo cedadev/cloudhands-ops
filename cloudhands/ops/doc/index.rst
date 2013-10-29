@@ -21,6 +21,7 @@ Documentation
 .. toctree::
    :maxdepth: 2
 
+   schema
    story_jap
 
 References
