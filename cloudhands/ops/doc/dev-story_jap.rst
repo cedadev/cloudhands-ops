@@ -29,10 +29,4 @@ Tasks
 * Explore process control and events
 * Identify indicators
 
-APIs
-====
-
-.. automodule:: cloudhands.common.permissions
-
-
 .. _discoverable permissions: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/urldispatch.html#using-pyramid-security-with-url-dispatch

@@ -9,23 +9,44 @@
 Top level
 +++++++++
 
+This manual is the documentation for the software which operates the UK STFC
+JASMIN cloud infrastructure. JASMIN provides a federated storage and computing
+platform for scientific applications.
+
+The software is written in Python_. Componentisation is a key architectural
+feature, allowing contributors to extend the core functionality by writing
+packages which conform to one of the JASMIN plugin APIs.
+
+.. _Python: http://python.org
+
+.. toctree::
+   :maxdepth: 3
+
+   dev-guide
+   ops-guide
+
 Python packages
 :::::::::::::::
+
+The software is distributed under the `cloudhands` namespace. It consists of
+several separate packages.
+
+cloudhands-common
+    Mumble
+
+cloudhands-web
+    Mumble
+
+cloudhands-jasmin
+    Mumble
 
 cloudhands-ops
     Contains user guide, operations scripts and experimental code.
 
-Documentation
-:::::::::::::
-
-.. toctree::
-   :maxdepth: 2
-
-   schema
-   story_jap
-
 References
 ::::::::::
+
+The software runs as a web portal. SQLAlchemy, Pyramid
 
 * `Pyramid security model`_
 * `Multiple authentication methods`_
