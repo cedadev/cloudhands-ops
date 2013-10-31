@@ -62,7 +62,7 @@ $PYENV/bin/sphinx-build -c $PARENT/cloudhands-ops/cloudhands/ops/doc \
 #    > $PARENT/cloudhands-web/cloudhands/web/static/html/guide.html
 
 echoerr "Creating source packages ..."
-for i in cloudhands-common cloudhands-web; do
+for i in cloudhands-common cloudhands-jasmin cloudhands-web; do
     cd $PARENT/$i
     rm -rf dist
     rm -rf build

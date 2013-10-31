@@ -9,7 +9,7 @@
 Top level
 +++++++++
 
-This manual is the documentation for the software which operates the UK STFC
+This manual is documentation for the software which operates the UK STFC
 JASMIN cloud infrastructure. JASMIN provides a federated storage and computing
 platform for scientific applications.
 
@@ -28,25 +28,25 @@ packages which conform to one of the JASMIN plugin APIs.
 Python packages
 :::::::::::::::
 
-The software is distributed under the `cloudhands` namespace. It consists of
-several separate packages.
+The software is distributed as several separate packages.
 
 cloudhands-common
-    Mumble
+    Common types, utilities and database schema
 
 cloudhands-web
-    Mumble
+    User interface and Web portal application
 
 cloudhands-jasmin
-    Mumble
+    Site-specific configuration for the JASMIN infrastructure (private)
 
 cloudhands-ops
-    Contains user guide, operations scripts and experimental code.
+    Contains this manual, some operations scripts and experimental code.
 
 References
 ::::::::::
 
-The software runs as a web portal. SQLAlchemy, Pyramid
+The software runs as a web application portal. It uses the Pyramid web
+framework and the SQLAlchemy ORM. The following material has informed the design.
 
 * `Pyramid security model`_
 * `Multiple authentication methods`_

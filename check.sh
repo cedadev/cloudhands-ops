@@ -46,7 +46,7 @@ then
     done
 fi
 
-for i in cloudhands-common cloudhands-web; do
+for i in cloudhands-common cloudhands-jasmin cloudhands-web; do
     cd $PARENT/$i
 
     version=`$PYENV/bin/python setup.py --version`

@@ -23,6 +23,14 @@ Site customisation
 
 ..  _entry points: http://pythonhosted.org/distribute/setuptools.html#dynamic-discovery-of-services-and-plugins
 
+jasmin.site.settings
+~~~~~~~~~~~~~~~~~~~~
+
+This interface is how to provide host names, connection strings and tokens
+for use by the application.
+
+.. autodata:: cloudhands.common.discovery.settings
+
 jasmin.component.fsm
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -34,5 +42,3 @@ database table which defines the permitted states of a FSM.
 jasmin.pyramid.settings
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-jasmin.libcloud.creds
-~~~~~~~~~~~~~~~~~~~~~
