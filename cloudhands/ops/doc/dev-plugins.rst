@@ -23,13 +23,21 @@ Site customisation
 
 ..  _entry points: http://pythonhosted.org/distribute/setuptools.html#dynamic-discovery-of-services-and-plugins
 
-jasmin.site.settings
-~~~~~~~~~~~~~~~~~~~~
+jasmin.service.settings
+~~~~~~~~~~~~~~~~~~~~~~~
 
-This interface is how to provide host names, connection strings and tokens
-for use by the application.
+This interface is how you provide host names, connection strings and tokens
+to the application.
 
 .. autodata:: cloudhands.common.discovery.settings
+
+jasmin.ssl.bundle
+~~~~~~~~~~~~~~~~~
+
+This entry point specifies a path to a user-supplied bundle of SSL
+certificates.
+
+.. autodata:: cloudhands.common.discovery.bundles
 
 jasmin.component.fsm
 ~~~~~~~~~~~~~~~~~~~~
@@ -37,7 +45,7 @@ jasmin.component.fsm
 The Jasmin `Finite State Machine` interface allows developers to declare a new
 database table which defines the permitted states of a FSM.
 
-.. autodata:: cloudhands.common.discovery.fsm
+.. autodata:: cloudhands.common.discovery.fsms
 
 jasmin.pyramid.settings
 ~~~~~~~~~~~~~~~~~~~~~~~
