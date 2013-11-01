@@ -46,7 +46,7 @@ then
     done
 fi
 
-for i in cloudhands-common cloudhands-jasmin cloudhands-web; do
+for i in cloudhands-common cloudhands-burst cloudhands-jasmin cloudhands-web; do
     cd $PARENT/$i
 
     version=`$PYENV/bin/python setup.py --version`
@@ -61,7 +61,7 @@ for i in cloudhands-common cloudhands-jasmin cloudhands-web; do
 
     if [[ "$*" != *--notest* ]];
     then
-        $PYENV/bin/python -m unittest discover cloudhands
+        $PYENV/bin/python -m unittest discover -v cloudhands
     fi
-
 done
+
