@@ -2,8 +2,8 @@
     ##++::==~~--''``
 
 
-Style templates
-===============
+User interface
+==============
 
 Considered the frameworks mentioned in reviews at webgranth_ and codegeekz_ against these
 criteria:
@@ -13,8 +13,8 @@ criteria:
 * Favouring a RESTful architecture rather than one-page web apps.
 * Compatible with a Python framework (not tied to back ends like node.js or PHP).
 
-Shortlist
-~~~~~~~~~
+Style templates
+~~~~~~~~~~~~~~~
 
 * https://sprresponsive.com/sprinvoice/
     A single-page template for an invoice document.
@@ -31,13 +31,14 @@ Shortlist
 * http://code.google.com/p/css3-action-framework/
     A library of CSS effects.
 
-User interface
-~~~~~~~~~~~~~~
+Theming
+~~~~~~~
 
 * Picked colours from the `image of LOTUS in the JASMIN data centre`_.
 * Created a corresponding `yui skin`_ using the online `YUI skin builder`_.
 * Picked a `matching background texture`_.
 * Selected a `layout for the landing page`_ and `one for the main workflow`_.
+* Identified a `free font icon set`_ for control icons.
  
 .. _webgranth: http://www.webgranth.com/best-html5-and-css3-frameworks-you-would-know-ever
 .. _codegeekz: http://codegeekz.com/css-frameworks-for-accelerated-development/
@@ -47,6 +48,6 @@ User interface
 .. _matching background texture: http://subtlepatterns.com/patterns/bo_play_pattern.zip
 .. _layout for the landing page: http://purecss.io/layouts/marketing/
 .. _one for the main workflow: http://purecss.io/layouts/email/
+.. _free font icon set: http://fortawesome.github.io/Font-Awesome/get-started/
 .. _Pencil wireframe tool: http://pencil.evolus.vn/
-
 
