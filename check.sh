@@ -4,9 +4,9 @@
 # eg:
 # $ check.sh --novenv --nopep8
 
-PYTHON=/usr/local/bin/python3.4
-PYENV=~/pyops-3.4
-SETUPTOOLS=setuptools-1.1.7
+PYTHON=/usr/local/bin/python3.3
+PYENV=~/pyops-3.3
+SETUPTOOLS=setuptools-1.3.1
 PIP=pip-1.4.1
 
 DIR=$( cd "$( dirname "$0" )" && pwd )
