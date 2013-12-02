@@ -1,20 +1,19 @@
 ..  Titling
     ##++::==~~--''``
 
-User Story: JASMIN Analysis Package
-===================================
+User Story: Account creation
+============================
 
-As a scientist working for STFC I want my analytics processes to run where
-they have access to JASMIN storage so I can apply my models to a particular
-dataset.
+As a scientist working for STFC I want to add colleagues to my 
+JASMIN organisation so that they can begin working on their data.
 
 Elaboration
 ~~~~~~~~~~~
 
-* Predefined vCloud template contains standard JASMIN analysis package
-* Ability to measure readiness of a node
-* Ability to configure node with software, process configuration
-* Alerting on conditions (ready, finished, error)
+* PI has Membership with admin role
+* New user signs on with email address
+* PI searches for new users and adds them to Organisation
+* User account enriched with LDAP data
 
 Tasks
 ~~~~~

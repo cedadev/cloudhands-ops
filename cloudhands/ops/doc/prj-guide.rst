@@ -11,4 +11,5 @@ Project guide
    prj-style
    prj-rest
    prj-story01
+   prj-story02
 
