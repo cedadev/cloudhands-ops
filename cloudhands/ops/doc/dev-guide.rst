@@ -7,8 +7,10 @@ Developer guide
 .. toctree::
    :maxdepth: 2
 
-   dev-plugins
    dev-schema
+   dev-agents
+   dev-api
+   dev-plugins
 
 References
 ==========

@@ -29,23 +29,4 @@ Tasks
 * Explore process control and events
 * Identify indicators
 
-LDAP
-~~~~
-
-::
-
-    ldapsearch -x -H ldap://homer.esc.rl.ac.uk -s sub -b "o=hpc,dc=rl,dc=ac,dc=uk" "(&(objectclass=organizationalunit))"
-
-Find POSIX accounts which have no public keys::
-
-    ldapsearch -x -H ldap://homer.esc.rl.ac.uk -s sub -b 'o=hpc,dc=rl,dc=ac,dc=uk' '(&(objectclass=posixAccount)(!(objectclass=ldapPublicKey)))'
-
-Query the subschema for attribute types::
-
-    ldapsearch -x -H ldap://homer.esc.rl.ac.uk -s base -b 'cn=subschema' attributeTypes
-
-or::
-
-    ldapsearch -x -H ldap://homer.esc.rl.ac.uk -s base -b 'cn=subschema' +
-
 .. _discoverable permissions: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/urldispatch.html#using-pyramid-security-with-url-dispatch

@@ -2,8 +2,8 @@
     ##++::==~~--''``
 
 
-Plugin APIs
-===========
+Plugin framework
+================
 
 Cloudhands makes extensive use of python `entry points`_ to define interfaces
 for third party plugins.
