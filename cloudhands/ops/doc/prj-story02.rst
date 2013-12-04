@@ -47,4 +47,4 @@ or::
 
     ldapsearch -x -H ldap://homer.esc.rl.ac.uk -s base -b 'cn=subschema' +
 
-.. _discoverable permissions: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/urldispatch.html#using-pyramid-security-with-url-dispatch
+.. _search Exchange for emails with LDAP: https://gist.github.com/liveaverage/4503265
