@@ -29,7 +29,7 @@ jasmin.service.settings
 This interface is how you provide host names, connection strings and tokens
 to the application.
 
-.. autodata:: cloudhands.common.discovery.settings
+.. .. autodata:: cloudhands.common.discovery.settings
 
 jasmin.ssl.bundle
 ~~~~~~~~~~~~~~~~~
@@ -37,7 +37,7 @@ jasmin.ssl.bundle
 This entry point specifies a path to a user-supplied bundle of SSL
 certificates.
 
-.. autodata:: cloudhands.common.discovery.bundles
+.. .. autodata:: cloudhands.common.discovery.bundles
 
 jasmin.component.fsm
 ~~~~~~~~~~~~~~~~~~~~
@@ -45,7 +45,7 @@ jasmin.component.fsm
 The Jasmin `Finite State Machine` interface allows developers to declare a new
 database table which defines the permitted states of a FSM.
 
-.. autodata:: cloudhands.common.discovery.fsms
+.. .. autodata:: cloudhands.common.discovery.fsms
 
 jasmin.pyramid.settings
 ~~~~~~~~~~~~~~~~~~~~~~~
