@@ -1,8 +1,14 @@
 ..  Titling
     ##++::==~~--''``
 
-Database schema
-===============
+Data Model
+==========
+
+The data model has been developed along traditional lines in order to
+accomodate a relational database back-end. The model is defined
+as a schema in third-normal form using the SQLAlchemy_ ORM.
+
+.. _SQLAlchemy: http://docs.sqlalchemy.org
 
 There are about 20 tables in the database schema. Of these, four fundamental
 types provide the basis for implementing business logic:
@@ -12,7 +18,7 @@ types provide the basis for implementing business logic:
 * Resources_
 * States_
 
-A change to application state is modelled as:
+Typically, a change to application state is modelled as:
 
 * linking an artifact with an actor
 * linking an artifact with a resource
@@ -63,6 +69,10 @@ system. Their existence is transitory, and has to be continually verified.
 
 .. autoclass:: cloudhands.common.schema.PosixGId
 
+Resources have a base type, `Touch` which carries no contextual data
+but which can be used to signal changes in States_.
+
+.. autoclass:: cloudhands.common.schema.Touch
 
 States
 ~~~~~~
@@ -78,3 +88,9 @@ logic can make transitions and persist state in the database.
 .. autoclass:: cloudhands.common.fsm.HostState
    :members: table, values
    :undoc-members:
+
+Categories
+~~~~~~~~~~
+
+.. autoclass:: cloudhands.common.schema.Organisation
+
