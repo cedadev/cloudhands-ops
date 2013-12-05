@@ -12,6 +12,12 @@ types provide the basis for implementing business logic:
 * Resources_
 * States_
 
+A change to application state is modelled as:
+
+* linking an artifact with an actor
+* linking an artifact with a resource
+* changing the state of an artifact
+
 Actors
 ~~~~~~
 
@@ -53,18 +59,22 @@ system. Their existence is transitory, and has to be continually verified.
 
 .. autoclass:: cloudhands.common.schema.EmailAddress
 
+.. autoclass:: cloudhands.common.schema.PosixUId
+
+.. autoclass:: cloudhands.common.schema.PosixGId
+
 
 States
 ~~~~~~
 
-.. automodule:: cloudhands.common.discovery
-   :members:
+The nature of Artifacts_ is that they take some effort to establish, and they
+change over time. Each artifact table has its own State class so that business
+logic can make transitions and persist state in the database.
+ 
+.. autoclass:: cloudhands.common.fsm.MembershipState
+   :members: table, values
+   :undoc-members:
 
-.. _discoverable permissions: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/urldispatch.html#using-pyramid-security-with-url-dispatch
-
-Operations
-~~~~~~~~~~
-
-.. automodule:: cloudhands.common.tricks
-   :members: create_user_from_email
-
+.. autoclass:: cloudhands.common.fsm.HostState
+   :members: table, values
+   :undoc-members:
