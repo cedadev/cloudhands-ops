@@ -32,6 +32,10 @@ Membership operations
    :members: __init__, __call__
    :special-members:
 
+.. autoclass:: cloudhands.burst.membership.Activation
+   :members: __init__, __call__
+   :special-members:
+
 Agents
 ~~~~~~
 
