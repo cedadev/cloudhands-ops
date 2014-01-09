@@ -64,6 +64,7 @@ for i in cloudhands-common cloudhands-burst cloudhands-jasmin \
     then
         for f in `find . -name "*.py"`; do
             $PYENV/bin/python $PYENV/bin/pylint \
+            --rcfile=$PARENT/cloudhands-ops/pylint.rc \
             --errors-only --reports=n $f 2> /dev/null
         done
     fi
