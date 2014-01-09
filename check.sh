@@ -60,9 +60,16 @@ for i in cloudhands-common cloudhands-burst cloudhands-jasmin \
         --exclude='.svn,CVS,.bzr,.hg,.git,__pycache__,build,dist' .
     fi
 
+    if [[ "$*" != *--nolint* ]];
+    then
+        for f in `find . -name "*.py"`; do
+            $PYENV/bin/python $PYENV/bin/pylint \
+            --errors-only --reports=n $f 2> /dev/null
+        done
+    fi
+
     if [[ "$*" != *--notest* ]];
     then
         $PYENV/bin/python -m unittest discover -v cloudhands
     fi
 done
-
