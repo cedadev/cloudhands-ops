@@ -64,7 +64,7 @@ $PYENV/bin/sphinx-build -c $PARENT/cloudhands-ops/cloudhands/ops/doc \
 if [[ "$*" != *--nobundle* ]];
 then
     BUNDLE=jasmin-bundle.tar
-    echoerr "Gathering vendor packages"
+    echoerr "Gathering vendor packages."
     tar -cf $PARENT/cloudhands-ops/$BUNDLE -C $PARENT/cloudhands-ops/vendor .
 fi
 
