@@ -61,6 +61,13 @@ $PYENV/bin/sphinx-build -c $PARENT/cloudhands-ops/cloudhands/ops/doc \
 #$PYENV/bin/python3 -m cloudhands.ops.scripts.webdoc --parent=$PARENT \
 #    > $PARENT/cloudhands-web/cloudhands/web/static/html/guide.html
 
+if [[ "$*" != *--nobundle* ]];
+then
+    BUNDLE=jasmin-bundle.tar
+    echoerr "Gathering vendor packages"
+    tar -cf $PARENT/cloudhands-ops/$BUNDLE -C $PARENT/cloudhands-ops/vendor .
+fi
+
 echoerr "Creating source packages ..."
 for i in cloudhands-common cloudhands-burst cloudhands-jasmin cloudhands-web; do
     cd $PARENT/$i
@@ -75,11 +82,17 @@ for i in cloudhands-common cloudhands-burst cloudhands-jasmin cloudhands-web; do
     proj=$(basename `pwd`)
     $PYENV/bin/python3 setup.py sdist > /dev/null
     for pkg in `ls dist/$proj*.tar.gz`; do
-        echo `basename $pkg`
+        distrbn=`basename $pkg`
+        echo $distrbn
 
         if [[ "$*" != *--nosign* ]];
         then
             gpg --armor --detach-sign --yes $pkg
+        fi
+
+        if [[ "$*" != *--nobundle* ]];
+        then
+            tar -rf $PARENT/cloudhands-ops/$BUNDLE -C $PARENT/$i/dist $distrbn
         fi
 
     done
