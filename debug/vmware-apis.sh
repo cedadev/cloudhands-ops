@@ -1,4 +1,4 @@
-#! /bin/sh -
+#! /bin/bash -
 
 # This boilerplate from 'Classic Shell Scripting'
 
@@ -10,6 +10,9 @@ export PATH
 
 EXITCODE=0
 PROGRAM=$( basename "$0" )
+DIR=$( cd "$( dirname "$0" )" && pwd )
+PARENT=$(readlink -e "$DIR/..")
+CFG="$PARENT/../cloudhands-jasmin/cloudhands/jasmin/vcloud/phase01.cfg"
 
 error()
 {
@@ -30,8 +33,6 @@ usage_and_exit()
 
 version()
 {
-    DIR=$( cd "$( dirname "$0" )" && pwd )
-    PARENT=$(readlink -e "$DIR/..")
     VERSION=$(head "$PARENT/cloudhands/ops/__init__.py" | cut -d= -f2 | tr -d '" ')
     echo "$PROGRAM $VERSION"
 }
@@ -52,7 +53,23 @@ https://cemscloud.jc.rl.ac.uk:443/api/versions`
     | sort | uniq | wc -l
 }
 
-read -r -d '' LOGINTEST <<'END'
+read_credentials()
+{
+    # Read the variables 'name' and 'pass' from the user section of a config
+    # file
+    if [ -f "$CFG" ]
+    then
+        while read -r key value; do
+            eval user_$key=\$value
+        done < <(grep -A2 '\[user\]' $CFG \
+                | tr -d ' ' | cut -s -d'=' -f1,2 --output-delimiter=" ")
+    else
+        warning "Could not find settings ($CFG)"
+        exit 0
+    fi
+}
+
+read -r -d '' TEST_LOGIN <<'END'
 HTTP/1.1 200 OK
 Date: Tue, 14 Jan 2014 10:58:48 GMT
 x-vcloud-authorization: TF6QoPX2xZbwVZM0yT4QmMfM6nKvC2Yz/HqkuFdpU0U=
@@ -82,7 +99,10 @@ END
 
 api_login()
 {
-    echo "$LOGINTEST"
+    TOKEN=`curl -s -i -k -u 'dehaynes@CEMSTest:#########' \
+    -H 'Accept:application/*+xml;version=1.5' -X POST  \
+    https://cemscloud.jc.rl.ac.uk:443/api/sessions \
+    | grep 'x-vcloud-authorization.*'`
 }
 
 while test $# -gt 0
@@ -117,5 +137,9 @@ then
 else
     echo "API is responding"
 fi
+read_credentials
+echo $user_name
+echo $user_pass
 api_login
+echo $TOKEN
 warning "That's your lot, $USER!"
