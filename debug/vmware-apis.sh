@@ -14,12 +14,6 @@ DIR=$( cd "$( dirname "$0" )" && pwd )
 PARENT=$(readlink -e "$DIR/..")
 CFG="$PARENT/../cloudhands-jasmin/cloudhands/jasmin/vcloud/phase01.cfg"
 
-error()
-{
-    echo "$@" 1>&2
-    usage_and_exit 1
-}
-
 usage()
 {
     echo "Usage: $PROGRAM [--user USER]"
@@ -37,10 +31,21 @@ version()
     echo "$PROGRAM $VERSION"
 }
 
-warning()
+info()
 {
     echo "$@" 1>&2
+}
+
+warning()
+{
+    info "$@"
     EXITCODE=$(($EXITCODE + 1))
+}
+
+error()
+{
+    info "$@"
+    usage_and_exit 1
 }
 
 # End of boilerplate
@@ -99,10 +104,10 @@ END
 
 api_login()
 {
-    TOKEN=`curl -s -i -k -u 'dehaynes@CEMSTest:#########' \
+    curl -s -i -k -u "$1:$2" \
     -H 'Accept:application/*+xml;version=1.5' -X POST  \
     https://cemscloud.jc.rl.ac.uk:443/api/sessions \
-    | grep 'x-vcloud-authorization.*'`
+    | grep 'x-vcloud-authorization.*'
 }
 
 while test $# -gt 0
@@ -133,13 +138,14 @@ done
 if [ `api_versions` = "0" ]
 then
     warning "API is not responding"
-    exit 0
+    exit $EXITCODE
 else
-    echo "API is responding"
+    info "Endpoint contacted successfully."
 fi
+
 read_credentials
-echo $user_name
-echo $user_pass
-api_login
-echo $TOKEN
-warning "That's your lot, $USER!"
+TOKEN=`api_login $user_name $user_pass`
+
+curl -i -k -H 'Accept:application/*+xml;version=1.5' \
+-H "$TOKEN" \
+-X GET https://cemscloud.jc.rl.ac.uk:443/api/org
