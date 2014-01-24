@@ -82,6 +82,12 @@ read_credentials()
     fi
 }
 
+url_get() # token, url
+{
+    curl -s -i -k -H "Accept:application/*+xml;version="$host_api_version"" \
+    -H "$1" -X GET "$2"
+}
+
 api_versions()
 {
     REPLY=`curl -s -k \
@@ -180,9 +186,13 @@ read_credentials
 
 proc_get_network() # token
 {
-echo
+
+_url=`proc_get_org_url "$1"`
+_xml=`url_get "$1" "$_url"`
+info "$_xml"
+
 }
 
 TOKEN=`api_login "$user_name" "$user_pass"`
-info `proc_get_org_url "$TOKEN"`
+proc_get_network "$TOKEN"
 exit $EXITCODE
