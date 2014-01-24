@@ -106,6 +106,33 @@ api_org_get() # authorization token header
     https://"$host_name":"$host_port"/api/org
 }
 
+proc_get_org_url() # token
+{
+org_name=${user_name##*@}
+org_xml=`api_org_get "$1"`
+_scrap="${org_xml##*"$org_name\" href=\""}"
+echo "${_scrap%%\"/>*}"
+}
+
+proc_create_node() # OS image
+{
+# IP_MODE_VALS_1_5 = ['POOL', 'DHCP', 'MANUAL', 'NONE']
+# Find network href/elem from org (look for:
+# application/vnd.vmware.vcloud.orgNetwork+xml)
+
+# Get VDC
+
+# Send a "application/vnd.vmware.vcloud.instantiateVAppTemplateParams+xml"
+# as a POST /vdc/{id}/action/instantiateVAppTemplate
+
+# Retrieve task from vapp href
+# Loop on get status from task
+
+# POST /vApp/{id}/power/action/powerOn
+echo
+}
+
+# TODO: Add wait parameter to pause between creation and deletion
 while test $# -gt 0
 do
     case $1 in
@@ -151,6 +178,11 @@ fi
 
 read_credentials
 
+proc_get_network() # token
+{
+echo
+}
+
 TOKEN=`api_login "$user_name" "$user_pass"`
-echo `api_org_get "$TOKEN"`
+info `proc_get_org_url "$TOKEN"`
 exit $EXITCODE
