@@ -134,10 +134,27 @@ proc_get_vdc() # token
 
 _url=`proc_get_org_url "$1"`
 _xml=`url_get "$1" "$_url"`
-#_scrap="${_xml##*"application/vnd\.vmware\.vcloud\.vdc+xml\" href=\""}"
 _scrap=`echo "$_xml" | grep "application/vnd.vmware.vcloud.vdc+xml\""`
 _vdc="${_scrap##*"href=\""}"
 echo "${_vdc%%\"/>*}"
+}
+
+proc_get_catalogue() # token
+{
+_url=`proc_get_org_url "$1"`
+_xml=`url_get "$1" "$_url"`
+_scrap=`echo "$_xml" | grep "application/vnd.vmware.vcloud.catalog+xml\""`
+_cat="${_scrap##*"href=\""}"
+echo "${_cat%%\"/>*}"
+}
+
+proc_get_image() # token
+{
+_cat_url=`proc_get_catalogue "$1"`
+_xml=`url_get "$1" "$_cat_url"`
+_scrap=`echo "$_xml" | grep -i "centos"`
+_img="${_scrap##*"href=\""}"
+echo "$_img"
 }
 
 proc_create_node() # OS image
@@ -209,4 +226,6 @@ net_url=`proc_get_network "$TOKEN"`
 info "$net_url"
 vdc_url=`proc_get_vdc "$TOKEN"`
 info "$vdc_url"
+image_url=`proc_get_image "$TOKEN"`
+info "$image_url"
 exit $EXITCODE
