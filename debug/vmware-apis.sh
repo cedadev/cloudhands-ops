@@ -120,6 +120,26 @@ _scrap="${org_xml##*"$org_name\" href=\""}"
 echo "${_scrap%%\"/>*}"
 }
 
+proc_get_network() # token
+{
+
+_url=`proc_get_org_url "$1"`
+_xml=`url_get "$1" "$_url"`
+_scrap="${_xml##*"ORG-EXT-R\" href=\""}"
+echo "${_scrap%%\"/>*}"
+}
+
+proc_get_vdc() # token
+{
+
+_url=`proc_get_org_url "$1"`
+_xml=`url_get "$1" "$_url"`
+#_scrap="${_xml##*"application/vnd\.vmware\.vcloud\.vdc+xml\" href=\""}"
+_scrap=`echo "$_xml" | grep "application/vnd.vmware.vcloud.vdc+xml\""`
+_vdc="${_scrap##*"href=\""}"
+echo "${_vdc%%\"/>*}"
+}
+
 proc_create_node() # OS image
 {
 # IP_MODE_VALS_1_5 = ['POOL', 'DHCP', 'MANUAL', 'NONE']
@@ -184,15 +204,9 @@ fi
 
 read_credentials
 
-proc_get_network() # token
-{
-
-_url=`proc_get_org_url "$1"`
-_xml=`url_get "$1" "$_url"`
-info "$_xml"
-
-}
-
 TOKEN=`api_login "$user_name" "$user_pass"`
-proc_get_network "$TOKEN"
+net_url=`proc_get_network "$TOKEN"`
+info "$net_url"
+vdc_url=`proc_get_vdc "$TOKEN"`
+info "$vdc_url"
 exit $EXITCODE
