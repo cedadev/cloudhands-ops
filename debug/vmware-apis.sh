@@ -154,10 +154,10 @@ _cat_url=`proc_get_catalogue "$1"`
 _xml=`url_get "$1" "$_cat_url"`
 _scrap=`echo "$_xml" | grep -i "centos"`
 _img="${_scrap##*"href=\""}"
-echo "$_img"
+echo "${_img%%\"/>*}"
 }
 
-proc_create_node() # OS image
+proc_create_node() # token
 {
 # IP_MODE_VALS_1_5 = ['POOL', 'DHCP', 'MANUAL', 'NONE']
 # Find network href/elem from org (look for:
@@ -172,7 +172,18 @@ proc_create_node() # OS image
 # Loop on get status from task
 
 # POST /vApp/{id}/power/action/powerOn
-echo
+net_url=`proc_get_network "$1"`
+vdc_url=`proc_get_vdc "$1"`
+image_url=`proc_get_image "$1"`
+
+curl -s -i -k \
+-H "Accept:application/*+xml;version="$host_api_version"" \
+-H "Content-Type: application/vnd.vmware.vcloud.instantiateVAppTemplateParams+xml" \
+-H "$1" -X POST \
+-d "name=api_test" \
+"$vdc_url/action/instantiateVAppTemplate"
+
+echo "$net_url" "$vdc_url" "$image_url"
 }
 
 # TODO: Add wait parameter to pause between creation and deletion
@@ -222,10 +233,5 @@ fi
 read_credentials
 
 TOKEN=`api_login "$user_name" "$user_pass"`
-net_url=`proc_get_network "$TOKEN"`
-info "$net_url"
-vdc_url=`proc_get_vdc "$TOKEN"`
-info "$vdc_url"
-image_url=`proc_get_image "$TOKEN"`
-info "$image_url"
+info `proc_create_node "$TOKEN"`
 exit $EXITCODE
