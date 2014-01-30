@@ -1,0 +1,25 @@
+<InstantiateVAppTemplateParams name="server17" xml:lang="en" xmlns="http://www.vmware.com/vcloud/v0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <VAppTemplate href="https://vcloud.cems.rl.ac.uk/api/vAppTemplate/vappTemplate-44734619-b0f0-44f4-bc10-c74b773cb088" />
+ <InstantiationParams>
+  <ProductSection xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:q1="http://www.vmware.com/vcloud/v0.8">
+   <Property ovf:key="password" ovf:value="q1W2e3R4t5Y6" xmlns="http://schemas.dmtf.org/ovf/envelope/1" />
+  </ProductSection>
+  <VirtualHardwareSection xmlns:q1="http://www.vmware.com/vcloud/v0.8">
+   <Item xmlns="http://schemas.dmtf.org/ovf/envelope/1">
+    <InstanceID xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">1</InstanceID>
+    <ResourceType xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">3</ResourceType>
+    <VirtualQuantity xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">1</VirtualQuantity>
+   </Item>
+   <Item xmlns="http://schemas.dmtf.org/ovf/envelope/1">
+    <InstanceID xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">2</InstanceID>
+    <ResourceType xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">4</ResourceType>
+    <VirtualQuantity xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">1024</VirtualQuantity>
+   </Item>
+  </VirtualHardwareSection>
+  <NetworkConfigSection>
+   <NetworkConfig>
+     <NetworkAssociation href="https://vcloud.cems.rl.ac.uk/api/network/d829df9f-bca6-4f9c-9e72-1013334f499c" />
+   </NetworkConfig>
+  </NetworkConfigSection>
+ </InstantiationParams>
+</InstantiateVAppTemplateParams>

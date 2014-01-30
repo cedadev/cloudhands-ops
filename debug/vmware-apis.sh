@@ -152,6 +152,7 @@ proc_get_image() # token
 {
 _cat_url=`proc_get_catalogue "$1"`
 _xml=`url_get "$1" "$_cat_url"`
+info "$_xml"
 _scrap=`echo "$_xml" | grep -i "centos"`
 _img="${_scrap##*"href=\""}"
 echo "${_img%%\"/>*}"
