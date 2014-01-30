@@ -14,6 +14,7 @@ DIR=$( cd "$( dirname "$0" )" && pwd )
 PARENT=$(readlink -e "$DIR/..")
 SETTINGS="phase01"
 
+
 usage()
 {
     echo "Usage: $PROGRAM [--settings SETTINGS]"
@@ -158,6 +159,13 @@ _img="${_scrap##*"href=\""}"
 echo "${_img%%\"/>*}"
 }
 
+proc_get_template() # token
+{
+_vdc_url=`proc_get_vdc "$1"`
+_xml=`url_get "$1" "$_vdc_url"`
+echo "$_xml"
+}
+
 proc_create_node() # token
 {
 # IP_MODE_VALS_1_5 = ['POOL', 'DHCP', 'MANUAL', 'NONE']
@@ -176,6 +184,37 @@ proc_create_node() # token
 net_url=`proc_get_network "$1"`
 vdc_url=`proc_get_vdc "$1"`
 image_url=`proc_get_image "$1"`
+
+info "$net_url"
+
+CREATE_NODE_PAYLOAD="$(cat <<END_OF_XML
+<InstantiateVAppTemplateParams name="server17" xml:lang="en" xmlns="http://www.vmware.com/vcloud/v0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <VAppTemplate href="https://vcloud.cems.rl.ac.uk/api/vAppTemplate/vappTemplate-44734619-b0f0-44f4-bc10-c74b773cb088" />
+ <InstantiationParams>
+  <ProductSection xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:q1="http://www.vmware.com/vcloud/v0.8">
+   <Property ovf:key="password" ovf:value="q1W2e3R4t5Y6" xmlns="http://schemas.dmtf.org/ovf/envelope/1" />
+  </ProductSection>
+  <VirtualHardwareSection xmlns:q1="http://www.vmware.com/vcloud/v0.8">
+   <Item xmlns="http://schemas.dmtf.org/ovf/envelope/1">
+    <InstanceID xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">1</InstanceID>
+    <ResourceType xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">3</ResourceType>
+    <VirtualQuantity xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">1</VirtualQuantity>
+   </Item>
+   <Item xmlns="http://schemas.dmtf.org/ovf/envelope/1">
+    <InstanceID xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">2</InstanceID>
+    <ResourceType xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">4</ResourceType>
+    <VirtualQuantity xmlns="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">1024</VirtualQuantity>
+   </Item>
+  </VirtualHardwareSection>
+  <NetworkConfigSection>
+   <NetworkConfig>
+     <NetworkAssociation href="$net_url" />
+   </NetworkConfig>
+  </NetworkConfigSection>
+ </InstantiationParams>
+</InstantiateVAppTemplateParams>
+END_OF_XML
+)"
 
 curl -s -i -k \
 -H "Accept:application/*+xml;version="$host_api_version"" \
@@ -234,5 +273,6 @@ fi
 read_credentials
 
 TOKEN=`api_login "$user_name" "$user_pass"`
-info `proc_create_node "$TOKEN"`
+proc_get_image "$TOKEN"
+# info `proc_create_node "$TOKEN"`
 exit $EXITCODE
