@@ -188,7 +188,7 @@ vdc_url=`proc_get_vdc "$1"`
 template_url=`proc_get_template "$1"`
 
 CREATE_NODE_PAYLOAD=$(cat <<END_OF_XML
-<InstantiateVAppTemplateParams name="test-$vm_name" xml:lang="en" xmlns="http://www.vmware.com/vcloud/v0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<InstantiateVAppTemplateParams name="$vm_name" xml:lang="en" xmlns="http://www.vmware.com/vcloud/v0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <VAppTemplate href="$template_url" />
  <InstantiationParams>
   <ProductSection xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:q1="http://www.vmware.com/vcloud/v0.8">
@@ -216,12 +216,13 @@ CREATE_NODE_PAYLOAD=$(cat <<END_OF_XML
 END_OF_XML
 )
 
-curl -s -i -k \
+curl --trace-ascii curl-trace.txt -i -k \
 -H "Accept:application/*+xml;version="$host_api_version"" \
 -H "Content-Type: application/vnd.vmware.vcloud.instantiateVAppTemplateParams+xml" \
 -H "$1" -X POST \
--d "name=api_test" \
-"$vdc_url/action/instantiateVAppTemplate"
+"$vdc_url/action/instantiateVAppTemplate" \
+-d "$CREATE_NODE_PAYLOAD"
+#--data-urlencode $CREATE_NODE_PAYLOAD
 
 echo "$vm_name"
 }
