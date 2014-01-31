@@ -182,13 +182,14 @@ proc_create_node() # token
 # Loop on get status from task
 
 # POST /vApp/{id}/power/action/powerOn
+vm_name="test-`tr -dc "[:alpha:]" < /dev/urandom | head -c 8`"
 net_url=`proc_get_network "$1"`
 vdc_url=`proc_get_vdc "$1"`
 template_url=`proc_get_template "$1"`
 
-CREATE_NODE_PAYLOAD="$(cat <<END_OF_XML
-<InstantiateVAppTemplateParams name="server17" xml:lang="en" xmlns="http://www.vmware.com/vcloud/v0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
- <VAppTemplate href=""$template_url"" />
+CREATE_NODE_PAYLOAD=$(cat <<END_OF_XML
+<InstantiateVAppTemplateParams name="test-$vm_name" xml:lang="en" xmlns="http://www.vmware.com/vcloud/v0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <VAppTemplate href="$template_url" />
  <InstantiationParams>
   <ProductSection xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:q1="http://www.vmware.com/vcloud/v0.8">
    <Property ovf:key="password" ovf:value="q1W2e3R4t5Y6" xmlns="http://schemas.dmtf.org/ovf/envelope/1" />
@@ -213,7 +214,7 @@ CREATE_NODE_PAYLOAD="$(cat <<END_OF_XML
  </InstantiationParams>
 </InstantiateVAppTemplateParams>
 END_OF_XML
-)"
+)
 
 curl -s -i -k \
 -H "Accept:application/*+xml;version="$host_api_version"" \
@@ -222,7 +223,7 @@ curl -s -i -k \
 -d "name=api_test" \
 "$vdc_url/action/instantiateVAppTemplate"
 
-echo "$net_url" "$vdc_url" "$image_url"
+echo "$vm_name"
 }
 
 # TODO: Add wait parameter to pause between creation and deletion
@@ -272,5 +273,5 @@ fi
 read_credentials
 
 TOKEN=`api_login "$user_name" "$user_pass"`
-info `proc_create_node "$TOKEN"`
+info "Creating VM `proc_create_node "$TOKEN"`..."
 exit $EXITCODE
