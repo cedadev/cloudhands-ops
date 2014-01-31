@@ -153,7 +153,6 @@ proc_get_image() # token
 {
 _cat_url=`proc_get_catalogue "$1"`
 _xml=`url_get "$1" "$_cat_url"`
-info "$_xml"
 _scrap=`echo "$_xml" | grep -i "centos"`
 _img="${_scrap##*"href=\""}"
 echo "${_img%%\"/>*}"
@@ -161,9 +160,11 @@ echo "${_img%%\"/>*}"
 
 proc_get_template() # token
 {
-_vdc_url=`proc_get_vdc "$1"`
-_xml=`url_get "$1" "$_vdc_url"`
-echo "$_xml"
+_img=`proc_get_image "$1"`
+_xml=`url_get "$1" "$_img"`
+_scrap=`echo "$_xml" | grep "application/vnd.vmware.vcloud.vAppTemplate+xml\""`
+_tmpl="${_scrap##*"href=\""}"
+echo "${_tmpl%%\"/>*}"
 }
 
 proc_create_node() # token
@@ -183,13 +184,11 @@ proc_create_node() # token
 # POST /vApp/{id}/power/action/powerOn
 net_url=`proc_get_network "$1"`
 vdc_url=`proc_get_vdc "$1"`
-image_url=`proc_get_image "$1"`
-
-info "$net_url"
+template_url=`proc_get_template "$1"`
 
 CREATE_NODE_PAYLOAD="$(cat <<END_OF_XML
 <InstantiateVAppTemplateParams name="server17" xml:lang="en" xmlns="http://www.vmware.com/vcloud/v0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
- <VAppTemplate href="https://vcloud.cems.rl.ac.uk/api/vAppTemplate/vappTemplate-44734619-b0f0-44f4-bc10-c74b773cb088" />
+ <VAppTemplate href=""$template_url"" />
  <InstantiationParams>
   <ProductSection xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:q1="http://www.vmware.com/vcloud/v0.8">
    <Property ovf:key="password" ovf:value="q1W2e3R4t5Y6" xmlns="http://schemas.dmtf.org/ovf/envelope/1" />
@@ -273,6 +272,5 @@ fi
 read_credentials
 
 TOKEN=`api_login "$user_name" "$user_pass"`
-proc_get_image "$TOKEN"
-# info `proc_create_node "$TOKEN"`
+info `proc_create_node "$TOKEN"`
 exit $EXITCODE
