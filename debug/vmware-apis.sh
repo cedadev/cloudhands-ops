@@ -212,16 +212,19 @@ CREATE_NODE_PAYLOAD=$(cat <<END_OF_XML
    </NetworkConfig>
   </NetworkConfigSection>
  </InstantiationParams>
-</InstantiateVAppTemplateParams>
+</InstantiateVAppTemplateParams> 
 END_OF_XML
 )
+
+echo "$CREATE_NODE_PAYLOAD" > create_node-payload.xml
 
 curl --trace-ascii curl-trace.txt -i -k \
 -H "Accept:application/*+xml;version="$host_api_version"" \
 -H "Content-Type: application/vnd.vmware.vcloud.instantiateVAppTemplateParams+xml" \
 -H "$1" -X POST \
 "$vdc_url/action/instantiateVAppTemplate" \
--d "$CREATE_NODE_PAYLOAD"
+-d @create_node-payload.xml
+#-d "$CREATE_NODE_PAYLOAD"
 #--data-urlencode $CREATE_NODE_PAYLOAD
 
 echo "$vm_name"
