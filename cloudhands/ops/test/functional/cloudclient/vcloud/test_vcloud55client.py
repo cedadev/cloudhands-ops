@@ -27,9 +27,10 @@ from libcloud import security
 from libcloud.compute.types import Provider
 from libcloud.compute.providers import get_driver
 
-from libcloud.compute.drivers.vcloud import (VCloudNodeDriver,
-                                             VCloud_5_1_NodeDriver,
-                                             VCloud_1_5_Connection)
+import libcloud.compute.providers
+libcloud.compute.providers.DRIVERS[Provider.VCLOUD] = (
+    "cloudhands.ops.test.functional.cloudclient.vcloud.patch.vcloud",
+    "VCloud_5_5_NodeDriver")
 
 
 # Location of the directory containing *this* module
