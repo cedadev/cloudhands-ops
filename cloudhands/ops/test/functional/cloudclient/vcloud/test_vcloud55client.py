@@ -7,10 +7,18 @@ __date__ = "05/03/14"
 __copyright__ = "(C) 2014 Science and Technology Facilities Council"
 __license__ = "BSD - see LICENSE file in top-level directory"
 __revision__ = "$Id$"
+import sys
+_py3 = sys.version_info >= (3, 0)
+
+if _py3:
+    from urllib.request import urlopen
+    from urllib.request import Request
+else:
+    from urllib2 import urlopen, Request
+
 from os import path, environ
 import unittest
-from urllib.request import urlopen
-from urllib.request import Request
+
 import logging
 log = logging.getLogger(__name__)
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
@@ -24,18 +32,38 @@ from libcloud.compute.drivers.vcloud import (VCloudNodeDriver,
                                              VCloud_1_5_Connection)
 
 
+# Location of the directory containing *this* module
 HERE_DIR = path.dirname(__file__)
+
+# The configuration directory holds files for setting the vCD hostname and 
+# user credentials, also, a CA directory for CA certificate bundle file
 CONFIG_DIR = path.join(HERE_DIR, 'config')
+
+# CA Certificates bundle for securing the connection to the server.  This is a
+# concatenated set of PEM-format CA certificates.  Nb. server authentication is
+# disabled in the test environment as the test server is using a selg-signed 
+# certificate
 CA_CERTS_PATH = path.join(CONFIG_DIR, 'ca', 'v55-ca-bundle.crt')
+
+# File containing the authentication credentials.  It should be of the form
+# <vCloud id>@<vCloud Org Name>:<password>
 CREDS_FILEPATH = path.join(CONFIG_DIR, 'v55creds.txt')
+
+# File containing the hostname for the vCloud Director API endpoint.  Simply
+# place the FQDN on a single line and save the file.
 CLOUD_HOSTNAME_FILEPATH = path.join(CONFIG_DIR, 'v55cloud-host.txt')
 
     
 class Vcd55TestCloudClient(unittest.TestCase):
     '''Test vCloud Director API v5.5 against Apache Libcloud - requires
-    patched version of the latter
+    patched version of the latter: 
+    
+     * copy the vcloud module from the patch sub-directory into the equivalent
+     location for your libcloud installation i.e. replace 
+     
+    `libcloud.compute.drivers.vcloud`
     '''
-    USERNAME, PASSWORD = open(CREDS_FILEPATH).read().split(':')
+    USERNAME, PASSWORD = open(CREDS_FILEPATH).read().strip().split(':')
     CLOUD_HOSTNAME = open(CLOUD_HOSTNAME_FILEPATH).read().strip()
     
     # Pick image name from environment variable or accept default
