@@ -9,7 +9,8 @@ __license__ = "BSD - see LICENSE file in top-level directory"
 __revision__ = "$Id$"
 from os import path, environ
 import unittest
-from urllib2 import urlopen, Request
+from urllib.request import urlopen
+from urllib.request import Request
 import logging
 log = logging.getLogger(__name__)
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
@@ -122,7 +123,7 @@ class Vcd55TestCloudClient(unittest.TestCase):
                 req = Request(network.attrib['href'], None, headers)
                 network_fp = urlopen(req)
                 log.info("network content %r", network_fp.read())
-            except Exception, e:
+            except Exception as e:
                 self.fail(e)
                     
     def test06_create_and_destroy_node(self):
@@ -178,7 +179,7 @@ class Vcd55TestCloudClient(unittest.TestCase):
             node = self.driver.create_node(name='phil-test08-node-ex-network', 
                                            image=image,
                                            ex_network=network_r)
-        except Exception, e:
+        except Exception as e:
             self.fail(e)
             
         log.info('Completed vApp creation for %r', node.name)
@@ -204,7 +205,7 @@ class Vcd55TestCloudClient(unittest.TestCase):
             node = self.driver.create_node(name=vapp_name, 
                                            image=image,
                                            ex_vm_names=[vm_name])
-        except Exception, e:
+        except Exception as e:
             self.fail(e.message.attrib)
             
         log.info('Completed %r vApp creation', vapp_name)

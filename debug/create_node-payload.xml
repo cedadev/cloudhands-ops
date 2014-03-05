@@ -1,4 +1,4 @@
-<InstantiateVAppTemplateParams name="server17" xml:lang="en" xmlns="http://www.vmware.com/vcloud/v0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<InstantiateVAppTemplateParams name="test-zyIceFEE" xml:lang="en" xmlns="http://www.vmware.com/vcloud/v0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <VAppTemplate href="https://vcloud.cems.rl.ac.uk/api/vAppTemplate/vappTemplate-44734619-b0f0-44f4-bc10-c74b773cb088" />
  <InstantiationParams>
   <ProductSection xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:q1="http://www.vmware.com/vcloud/v0.8">
@@ -18,8 +18,16 @@
   </VirtualHardwareSection>
   <NetworkConfigSection>
    <NetworkConfig>
-     <NetworkAssociation href="https://vcloud.cems.rl.ac.uk/api/network/d829df9f-bca6-4f9c-9e72-1013334f499c" />
+     <NetworkAssociation href="HTTP/1.0 200 Connection established
+
+HTTP/1.1 200 OK
+Date: Tue, 04 Mar 2014 10:31:19 GMT
+Content-Type: application/vnd.vmware.vcloud.org+xml;version=1.5
+Content-Length: 2416
+Connection: close
+
+<" />
    </NetworkConfig>
   </NetworkConfigSection>
  </InstantiationParams>
-</InstantiateVAppTemplateParams>
+</InstantiateVAppTemplateParams> 

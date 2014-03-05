@@ -187,7 +187,7 @@ net_url=`proc_get_network "$1"`
 vdc_url=`proc_get_vdc "$1"`
 template_url=`proc_get_template "$1"`
 
-CREATE_NODE_PAYLOAD=$(cat <<END_OF_XML
+CREATE_NODE_PAYLOAD=$(cat | tr -d "\n" <<END_OF_XML
 <InstantiateVAppTemplateParams name="$vm_name" xml:lang="en" xmlns="http://www.vmware.com/vcloud/v0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <VAppTemplate href="$template_url" />
  <InstantiationParams>
@@ -223,8 +223,8 @@ curl --trace-ascii curl-trace.txt -i -k \
 -H "Content-Type: application/vnd.vmware.vcloud.instantiateVAppTemplateParams+xml" \
 -H "$1" -X POST \
 "$vdc_url/action/instantiateVAppTemplate" \
--d @create_node-payload.xml
-#-d "$CREATE_NODE_PAYLOAD"
+#-d @create_node-payload.xml
+-d "$CREATE_NODE_PAYLOAD"
 #--data-urlencode $CREATE_NODE_PAYLOAD
 
 echo "$vm_name"

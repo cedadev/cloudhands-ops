@@ -9,7 +9,7 @@ __license__ = "BSD - see LICENSE file in top-level directory"
 __revision__ = "$Id$"
 from os import path
 import unittest
-from urllib2 import urlopen
+from urllib.request import urlopen
 import logging
 log = logging.getLogger(__name__)
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
@@ -141,7 +141,7 @@ class Vcd15TestCloudClient(unittest.TestCase):
             node = self.conn.create_node(name='phil-test-node-ex-network01', 
                                          image=image,
                                          ex_network=network_r)
-        except Exception, e:
+        except Exception as e:
             self.fail(e)
             
         log.info('Completed vApp creation')
@@ -181,7 +181,7 @@ class Vcd15TestCloudClient(unittest.TestCase):
             node = self.conn.create_node(name=vapp_name, 
                                          image=image,
                                          ex_vm_names=[vm_name])
-        except Exception, e:
+        except Exception as e:
             self.fail(e)
             
         log.info('Completed %r vApp creation', vapp_name)
