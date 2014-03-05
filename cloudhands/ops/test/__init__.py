@@ -1,6 +1,6 @@
 """JASMIN Cloud
 
-Cloudhands ops package
+Cloudhands ops test package
 """
 __author__ = "P J Kershaw"
 __date__ = "05/03/14"
@@ -9,4 +9,3 @@ __license__ = "BSD - see LICENSE file in top-level directory"
 __contact__ = "Philip.Kershaw@stfc.ac.uk"
 __revision__ = "$Id$"
 __import__('pkg_resources').declare_namespace(__name__)
-__version__ = "0.01"
