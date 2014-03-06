@@ -19,16 +19,15 @@ CA_CERTS_PATH = path.join(CONFIG_DIR, 'ca', 'mozilla-ca-bundle.crt')
 CREDS_FILEPATH = path.join(CONFIG_DIR, 'aws_creds.txt')
 
 
+@unittest.skip("Pending AWS account")
 class TestAwsCloudClient(unittest.TestCase):
-    USERNAME, PASSWORD = open(CREDS_FILEPATH).read().split(':')
     
     security.CA_CERTS_PATH = [CA_CERTS_PATH]
     
     def setUp(self):
-        
+        USERNAME, PASSWORD = open(CREDS_FILEPATH).read().split(':')
         aws_driver = get_driver(Provider.EC2)
-        self.conn = aws_driver(self.__class__.USERNAME,
-                               self.__class__.PASSWORD)
+        self.conn = aws_driver(USERNAME, PASSWORD)
         
     def test01_list_nodes(self):
         nodes = self.conn.list_nodes()
@@ -37,17 +36,15 @@ class TestAwsCloudClient(unittest.TestCase):
             log.info('node = %r', node)
 
 
-
+@unittest.skip("Pending AWS account")
 class TestEuWestAwsCloudClient(unittest.TestCase):
-    USERNAME, PASSWORD = open(CREDS_FILEPATH).read().split(':')
     
     security.CA_CERTS_PATH = [CA_CERTS_PATH]
     
     def setUp(self):
-        
+        USERNAME, PASSWORD = open(CREDS_FILEPATH).read().split(':')
         aws_driver = get_driver(Provider.EC2_EU_WEST)
-        self.conn = aws_driver(self.__class__.USERNAME,
-                               self.__class__.PASSWORD)
+        self.conn = aws_driver(USERNAME, PASSWORD)
         
     def test01_list_nodes(self):
         nodes = self.conn.list_nodes()

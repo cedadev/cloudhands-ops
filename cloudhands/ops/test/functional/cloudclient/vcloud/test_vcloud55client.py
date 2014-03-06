@@ -25,12 +25,8 @@ logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
 
 from libcloud import security
 from libcloud.compute.types import Provider
-from libcloud.compute.providers import get_driver
-
 import libcloud.compute.providers
-libcloud.compute.providers.DRIVERS[Provider.VCLOUD] = (
-    "cloudhands.ops.test.functional.cloudclient.vcloud.patch.vcloud",
-    "VCloud_5_5_NodeDriver")
+from libcloud.compute.providers import get_driver
 
 
 # Location of the directory containing *this* module
@@ -77,6 +73,10 @@ class Vcd55TestCloudClient(unittest.TestCase):
     
     def setUp(self):
         
+        libcloud.compute.providers.DRIVERS[Provider.VCLOUD] = (
+        "cloudhands.ops.test.functional.cloudclient.vcloud.patch.vcloud",
+        "VCloud_5_5_NodeDriver")
+
         driver = get_driver(Provider.VCLOUD)
         self.driver = driver(self.__class__.USERNAME,
                              self.__class__.PASSWORD, 

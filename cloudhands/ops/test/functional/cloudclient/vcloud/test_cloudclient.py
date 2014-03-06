@@ -25,6 +25,7 @@ CREDS_FILEPATH = path.join(CONFIG_DIR, 'creds.txt')
 CLOUD_HOSTNAME_FILEPATH = path.join(CONFIG_DIR, 'cloud-host.txt')
 
 
+@unittest.skip("Sunsetting vDirector 1.5")
 class Vcd15TestCloudClient(unittest.TestCase):
     USERNAME, PASSWORD = open(CREDS_FILEPATH).read().split(':')
     CLOUD_HOSTNAME = open(CLOUD_HOSTNAME_FILEPATH).read().strip()
