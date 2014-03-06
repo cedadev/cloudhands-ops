@@ -47,7 +47,7 @@ then
 fi
 
 for i in cloudhands-common cloudhands-burst cloudhands-jasmin \
-    cloudhands-web cloudhands-ops; do
+    cloudhands-web; do
     cd $PARENT/$i
 
     version=`$PYENV/bin/python setup.py --version`
