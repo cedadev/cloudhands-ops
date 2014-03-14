@@ -57,22 +57,28 @@ CLOUD_HOSTNAME_FILEPATH = path.join(CONFIG_DIR, 'v55cloud-host.txt')
 is_bool = lambda val: val.lower() in ('true', 'false')
 
 def infer_type_from_str(val):
+    if is_bool(val):
+        return bool(val)
+    
+    # Try for an integer
     try:
         return long(val)
-    
+ 
     except ValueError:
-        if is_bool(val):
-            return bool(val)
-        else:
+        # Check for floating point number
+        try:
+            return float(val)
+        
+        except ValueError:
+            # Default to string
             return val
 
 def mk_valid_varname(name):
     '''Make a valid Python variable name from XML element attributes'''
-    if name.startswith('http'):
-        # Ignore schema declarations
+    if not isinstance(name, basestring):
         return None
     
-    varname = re.sub('[^0-9a-zA-Z_]', '_', name)
+    varname = camelcase2underscores(re.sub('[^0-9a-zA-Z_]', '_', name))
 
     # Avoid reserved names
     if keyword.iskeyword(varname):
@@ -84,8 +90,9 @@ def camelcase2underscores(varname):
     to_underscores_name = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', varname)
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', to_underscores_name).lower()
      
-et_get_tagname = lambda elem: elem.tag.rsplit('}')[-1]
-      
+et_strip_ns_from_tag = lambda tagname: tagname.rsplit('}')[-1]
+et_get_tagname = lambda elem: et_strip_ns_from_tag(elem.tag)
+
 def _log_etree_elem(obj, level=logging.DEBUG):
     if log.getEffectiveLevel() <= level:
         log.debug(ET.tostring(obj))
@@ -127,75 +134,102 @@ class Vcd55TestCloudClient(unittest.TestCase):
             log.info("vDC Storage: %r", vdc.storage)
             log.info("vDC Memory: %r", vdc.memory)
             log.info("vDC CPU: %r", vdc.cpu)
+            
+        self._add_nat(vdc, '192.168.0.1', 'external ip')
         
-        edgegateway_uris = self._get_vdc_edgegateways(vdc.id)
-        self.assert_(edgegateway_uris)
+    def _get_edgegateway(self, vdc):
+        # Find out the Edge Gateway URIs for this VDC
+        edgegateway_uris = self._get_vdc_edgegateway_uris(vdc.id)
         
+        # Resolve the first to retrieve the Edge Gateway Record
         edgegateway_recs = self._get_edgegateway_rec(edgegateway_uris[0])
-        self.assert_(edgegateway_recs)
         
-        edgegateway = self._resolve_edgegateway_rec_uri(
-                                                    edgegateway_recs[0].href)
-        self.assert_(edgegateway)
+        # Resolve the Edge Gateway record link to get the Edge Gateway 
+        # information
+        return self._get_edgegateway_from_uri(edgegateway_recs[0].href)
+      
+    def _add_nat(self, vdc, org_ip, ext_ip):
+        '''Add a new NAT to map from an internal organisation address to an
+        external host
+        '''
+        gateway = self._get_edgegateway(vdc)
         
-    def _get_vdc_network_with_urlopen(self, vdc_uri):
-        '''Get vDC networks using urlopen'''
-        try:
-            headers = self.driver.connection.add_default_headers({})
-            headers['User-Agent'] = self.driver.connection._user_agent()
-            req = Request(vdc_uri, None, headers)
-            vdc_fp = urlopen(req)
-            log.info("Organisation info %s", vdc_fp.read())
+        # Alter the gateway settings adding a new NAT entry
+        
+        self._update_edgegateway(gateway)
+        
+    def _update_edgegateway(self, gateway):
+        '''Update Edge Gateway with settings provided'''
+        update_uri = None
+        for link in gateway.link:
+            if link.rel == 'edgeGateway:configureServices':
+                update_uri = link.rel
+                break
             
-        except Exception as e:
-            self.fail(e)
+        if update_uri is None:
+            self.fail('No Gateway update URI found in Gateway response')
             
-    def _get_vdc_edgegateways(self, vdc_uri):
+        res = self.driver.connection.request(get_url_path(update_uri),
+                                             method='POST',
+                                             data=ET.tostring(gateway._elem))
+              
+    def _get_vdc_edgegateway_uris(self, vdc_uri):
         '''Get vDC Edge Gateway URIs'''
-        res = self.driver.connection.request(get_url_path(vdc_uri))
-        self.assert_(res.object)
-        _log_etree_elem(res.object)
-        
         edgegateway_uris = []
-        for link in res.object.findall(fixxpath(res.object, "Link")):
+        for link in self._get_elems(vdc_uri, "Link"):
             if link.get('rel') == 'edgeGateways':
                 edgegateway_uris.append(link.get('href'))
                 
         return edgegateway_uris
-    
+
+    def _get_elems(self, uri, xpath):
+        '''Get XML elements from a given URI and XPath search over returned XML 
+        content
+        '''
+        res = self.driver.connection.request(get_url_path(uri))
+        if xpath.startswith('{'):
+            return res.object.findall(xpath)
+        else:
+            return res.object.findall(fixxpath(res.object, xpath))
+           
     def _get_edgegateway_rec(self, edgegateway_uri):
         res = self.driver.connection.request(get_url_path(edgegateway_uri))
         _log_etree_elem(res.object)
-        
-        class EdgeGatewayRecord(object):
-            '''Edge gateway record'''
-
+#        
+#        class EdgeGatewayRecord(object):
+#            '''Edge gateway record'''
+#
         edgegateway_rec_elems = res.object.findall(fixxpath(res.object, 
                                                    "EdgeGatewayRecord"))
         edgegateway_recs = []
         for edgegateway_rec_elem in edgegateway_rec_elems:
-            edgegateway_recs.append(EdgeGatewayRecord())
-            
-            for name, val in edgegateway_rec_elem.items():
-                
-                varname = mk_valid_varname(name)
-                if varname is not None:
-                    # Skips attributes which are namespace declarations
-                    setattr(edgegateway_recs[-1], 
-                            varname, 
-                            infer_type_from_str(val))
+#            edgegateway_recs.append(EdgeGatewayRecord())
+#            
+#            for name, val in edgegateway_rec_elem.items():
+#                
+#                varname = mk_valid_varname(name)
+#                if varname is not None:
+#                    # Skips attributes which are namespace declarations
+#                    setattr(edgegateway_recs[-1], 
+#                            varname, 
+#                            infer_type_from_str(val))
+            edgegateway_recs.append(self._et_class_walker(edgegateway_rec_elem))
                    
         return edgegateway_recs
     
-    def _resolve_edgegateway_rec_uri(self, edgegateway_rec_uri):
+    def _get_edgegateway_from_uri(self, edgegateway_rec_uri):
         res = self.driver.connection.request(get_url_path(edgegateway_rec_uri))
         _log_etree_elem(res.object)
         
         gateway_iface_elems = res.object.findall(fixxpath(res.object, 
                                                           "GatewayInterface"))
         
-        _obj = self._et_class_walker(res.object)
-        return _obj
+        gateway = self._et_class_walker(res.object)
+        
+        # Augment gateway object with explicit reference to ElementTree elem
+        gateway._elem = res.object
+        
+        return gateway
    
     def _et_class_walker(self, elem):
         '''Creates classes corresponding to elements and instantiates objects
@@ -208,7 +242,10 @@ class Vcd55TestCloudClient(unittest.TestCase):
         # Add the XML element's attributes as attributes of the new Python
         # object
         for attrname, attrval in elem.attrib.items():
-            varname = mk_valid_varname(attrname)
+            # Make a valid variable name from XML attribute name -
+            # et_get_tagname() call strips out ElementTree namespace specifier
+            # where needed
+            varname = mk_valid_varname(et_strip_ns_from_tag(attrname))
             if varname is not None:
                 setattr(_obj, varname, infer_type_from_str(attrval))
         
