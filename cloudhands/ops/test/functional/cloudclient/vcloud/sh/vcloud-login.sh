@@ -8,4 +8,7 @@ if [ -z "$2" ]; then
     exit 1;
 fi
 
-curl -X POST https://$1/api/sessions --user $2 -k -H 'Accept:application/*+xml;version=1.5' -i
+output=$(curl -X POST https://$1/api/sessions --user $2 -k -H 'Accept:application/*+xml;version=5.5' -i)
+id_handle=`echo "$output" |grep x-vcloud-authorization | awk '{print $2}'`
+echo "$id_handle"
+exit 0;
