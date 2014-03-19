@@ -17,7 +17,7 @@ if _py3:
 else:
     from urllib2 import urlopen, Request
 
-from os import path, environ
+from os import path
 import unittest
 import re
 import keyword
@@ -55,6 +55,7 @@ CREDS_FILEPATH = path.join(CONFIG_DIR, 'v55creds.txt')
 CLOUD_HOSTNAME_FILEPATH = path.join(CONFIG_DIR, 'v55cloud-host.txt')
 
 is_bool = lambda val: val.lower() in ('true', 'false')
+bool2str = lambda val: str(val).lower()
 
 def infer_type_from_str(val):
     if is_bool(val):
@@ -92,11 +93,63 @@ def camelcase2underscores(varname):
      
 et_strip_ns_from_tag = lambda tagname: tagname.rsplit('}')[-1]
 et_get_tagname = lambda elem: et_strip_ns_from_tag(elem.tag)
+et_get_namespace = lambda elem: elem.tag[1:].split("}", 1)[0]
+et_mk_tag = lambda namespace, tagname: "{%s}%s" % (namespace, tagname)
 
 def _log_etree_elem(obj, level=logging.DEBUG):
     if log.getEffectiveLevel() <= level:
         log.debug(ET.tostring(obj))
 
+
+class GatewayNatRule(object):
+    '''Gateway NAT rule'''
+    IFACE_URI_TYPE = "application/vnd.vmware.admin.network+xml"
+    DEFAULT_PORT = "any"
+    DEFAULT_PROTOCOL = "any"
+    
+    def __init__(self,
+                 iface_uri=None,
+                 iface_name=None,
+                 iface_uri_type=IFACE_URI_TYPE,
+                 orig_ip=None,
+                 orig_port=DEFAULT_PORT,
+                 transl_ip=None,
+                 transl_port=DEFAULT_PORT,
+                 protocol=DEFAULT_PROTOCOL):
+    
+        self.iface_uri = iface_uri
+        self.iface_name = iface_name
+        self.iface_uri_type = iface_uri_type
+        self.orig_ip = orig_ip
+        self.orig_port = orig_port
+        self.transl_ip = transl_ip
+        self.transl_port = transl_port
+        self.protocol = protocol
+        
+        
+class NatRule(object):
+    RULE_TYPES = ('DNAT', 'SNAT')
+    
+    def __init__(self, rule_type='DNAT', rule_id=None, rule_is_enabled=False,
+                 **gateway_nat_rule_kw):
+        self.rule_type = rule_type
+        self.rule_id = rule_id
+        self.rule_is_enabled = rule_is_enabled
+        
+        self.gateway_nat_rule = GatewayNatRule(**gateway_nat_rule_kw)
+    
+    @property
+    def rule_type(self):
+        return self._rule_type
+    
+    @rule_type.setter
+    def rule_type(self, val):
+        if val not in self.__class__.RULE_TYPES:
+            raise ValueError('Accepted values for "rule_type" are: %r' %
+                             self.__class__.RULE_TYPES) 
+
+        self._rule_type = val
+           
     
 class Vcd55TestCloudClient(unittest.TestCase):
     '''Test vCloud Director API v5.5 network configuration 
@@ -108,6 +161,8 @@ class Vcd55TestCloudClient(unittest.TestCase):
     # Disable SSL verification for testing ONLY
 #    security.CA_CERTS_PATH = [CA_CERTS_PATH]
     security.VERIFY_SSL_CERT = False
+    
+    CONFIG_EDGE_GATEWAY_URI = 'edgeGateway:configureServices'
     
     def setUp(self):
         '''Initialise vCD driver'''
@@ -122,6 +177,8 @@ class Vcd55TestCloudClient(unittest.TestCase):
                              host=self.__class__.CLOUD_HOSTNAME,
                              api_version='5.5',
                              port=443)
+        
+        self._ns = None
 
     def test01(self):
         vdcs = self.driver.vdcs
@@ -162,17 +219,124 @@ class Vcd55TestCloudClient(unittest.TestCase):
         '''Update Edge Gateway with settings provided'''
         update_uri = None
         for link in gateway.link:
-            if link.rel == 'edgeGateway:configureServices':
+            if link.rel == self.__class__.CONFIG_EDGE_GATEWAY_URI:
                 update_uri = link.rel
                 break
             
         if update_uri is None:
             self.fail('No Gateway update URI found in Gateway response')
+        
+        self._ns = et_get_namespace(gateway._elem)
+        
+        # Check allocation of external IPs
+        
+        # Check rule IDs already allocated
+        highest_nat_rule_id = 0
+        nat_service = \
+            gateway.configuration.edge_gateway_service_configuration.nat_service
+        for nat_rule in nat_service.nat_rule:
+            if nat_rule.id.value_ > highest_nat_rule_id:
+                highest_nat_rule_id = nat_rule.id.value_
+                
+        next_nat_rule_id = highest_nat_rule_id + 1
+        
+        # Source NAT rule
+        snat_rule = NatRule(
+            rule_type='SNAT',
+            rule_id=str(next_nat_rule_id),
+            rule_is_enabled=True,
+            iface_uri='https://cm005.cems.rl.ac.uk/api/admin/network/32b6b108-2dcc-48fd-b039-bbad89d668cd',
+            iface_name='EXT-INTERNET-TEST',
+            orig_ip='192.168.0.6',
+            transl_ip='130.246.139.249')
+
+        nat_service_xpath = 'Configuration/EdgeGatewayServiceConfiguration/NatService'
+        nat_service_elem = gateway._elem.find(fixxpath(gateway._elem, 
+                                                       nat_service_xpath))
+        if nat_service_elem is None:
+            self.fail('No <NatService/> element found in returned Edge Gateway '
+                      'configuration')
             
-        res = self.driver.connection.request(get_url_path(update_uri),
-                                             method='POST',
-                                             data=ET.tostring(gateway._elem))
-              
+        nat_service_elem.append(self._create_nat_rule(snat_rule))
+        
+        # Destination NAT rule
+        next_nat_rule_id += 1
+        dnat_rule = NatRule(
+            rule_type='SNAT',
+            rule_id=str(next_nat_rule_id),
+            rule_is_enabled=True,
+            iface_uri='https://cm005.cems.rl.ac.uk/api/admin/network/32b6b108-2dcc-48fd-b039-bbad89d668cd',
+            iface_name='EXT-INTERNET-TEST',
+            orig_ip='130.246.139.249',
+            transl_ip='192.168.0.6')
+                
+        nat_service_elem.append(self._create_nat_rule(dnat_rule))
+        
+        _log_etree_elem(gateway._elem)
+        
+        # Despatch updated configuration
+#        res = self.driver.connection.request(get_url_path(update_uri),
+#                                             method='POST',
+#                                             data=ET.tostring(gateway._elem))
+
+    def _create_nat_rule(self, nat_rule):   
+        '''Create XML for a new NAT rule appending it to the NAT Service element
+        '''                                                                       
+        nat_rule_elem = ET.Element(et_mk_tag(self._ns, 'NatRule'))
+        rule_type_elem = ET.SubElement(nat_rule_elem, et_mk_tag(self._ns, 
+                                                                'RuleType'))
+        rule_type_elem.text = nat_rule.rule_type
+        
+        is_enabled_elem = ET.SubElement(nat_rule_elem, 
+                                        et_mk_tag(self._ns, 'IsEnabled'))
+        is_enabled_elem.text = bool2str(nat_rule.rule_is_enabled)
+        
+        id_elem = ET.SubElement(nat_rule_elem, et_mk_tag(self._ns, 'Id'))
+        id_elem.text = str(nat_rule.rule_id)
+        
+        gateway_nat_rule_elem = self._create_gateway_nat_rule_elem(
+                                                    nat_rule.gateway_nat_rule)
+        
+        nat_rule_elem.append(gateway_nat_rule_elem)
+        
+        return nat_rule_elem
+    
+    def _create_gateway_nat_rule_elem(self, gateway_nat_rule):
+        '''Make a NAT Rule gateway interface XML element
+        '''
+        gateway_nat_rule_elem = ET.Element(et_mk_tag(self._ns, 
+                                                     'GatewayNatRule'))
+        
+        gateway_nat_rule_elem = ET.SubElement(gateway_nat_rule_elem,
+                                   et_mk_tag(self._ns, 'Interface'),
+                                   attrib={
+                                        'href': gateway_nat_rule.iface_uri,
+                                        'name': gateway_nat_rule.iface_name,
+                                        'type': gateway_nat_rule.iface_uri_type
+                                   })
+        
+        orig_ip_elem = ET.SubElement(gateway_nat_rule_elem, 
+                                     et_mk_tag(self._ns, 'OriginalIP'))
+        orig_ip_elem.text = gateway_nat_rule.orig_ip
+        
+        orig_port_elem = ET.SubElement(gateway_nat_rule_elem, 
+                                       et_mk_tag(self._ns, 'OriginalPort'))
+        orig_port_elem.text = gateway_nat_rule.orig_port
+        
+        transl_ip_elem = ET.SubElement(gateway_nat_rule_elem, 
+                                       et_mk_tag(self._ns, 'TranslatedIP'))
+        transl_ip_elem.text = gateway_nat_rule.transl_ip
+        
+        transl_port_elem = ET.SubElement(gateway_nat_rule_elem, 
+                                         et_mk_tag(self._ns, 'TranslatedPort'))
+        transl_port_elem.text = gateway_nat_rule.transl_port
+        
+        protocol_elem = ET.SubElement(gateway_nat_rule_elem, 
+                                      et_mk_tag(self._ns, 'Protocol'))
+        protocol_elem.text = gateway_nat_rule.protocol
+        
+        return gateway_nat_rule_elem
+                   
     def _get_vdc_edgegateway_uris(self, vdc_uri):
         '''Get vDC Edge Gateway URIs'''
         edgegateway_uris = []
@@ -195,24 +359,11 @@ class Vcd55TestCloudClient(unittest.TestCase):
     def _get_edgegateway_rec(self, edgegateway_uri):
         res = self.driver.connection.request(get_url_path(edgegateway_uri))
         _log_etree_elem(res.object)
-#        
-#        class EdgeGatewayRecord(object):
-#            '''Edge gateway record'''
-#
+
         edgegateway_rec_elems = res.object.findall(fixxpath(res.object, 
                                                    "EdgeGatewayRecord"))
         edgegateway_recs = []
         for edgegateway_rec_elem in edgegateway_rec_elems:
-#            edgegateway_recs.append(EdgeGatewayRecord())
-#            
-#            for name, val in edgegateway_rec_elem.items():
-#                
-#                varname = mk_valid_varname(name)
-#                if varname is not None:
-#                    # Skips attributes which are namespace declarations
-#                    setattr(edgegateway_recs[-1], 
-#                            varname, 
-#                            infer_type_from_str(val))
             edgegateway_recs.append(self._et_class_walker(edgegateway_rec_elem))
                    
         return edgegateway_recs
@@ -235,8 +386,9 @@ class Vcd55TestCloudClient(unittest.TestCase):
         '''Creates classes corresponding to elements and instantiates objects
         with attributes based on the element's attributes'''
         
-        # Make a class with the same name as the XML element and instantiate
-        _cls = type(et_get_tagname(elem), (object,), {})
+        # Make a class with the same name as the XML element and instantiate.
+        # Trailing underscore flags that this class was created dynamically
+        _cls = type(et_get_tagname(elem) + '_', (object,), {})
         _obj = _cls()
         
         # Add the XML element's attributes as attributes of the new Python
