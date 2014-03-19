@@ -10,6 +10,7 @@ WebOb==1.2.3
 WebTest==2.0.10
 Whoosh==2.5.5
 apache-libcloud==0.14.0-beta3
+asyncio==0.4.1
 beautifulsoup4==4.3.2
 docutils==0.11
 macauthlib==0.6.0
