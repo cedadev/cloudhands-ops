@@ -21,7 +21,7 @@ def build_stats(parent, proj):
     rel = subprocess.check_output(
         [sys.executable, "setup.py", "--version"],
         cwd=path).decode("utf-8").strip()
-    return (proj, rel, cntr["lloc"])
+    return (proj, rel, cntr["loc"], cntr["lloc"])
 
 if __name__ == "__main__":
     args = iter(sys.argv)
@@ -29,6 +29,6 @@ if __name__ == "__main__":
     parent = next(args)
     projs = list(args)
     sys.stdout.write(
-        "\n".join("{: >18}\t{}\t{}".format(*build_stats(parent, proj))
+        "\n".join("{: >18}\t{}\t{}\t{}".format(*build_stats(parent, proj))
         for proj in projs))
     sys.stdout.write("\n")
