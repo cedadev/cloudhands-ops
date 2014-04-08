@@ -46,13 +46,10 @@ CONFIG_DIR = path.join(HERE_DIR, 'config')
 # certificate
 CA_CERTS_PATH = path.join(CONFIG_DIR, 'ca', 'v55-ca-bundle.crt')
 
-# File containing the authentication credentials.  It should be of the form
-# <vCloud id>@<vCloud Org Name>:<password>
-CREDS_FILEPATH = path.join(CONFIG_DIR, 'v55creds.txt')
+# Configuration for Edge Gateway NAT'ing - .cfg.dev file is used for testing
+# .cfg checked into git
+EDGE_GATEWAY_CONF_FILEPATH = path.join(CONFIG_DIR, 'edge_gateway.cfg.dev')
 
-# File containing the hostname for the vCloud Director API endpoint.  Simply
-# place the FQDN on a single line and save the file.
-CLOUD_HOSTNAME_FILEPATH = path.join(CONFIG_DIR, 'v55cloud-host.txt')
 
 is_bool = lambda val: val.lower() in ('true', 'false')
 bool2str = lambda val: str(val).lower()
@@ -163,6 +160,13 @@ class Vcd55TestCloudClient(unittest.TestCase):
     security.VERIFY_SSL_CERT = False
     
     CONFIG_EDGE_GATEWAY_URI = 'edgeGateway:configureServices'
+    NAT_SERVICE_XPATH = ('Configuration/EdgeGatewayServiceConfiguration/'
+                         'NatService')
+    EDGE_GATEWAY_SERVICE_CONF_XPATH = \
+                        'Configuration/EdgeGatewayServiceConfiguration'
+             
+    SRC_NAT_RULE_TYPE = 'SNAT'
+    DEST_NAT_RULE_TYPE = 'DNAT'
     
     def setUp(self):
         '''Initialise vCD driver'''
@@ -205,22 +209,29 @@ class Vcd55TestCloudClient(unittest.TestCase):
         # information
         return self._get_edgegateway_from_uri(edgegateway_recs[0].href)
       
-    def _add_nat(self, vdc, org_ip, ext_ip):
+    def _add_nat_rule(self, vdc, internal_ip, external_ip):
         '''Add a new NAT to map from an internal organisation address to an
         external host
         '''
         gateway = self._get_edgegateway(vdc)
         
+        log.debug('Current EdgeGateway configuration . . . ')
+        _log_etree_elem(gateway._elem)
+        
         # Alter the gateway settings adding a new NAT entry
         
-        self._update_edgegateway(gateway)
+#        self._update_edgegateway(gateway)
         
-    def _update_edgegateway(self, gateway):
+    def _update_edgegateway(self, gateway, iface_name='EXT-INTERNET-TEST',
+                            internal_ip='192.168.0.6',
+                            external_ip='130.246.139.249'):
         '''Update Edge Gateway with settings provided'''
+        
+        # Find update endpoint
         update_uri = None
         for link in gateway.link:
             if link.rel == self.__class__.CONFIG_EDGE_GATEWAY_URI:
-                update_uri = link.rel
+                update_uri = link.href
                 break
             
         if update_uri is None:
@@ -228,8 +239,28 @@ class Vcd55TestCloudClient(unittest.TestCase):
         
         self._ns = et_get_namespace(gateway._elem)
         
+        # Get the update elements - the update interface expects a 
+        # <EdgeGatewayServiceConfiguration/> top-level element
+        gateway_service_conf_elem = gateway._elem.find(
+                    fixxpath(gateway._elem,
+                             self.__class__.EDGE_GATEWAY_SERVICE_CONF_XPATH))
+        if gateway_service_conf_elem is None:
+            self.fail('No <EdgeGatewayServiceConfiguration/> element found '
+                      '<EdgeGateway/> settings returned from service')
+            
         # Check allocation of external IPs
         
+        # Get interface URI
+        iface_uri = None
+        for interface in \
+                gateway.configuration.gateway_interfaces.gateway_interface:
+            if interface.name.value_ == iface_name:
+                iface_uri = interface.network.href
+                break
+            
+        if iface_uri is None:
+            self.msg('Interface found with name %r' % iface_name)
+
         # Check rule IDs already allocated
         highest_nat_rule_id = 0
         nat_service = \
@@ -239,20 +270,29 @@ class Vcd55TestCloudClient(unittest.TestCase):
                 highest_nat_rule_id = nat_rule.id.value_
                 
         next_nat_rule_id = highest_nat_rule_id + 1
+
+        # Check external IP is not already used in an existing rule
+        # TODO: should this necessarily be a fatal error?
+        for nat_rule in nat_service.nat_rule:
+            gw_rule = nat_rule.gateway_nat_rule
+            if (external_ip in (gw_rule.original_ip.value_, 
+                                gw_rule.translated_ip.value_)):
+                self.fail('Required external IP address %r has already been '
+                          'used in an existing NAT rule (id %r)' %
+                          (external_ip, nat_rule.id.value_))
         
         # Source NAT rule
-        snat_rule = NatRule(
-            rule_type='SNAT',
-            rule_id=str(next_nat_rule_id),
-            rule_is_enabled=True,
-            iface_uri='https://cm005.cems.rl.ac.uk/api/admin/network/32b6b108-2dcc-48fd-b039-bbad89d668cd',
-            iface_name='EXT-INTERNET-TEST',
-            orig_ip='192.168.0.6',
-            transl_ip='130.246.139.249')
+        snat_rule = NatRule(rule_type=self.__class__.SRC_NAT_RULE_TYPE,
+                            rule_id=str(next_nat_rule_id),
+                            rule_is_enabled=True,
+                            iface_uri=iface_uri,
+                            iface_name=iface_name,
+                            orig_ip=internal_ip,
+                            transl_ip=external_ip)
 
-        nat_service_xpath = 'Configuration/EdgeGatewayServiceConfiguration/NatService'
-        nat_service_elem = gateway._elem.find(fixxpath(gateway._elem, 
-                                                       nat_service_xpath))
+       
+        nat_service_elem = gateway._elem.find(
+                    fixxpath(gateway._elem, self.__class__.NAT_SERVICE_XPATH))
         if nat_service_elem is None:
             self.fail('No <NatService/> element found in returned Edge Gateway '
                       'configuration')
@@ -261,23 +301,25 @@ class Vcd55TestCloudClient(unittest.TestCase):
         
         # Destination NAT rule
         next_nat_rule_id += 1
-        dnat_rule = NatRule(
-            rule_type='SNAT',
-            rule_id=str(next_nat_rule_id),
-            rule_is_enabled=True,
-            iface_uri='https://cm005.cems.rl.ac.uk/api/admin/network/32b6b108-2dcc-48fd-b039-bbad89d668cd',
-            iface_name='EXT-INTERNET-TEST',
-            orig_ip='130.246.139.249',
-            transl_ip='192.168.0.6')
+        dnat_rule = NatRule(rule_type=self.__class__.DEST_NAT_RULE_TYPE,
+                            rule_id=str(next_nat_rule_id),
+                            rule_is_enabled=True,
+                            iface_uri=iface_uri,
+                            iface_name=iface_name,
+                            orig_ip=external_ip,
+                            transl_ip=internal_ip)
                 
         nat_service_elem.append(self._create_nat_rule(dnat_rule))
         
         _log_etree_elem(gateway._elem)
         
         # Despatch updated configuration
-#        res = self.driver.connection.request(get_url_path(update_uri),
-#                                             method='POST',
-#                                             data=ET.tostring(gateway._elem))
+        gateway_service_conf_xml = ET.tostring(gateway_service_conf_elem)
+        res = self.driver.connection.request(get_url_path(update_uri),
+                                             method='POST',
+                                             data=gateway_service_conf_xml)
+        self.assert_(res)
+        _log_etree_elem(res.object)
 
     def _create_nat_rule(self, nat_rule):   
         '''Create XML for a new NAT rule appending it to the NAT Service element
@@ -307,16 +349,16 @@ class Vcd55TestCloudClient(unittest.TestCase):
         gateway_nat_rule_elem = ET.Element(et_mk_tag(self._ns, 
                                                      'GatewayNatRule'))
         
-        gateway_nat_rule_elem = ET.SubElement(gateway_nat_rule_elem,
-                                   et_mk_tag(self._ns, 'Interface'),
-                                   attrib={
-                                        'href': gateway_nat_rule.iface_uri,
-                                        'name': gateway_nat_rule.iface_name,
-                                        'type': gateway_nat_rule.iface_uri_type
-                                   })
+        ET.SubElement(gateway_nat_rule_elem,
+                      et_mk_tag(self._ns, 'Interface'),
+                      attrib={
+                         'href': gateway_nat_rule.iface_uri,
+                         'name': gateway_nat_rule.iface_name,
+                         'type': gateway_nat_rule.iface_uri_type
+                      })
         
         orig_ip_elem = ET.SubElement(gateway_nat_rule_elem, 
-                                     et_mk_tag(self._ns, 'OriginalIP'))
+                                     et_mk_tag(self._ns, 'OriginalIp'))
         orig_ip_elem.text = gateway_nat_rule.orig_ip
         
         orig_port_elem = ET.SubElement(gateway_nat_rule_elem, 
@@ -324,7 +366,7 @@ class Vcd55TestCloudClient(unittest.TestCase):
         orig_port_elem.text = gateway_nat_rule.orig_port
         
         transl_ip_elem = ET.SubElement(gateway_nat_rule_elem, 
-                                       et_mk_tag(self._ns, 'TranslatedIP'))
+                                       et_mk_tag(self._ns, 'TranslatedIp'))
         transl_ip_elem.text = gateway_nat_rule.transl_ip
         
         transl_port_elem = ET.SubElement(gateway_nat_rule_elem, 
