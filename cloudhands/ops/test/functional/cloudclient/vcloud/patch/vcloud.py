@@ -921,7 +921,8 @@ class Instantiate_1_5_VAppXML(object):
             parent.set('networkName', self.vm_network)
         configuration = ET.SubElement(parent, 'Configuration')
         ET.SubElement(configuration, 'ParentNetwork',
-                      {'href': self.network.get('href')})
+                      {'href': self.network.get('href'),
+                       'name': self.network.get('name')})
 
         if self.vm_fence is None:
             fencemode = self.network.find(fixxpath(self.network,

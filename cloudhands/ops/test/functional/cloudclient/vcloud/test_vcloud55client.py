@@ -7,13 +7,11 @@ __date__ = "05/03/14"
 __copyright__ = "(C) 2014 Science and Technology Facilities Council"
 __license__ = "BSD - see LICENSE file in top-level directory"
 __revision__ = "$Id$"
-import sys
-_py3 = sys.version_info >= (3, 0)
-
-if _py3:
+try:
     from urllib.request import urlopen
     from urllib.request import Request
-else:
+    
+except ImportError:
     from urllib2 import urlopen, Request
 
 from os import path, environ
@@ -65,7 +63,10 @@ class Vcd55TestCloudClient(unittest.TestCase):
     
     # Pick image name from environment variable or accept default
     IMAGE_NAME = environ.get(
-                        'TEST_CLOUD_CLIENT_IMAGE_NAME') or 'centos6.4-stemcell'
+                        'TEST_CLOUD_CLIENT_IMAGE_NAME') or 'stemcell-test' #'centos6-stemcell'
+    
+    NETWORK_NAME = environ.get('TEST_CLOUD_CLIENT_NETWORK_NAME') or \
+                                                'proxied-external-network'
     
     # Disable SSL verification for testing ONLY
 #    security.CA_CERTS_PATH = [CA_CERTS_PATH]
@@ -73,9 +74,9 @@ class Vcd55TestCloudClient(unittest.TestCase):
     
     def setUp(self):
         
-        libcloud.compute.providers.DRIVERS[Provider.VCLOUD] = (
-        "cloudhands.ops.test.functional.cloudclient.vcloud.patch.vcloud",
-        "VCloud_5_5_NodeDriver")
+#        libcloud.compute.providers.DRIVERS[Provider.VCLOUD] = (
+#        "cloudhands.ops.test.functional.cloudclient.vcloud.patch.vcloud",
+#        "VCloud_5_5_NodeDriver")
 
         driver = get_driver(Provider.VCLOUD)
         self.driver = driver(self.__class__.USERNAME,
@@ -126,6 +127,13 @@ class Vcd55TestCloudClient(unittest.TestCase):
         for node in nodes:
             self.assert_(node)
             log.info(node)
+            log.info(node.extra['vdc'])
+            for vm in node.extra['vms']:
+                log.info("VM name: %r", vm['name'])
+                log.info("VM Operating system: %r", vm['os_type'])
+                log.info("VM state: %r", vm['state'])
+                log.info("VM private IPs: %r", vm['private_ips'])
+                log.info("VM public IPs: %r", vm['public_ips'])
         
     def test04_list_images(self):
         # List all available vApp Templates
@@ -201,12 +209,13 @@ class Vcd55TestCloudClient(unittest.TestCase):
         image = self._get_image()
 
         # Create node with specific network setting
-        network_r = 'TEST-ORG-EXT-R'
-        
+        network_r = self.__class__.NETWORK_NAME
         log.info('Creating vApp %r with network %r ...', image, network_r)
         try:
             node = self.driver.create_node(name='phil-test08-node-ex-network', 
                                            image=image,
+                                           ex_vm_network='Net-Test',
+                                           ex_vm_fence='bridged',
                                            ex_network=network_r)
         except Exception as e:
             self.fail(e)
@@ -248,5 +257,7 @@ class Vcd55TestCloudClient(unittest.TestCase):
         
               
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    import sys;sys.argv = [
+        '', 
+        'Vcd55TestCloudClient.test08_create_and_destroy_node_with_ex_network']
     unittest.main()
