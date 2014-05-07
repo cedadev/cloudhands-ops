@@ -3,7 +3,7 @@
 # Builds Cloudhands docs to go.
 
 PYTHON=/usr/local/bin/python3.4
-PYENV=~/pydev-3.4
+PYENV=~/pyops-3.3
 
 DIR=$( cd "$( dirname "$0" )" && pwd )
 PARENT=$(readlink -e $DIR/../../../..)
