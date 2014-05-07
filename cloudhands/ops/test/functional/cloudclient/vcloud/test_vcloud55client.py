@@ -23,7 +23,6 @@ logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
 
 from libcloud import security
 from libcloud.compute.types import Provider
-import libcloud.compute.providers
 from libcloud.compute.providers import get_driver
 
 
