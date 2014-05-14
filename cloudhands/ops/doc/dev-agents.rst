@@ -15,7 +15,7 @@ Operations
 ~~~~~~~~~~
 
 Having explicitly created tables in the database to track the state of
-:py:func:`cloudhands.common.schema.Artifact`, we build on that by formalising
+:py:func:`Artifacts <cloudhands.common.schema.Artifact>`, we build on that by formalising
 the transitions between states.
 
 Transitions are achieved through `operations`. They are Python
