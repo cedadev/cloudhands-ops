@@ -126,7 +126,7 @@ proc_get_network() # token
 
 _url=`proc_get_org_url "$1"`
 _xml=`url_get "$1" "$_url"`
-_scrap="${_xml##*"ORG-EXT-R\" href=\""}"
+_scrap="${_xml##*"proxied-external-network\" href=\""}"
 echo "${_scrap%%\"/>*}"
 }
 
@@ -153,7 +153,7 @@ proc_get_image() # token
 {
 _cat_url=`proc_get_catalogue "$1"`
 _xml=`url_get "$1" "$_cat_url"`
-_scrap=`echo "$_xml" | grep -i "centos"`
+_scrap=`echo "$_xml" | grep -i "Bastion-host"`
 _img="${_scrap##*"href=\""}"
 echo "${_img%%\"/>*}"
 }
