@@ -12,7 +12,7 @@ EXITCODE=0
 PROGRAM=$( basename "$0" )
 DIR=$( cd "$( dirname "$0" )" && pwd )
 PARENT=$(readlink -e "$DIR/..")
-SETTINGS="phase01"
+SETTINGS="phase03"
 
 
 usage()
@@ -53,7 +53,7 @@ version()
 
 read_endpoint()
 {
-    # Read the variables 'name', 'port' and 'api_version' from the user section
+    # Read the variables 'name', 'port' and 'api_version' from the host section
     # of a config file
     if [ -f "$CFG" ]
     then
@@ -187,7 +187,7 @@ net_url=`proc_get_network "$1"`
 vdc_url=`proc_get_vdc "$1"`
 template_url=`proc_get_template "$1"`
 
-CREATE_NODE_PAYLOAD=$(cat | tr -d "\n" <<END_OF_XML
+CREATE_NODE_PAYLOAD=$(cat <<END_OF_XML | tr -d "\n" 
 <InstantiateVAppTemplateParams name="$vm_name" xml:lang="en" xmlns="http://www.vmware.com/vcloud/v0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <VAppTemplate href="$template_url" />
  <InstantiationParams>
@@ -216,12 +216,15 @@ CREATE_NODE_PAYLOAD=$(cat | tr -d "\n" <<END_OF_XML
 END_OF_XML
 )
 
-echo "$CREATE_NODE_PAYLOAD" > create_node-payload.xml
+info $CREATE_NODE_PAYLOAD
+#echo "$CREATE_NODE_PAYLOAD" > create_node-payload.xml
 
+token=$1
+info "${token%.\n}"
 curl --trace-ascii curl-trace.txt -i -k \
 -H "Accept:application/*+xml;version="$host_api_version"" \
 -H "Content-Type: application/vnd.vmware.vcloud.instantiateVAppTemplateParams+xml" \
--H "$1" -X POST \
+-H "${token:67}" -X POST \
 "$vdc_url/action/instantiateVAppTemplate" \
 #-d @create_node-payload.xml
 -d "$CREATE_NODE_PAYLOAD"
@@ -277,5 +280,6 @@ fi
 read_credentials
 
 TOKEN=`api_login "$user_name" "$user_pass"`
+info $TOKEN
 info "Creating VM `proc_create_node "$TOKEN"`..."
 exit $EXITCODE
