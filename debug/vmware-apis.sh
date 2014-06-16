@@ -220,7 +220,6 @@ info $CREATE_NODE_PAYLOAD
 #echo "$CREATE_NODE_PAYLOAD" > create_node-payload.xml
 
 token=$1
-info "${token%.\n}"
 curl --trace-ascii curl-trace.txt -i -k \
 -H "Accept:application/*+xml;version="$host_api_version"" \
 -H "Content-Type: application/vnd.vmware.vcloud.instantiateVAppTemplateParams+xml" \
