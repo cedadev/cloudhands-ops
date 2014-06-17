@@ -12,7 +12,10 @@ EXITCODE=0
 PROGRAM=$( basename "$0" )
 DIR=$( cd "$( dirname "$0" )" && pwd )
 PARENT=$(readlink -e "$DIR/..")
-SETTINGS="phase03"
+ORG="un-managed_tenancy_test_org"
+SETTINGS="phase04"
+TEMPLATE="centos6-stemcell"
+VDC="un-managed_tenancy_test_org-std-compute-PAYG"
 
 
 usage()
@@ -153,7 +156,7 @@ proc_get_image() # token
 {
 _cat_url=`proc_get_catalogue "$1"`
 _xml=`url_get "$1" "$_cat_url"`
-_scrap=`echo "$_xml" | grep -i "Bastion-host"`
+_scrap=`echo "$_xml" | grep -i "$TEMPLATE"`
 _img="${_scrap##*"href=\""}"
 echo "${_img%%\"/>*}"
 }
@@ -236,6 +239,10 @@ echo "$vm_name"
 while test $# -gt 0
 do
     case $1 in
+        --org )
+            ORG=$2
+            shift
+            ;;
         --settings )
             SETTINGS=$2
             shift
