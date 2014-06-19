@@ -14,9 +14,9 @@ DIR=$( cd "$( dirname "$0" )" && pwd )
 PARENT=$(readlink -e "$DIR/..")
 ORG="un-managed_tenancy_test_org"
 SETTINGS="phase04"
-TEMPLATE="centos6-stemcell"
+TEMPLATE="Ubuntu 64-bit"
 VDC="un-managed_tenancy_test_org-std-compute-PAYG"
-NET="un-managed-external-network" # TOD: get from config
+NET="un-managed-external-network" # TODO: get from config
 
 usage()
 {
@@ -131,7 +131,6 @@ proc_get_network() # token
 
 _url=`proc_get_org_url "$1"`
 _xml=`url_get "$1" "$_url"`
-info $_xml
 _scrap="${_xml##*"$NET\" href=\""}"
 echo "${_scrap%%\"/>*}"
 }
@@ -159,6 +158,7 @@ proc_get_image() # token
 {
 _cat_url=`proc_get_catalogue "$1"`
 _xml=`url_get "$1" "$_cat_url"`
+info $_xml
 _scrap=`echo "$_xml" | grep -i "$TEMPLATE"`
 _img="${_scrap##*"href=\""}"
 echo "${_img%%\"/>*}"
@@ -290,9 +290,8 @@ read_credentials
 
 TOKEN=`api_login "$user_name" "$user_pass"`
 net_url=`proc_get_network "$TOKEN"`
-info $net_url
 vdc_url=`proc_get_vdc "$TOKEN"`
 template_url=`proc_get_template "$TOKEN"`
 
-#info "Creating VM `proc_create_node "$TOKEN"`..."
+info "Creating VM `proc_create_node "$TOKEN"`..."
 exit $EXITCODE
