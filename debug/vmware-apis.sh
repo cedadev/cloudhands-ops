@@ -16,11 +16,11 @@ ORG="un-managed_tenancy_test_org"
 SETTINGS="phase04"
 TEMPLATE="centos6-stemcell"
 VDC="un-managed_tenancy_test_org-std-compute-PAYG"
-
+NET="un-managed-external-network" # TOD: get from config
 
 usage()
 {
-    echo "Usage: $PROGRAM [--settings SETTINGS]"
+    echo "Usage: $PROGRAM --org ORG [--settings SETTINGS]"
 }
 
 usage_and_exit()
@@ -118,7 +118,9 @@ api_org_get() # authorization token header
 
 proc_get_org_url() # token
 {
-org_name=${user_name##*@}
+# To be used when account is at org level
+#org_name=${user_name##*@}
+org_name=$ORG
 org_xml=`api_org_get "$1"`
 _scrap="${org_xml##*"$org_name\" href=\""}"
 echo "${_scrap%%\"/>*}"
@@ -129,7 +131,8 @@ proc_get_network() # token
 
 _url=`proc_get_org_url "$1"`
 _xml=`url_get "$1" "$_url"`
-_scrap="${_xml##*"proxied-external-network\" href=\""}"
+info $_xml
+_scrap="${_xml##*"$NET\" href=\""}"
 echo "${_scrap%%\"/>*}"
 }
 
@@ -219,7 +222,7 @@ CREATE_NODE_PAYLOAD=$(cat <<END_OF_XML | tr -d "\n"
 END_OF_XML
 )
 
-info $CREATE_NODE_PAYLOAD
+info $vdc_url
 #echo "$CREATE_NODE_PAYLOAD" > create_node-payload.xml
 
 token=$1
@@ -286,6 +289,10 @@ fi
 read_credentials
 
 TOKEN=`api_login "$user_name" "$user_pass"`
-info $TOKEN
-info "Creating VM `proc_create_node "$TOKEN"`..."
+net_url=`proc_get_network "$TOKEN"`
+info $net_url
+vdc_url=`proc_get_vdc "$TOKEN"`
+template_url=`proc_get_template "$TOKEN"`
+
+#info "Creating VM `proc_create_node "$TOKEN"`..."
 exit $EXITCODE
