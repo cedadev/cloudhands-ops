@@ -193,11 +193,12 @@ net_url=`proc_get_network "$1"`
 vdc_url=`proc_get_vdc "$1"`
 template_url=`proc_get_template "$1"`
 
+# As per libcloud
 CREATE_NODE_PAYLOAD=$(cat <<END_OF_XML | tr -d "\n" 
 <InstantiateVAppTemplateParams name="$vm_name" xml:lang="en" xmlns="http://www.vmware.com/vcloud/v0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <VAppTemplate href="$template_url" />
  <InstantiationParams>
-  <ProductSection xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:q1="http://www.vmware.com/vcloud/v0.8">
+  <ProductSection xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:q1="http://www.vmware.com/vcloud/v1.5">
    <Property ovf:key="password" ovf:value="q1W2e3R4t5Y6" xmlns="http://schemas.dmtf.org/ovf/envelope/1" />
   </ProductSection>
   <VirtualHardwareSection xmlns:q1="http://www.vmware.com/vcloud/v0.8">
@@ -222,7 +223,26 @@ CREATE_NODE_PAYLOAD=$(cat <<END_OF_XML | tr -d "\n"
 END_OF_XML
 )
 
-info $vdc_url
+# As per Charlie
+CREATE_NODE_PAYLOAD=$(cat <<END_OF_XML | tr -d "\n" 
+<InstantiateVAppTemplateParams xmlns="http://www.vmware.com/vcloud/v1.5" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" name="Charlie-TEST2" deploy="false" powerOn="false">
+<Description>Testing AppServer</Description>
+<InstantiationParams>
+    <NetworkConfigSection>
+        <ovf:Info>The configuration parameters for logical networks</ovf:Info>
+        <NetworkConfig networkName="proxied-external-network">
+            <Configuration>
+                <ParentNetwork name="un-managed-external-network" href="https://vjasmin-vcloud-test.jc.rl.ac.uk/api/admin/network/9604bd58-b05c-4fa3-9f9b-4e7991376f21"/>
+                <FenceMode>bridged</FenceMode>
+            </Configuration>
+        </NetworkConfig>
+    </NetworkConfigSection>
+</InstantiationParams>
+        <Source href="https://vjasmin-vcloud-test.jc.rl.ac.uk/api/vAppTemplate/vappTemplate-1964b597-5477-4513-b126-4e6baa6032d6" />
+</InstantiateVAppTemplateParams>
+END_OF_XML
+)
+
 #echo "$CREATE_NODE_PAYLOAD" > create_node-payload.xml
 
 token=$1
@@ -231,8 +251,8 @@ curl --trace-ascii curl-trace.txt -i -k \
 -H "Content-Type: application/vnd.vmware.vcloud.instantiateVAppTemplateParams+xml" \
 -H "${token:67}" -X POST \
 "$vdc_url/action/instantiateVAppTemplate" \
-#-d @create_node-payload.xml
 -d "$CREATE_NODE_PAYLOAD"
+#-d @create_node-payload.xml
 #--data-urlencode $CREATE_NODE_PAYLOAD
 
 echo "$vm_name"
