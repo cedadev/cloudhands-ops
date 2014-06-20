@@ -1,4 +1,4 @@
-#! /bin/bash -
+#! /bin/bash
 
 # This boilerplate from 'Classic Shell Scripting'
 
@@ -225,7 +225,7 @@ END_OF_XML
 
 # As per Charlie
 CREATE_NODE_PAYLOAD=$(cat <<END_OF_XML | tr -d "\n" 
-<InstantiateVAppTemplateParams xmlns="http://www.vmware.com/vcloud/v1.5" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" name="Charlie-TEST2" deploy="false" powerOn="false">
+<InstantiateVAppTemplateParams xmlns="http://www.vmware.com/vcloud/v1.5" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" name="Charlie-TEST5" deploy="false" powerOn="false">
 <Description>Testing AppServer</Description>
 <InstantiationParams>
     <NetworkConfigSection>
@@ -249,10 +249,11 @@ token=$1
 curl --trace-ascii curl-trace.txt -i -k \
 -H "Accept:application/*+xml;version="$host_api_version"" \
 -H "Content-Type: application/vnd.vmware.vcloud.instantiateVAppTemplateParams+xml" \
--H "${token:67}" -X POST \
+-H "${token}x" -X POST \
 "$vdc_url/action/instantiateVAppTemplate" \
 -d "$CREATE_NODE_PAYLOAD"
-#-d @create_node-payload.xml
+#-H "${token:67}" -X POST \
+#-d @/home/dehaynes/Documents/JASMIN/vm-settings.xml
 #--data-urlencode $CREATE_NODE_PAYLOAD
 
 echo "$vm_name"
