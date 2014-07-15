@@ -122,6 +122,12 @@ This procedure tests various paths through the user registration process.
 5. LDAP entry created on first login
 ------------------------------------
 
+.. important::
+
+   The behaviour described in this section is undesirable on a public facing
+   network as it constitutes `resource exhaustion`_ of unique `cn` names
+   and (ultimately) `uidNumbers`.
+ 
 0. Prerequisites
     * `1. Successful registration`_.
     * `2. Successful confirmation`_.
@@ -147,3 +153,4 @@ This procedure tests various paths through the user registration process.
         sn: UNKNOWN
 
 .. _free external email address: http://www.mail.com/int/
+.. _resource exhaustion: https://www.owasp.org/index.php/Resource_exhaustion 
