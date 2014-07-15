@@ -115,9 +115,35 @@ This procedure tests various paths through the user registration process.
     * The Password field is styled green.
 
 3. Click `Log in`.
-
     * A yellow message appears: `Login failed. Please try again`.
     * The Username field is empty and styled red.
     * The Password field is empty and styled red.
+
+5. LDAP entry created on first login
+------------------------------------
+
+0. Prerequisites
+    * `1. Successful registration`_.
+    * `2. Successful confirmation`_.
+    * `3. Successful login`_.
+
+1. View LDAP record for `denderby`. Use the `ldapvi` program like this::
+
+    ldapvi -d -h ldap-test.jc.rl.ac.uk -w password \
+    --user "cn=dehaynes,ou=ceda,ou=People,o=hpc,dc=rl,dc=ac,dc=uk"
+
+   Use the `G` key to navigate to the end of the file.
+
+    * An LDAP record has been created as follows::
+
+        cn=denderby,ou=jasmin2,ou=People,o=hpc,dc=rl,dc=ac,dc=uk
+        cn: denderby
+        description: JASMIN2 vCloud registration
+        mail: dominic.enderby@contractor.net
+        objectClass: inetOrgPerson
+        objectClass: person
+        objectClass: top
+        objectClass: organizationalPerson
+        sn: UNKNOWN
 
 .. _free external email address: http://www.mail.com/int/
