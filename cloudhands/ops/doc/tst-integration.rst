@@ -36,6 +36,31 @@ This procedure tests various paths through the user registration process.
 1. Visit the JASMIN home page and click on the `Register` link.
     
     * The link takes you to https://jasmin-cloud.jc.rl.ac.uk/register
-    * A form is displayed
+    * A form is displayed with three fields and a `Register me` button.
+      The fields are `Username`, `Password`, `Email`.
+
+2. Enter registration details for a new user.
+
+    * Username: ``denderby``
+    * Password: ``D0m1n1c_Enderby``
+    * Email: ``dominic.enderby@contractor.net``
+
+3. Click the button `Register me`
+
+    * You are redirected to the home page.
+
+2. Successful confirmation
+--------------------------
+
+0. Prerequisites
+    * `1. Successful registration`_
+
+
+1. Visit email account and check Inbox
+
+    * The Inbox contains a new message entitled `JASMIN notification`.
+
+    .. image:: _static/register_confirm_email-lab.png
+
 
 .. _free external email address: http://www.mail.com/int/
