@@ -64,7 +64,7 @@ This procedure tests various paths through the user registration process.
 
 2. Click the confirmation link.
 
-    * The link takes you to https://jasmin-cloud.jc.rl.ac.uk/login.
+    * The linked page redirects you to https://jasmin-cloud.jc.rl.ac.uk/login.
 
 3. Successful login
 -------------------
