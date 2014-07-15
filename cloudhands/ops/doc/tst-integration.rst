@@ -45,7 +45,7 @@ This procedure tests various paths through the user registration process.
     * Password: ``D0m1n1c_Enderby``
     * Email: ``dominic.enderby@contractor.net``
 
-3. Click the button `Register me`
+3. Click the button `Register me`.
 
     * You are redirected to the home page.
 
@@ -53,7 +53,7 @@ This procedure tests various paths through the user registration process.
 --------------------------
 
 0. Prerequisites
-    * `1. Successful registration`_
+    * `1. Successful registration`_.
 
 
 1. Visit email account and check Inbox
@@ -62,5 +62,62 @@ This procedure tests various paths through the user registration process.
 
     .. image:: _static/register_confirm_email-lab.png
 
+2. Click the confirmation link.
+
+    * The link takes you to https://jasmin-cloud.jc.rl.ac.uk/login.
+
+3. Successful login
+-------------------
+
+0. Prerequisites
+    * `1. Successful registration`_.
+    * `2. Successful confirmation`_.
+
+1. Visit https://jasmin-cloud.jc.rl.ac.uk/login.
+
+    * A form is displayed with two fields and a `Log in` button.
+      The fields are `Username`, `Password`.
+    * The Username field is styled red and asks for a name 8 - 10 characters
+      long.
+    * The Password field is styled red and asks for a name 8 - 20 characters
+      long.
+
+        * at least one lowercase letter
+        * at least one uppercase letter
+        * at least one numeric digit
+        * at least one special character
+        * no whitespace.
+
+2. Enter a valid username.
+
+    * The Username field is styled green
+
+3. Enter a valid password.
+
+    * The Password field is styled green.
+
+4. Click `Log in`.
+
+    * You are redirected to the home page.
+
+4. Unsuccessful login (password)
+--------------------------------
+
+0. Prerequisites
+    * `1. Successful registration`_.
+    * `2. Successful confirmation`_.
+
+1. Proceed with `3. Successful login`_, stopping before step 3.
+
+2. Enter a false password which conforms to the password criteria.
+   Example: ``N0t_MyPa55w0rd``.
+
+    * The Password field is styled green.
+
+3. Click `Log in`.
+
+    * A yellow message appears: `Login failed. Please try again`.
+    * The Username field is empty and styled red.
+    * The Password field is empty and styled red.
 
 .. _free external email address: http://www.mail.com/int/
