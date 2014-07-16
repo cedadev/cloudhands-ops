@@ -15,7 +15,7 @@ setup(
     description="Operations for cloudhands PaaS",
     author="D Haynes",
     author_email="david.e.haynes@stfc.ac.uk",
-    url="http://pypi.python.org/pypi/cloudhands-ops",
+    url="https://github.com/cedadev/cloudhands-ops.git",
     long_description=__doc__,
     classifiers=[
         "Operating System :: OS Independent",
