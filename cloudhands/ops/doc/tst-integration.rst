@@ -174,7 +174,7 @@ is only available in the `Lab` environment.
 
     * The Username field is styled green.
 
-3. Enter the password for the demo: ``IWannaS33TheDemo``.
+3. Enter the password for the demo: ``IWannaS33TheDemo!``.
 
     * The Password field is styled green.
 
