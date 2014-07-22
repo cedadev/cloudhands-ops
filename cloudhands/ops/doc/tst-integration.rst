@@ -14,6 +14,12 @@ User registration
 
 This procedure tests various paths through the user registration process.
 
+.. note::
+
+   You can perform these tests in the development environment, but all URLs
+   will have their root at http://jasmin-cloud.jc.rl.ac.uk:8080, not as
+   specified below.
+
 0. Prerequisites
 ----------------
 
@@ -35,7 +41,7 @@ This procedure tests various paths through the user registration process.
 
 1. Visit the JASMIN home page and click on the `Register` link.
     
-    * The link takes you to https://jasmin-cloud.jc.rl.ac.uk/register
+    * The link takes you to https://jasmin-cloud.jc.rl.ac.uk/registration
     * A form is displayed with three fields and a `Register me` button.
       The fields are `Username`, `Password`, `Email`.
 
@@ -47,7 +53,8 @@ This procedure tests various paths through the user registration process.
 
 3. Click the button `Register me`.
 
-    * You are redirected to the home page.
+    * You are redirected to a confirmation page.
+    * You can navigate by link to the home page.
 
 2. Successful confirmation
 --------------------------
@@ -59,6 +66,8 @@ This procedure tests various paths through the user registration process.
 1. Visit email account and check Inbox
 
     * The Inbox contains a new message entitled `JASMIN notification`.
+       
+      *NB: messages can take several minutes to be delivered*.
 
     .. image:: _static/register_confirm_email-lab.png
 
@@ -142,16 +151,16 @@ This procedure tests various paths through the user registration process.
 
     * An LDAP record has been created as follows::
 
-        cn=denderby,ou=jasmin2,ou=People,o=hpc,dc=rl,dc=ac,dc=uk
-        cn: denderby
-        description: JASMIN2 vCloud registration
-        mail: dominic.enderby@contractor.net
-        objectClass: inetOrgPerson
-        objectClass: person
-        objectClass: top
-        objectClass: organizationalPerson
-        sn: UNKNOWN
-
+          cn=denderby,ou=jasmin2,ou=People,o=hpc,dc=rl,dc=ac,dc=uk
+          description: JASMIN2 vCloud registration
+          mail: dominic.enderby@contractor.net
+          objectClass: top
+          objectClass: organizationalPerson
+          objectClass: inetOrgPerson
+          objectClass: person
+          sn: UNKNOWN
+          cn: denderby
+          userPassword: {SSHA}+UgJZlNMgaQ2aJbw3U9NNJpi/4bTQMpn
 
 Appliance lifecycle
 ~~~~~~~~~~~~~~~~~~~
