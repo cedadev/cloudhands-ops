@@ -27,7 +27,7 @@ to track the latest version of Python.
 Quick start
 :::::::::::
 
-Download and unpack the source distribution (version numbrs will differ)::
+Download and unpack the source distribution (version numbers will differ)::
 
     $ tar -xzvf cloudhands-ops-0.001.tar.gz
     $ cd cloudhands-ops-0.001
