@@ -24,8 +24,8 @@ This procedure tests various paths through the user registration process.
 ----------------
 
 * Set up a `free external email address`_.
-  You should record login details and store them in a protected location,
-  eg::
+  You should record login details and store them in a protected location
+  (not in code repository like this example)::
 
     Address: dominic.enderby@contractor.net
     Customer number: 211828816

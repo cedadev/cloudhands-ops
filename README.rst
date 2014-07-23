@@ -1,34 +1,40 @@
 ..  Titling
     ##++::==~~--''``
 
-Cloudhands is a `Platform as a Service` (PaaS) framework.
+Cloudhands is a `Platform as a Service` (PaaS) framework. It gives you the
+software necessary to run a private computing cloud for your business or
+organisation. A key objective is support for multiple back-end providers.
 
 This release
 ::::::::::::
 
-Cloudhands is a very young project. This release contains the following:
+Cloudhands is a very young project. As of Autumn 2014, it is under
+heavy development and features are added daily. 
 
-* the beginnings of an operations guide
+You are welcome to give `cloudhands` a try, but be aware that some parts
+of the codebase lack the test coverage of a finished product. Improvements
+to documentation are ongoing.
 
 Requirements
 ::::::::::::
 
-Cloudhands requires Python 3. It uses setuptools_ for installation.
+Cloudhands requires Python 3.3 or above. It uses setuptools_ for installation.
 
-You may wish to `compile Python 3.4`_ yourself if it is not yet available from
-your package repository.
+The reference platform is RHEL 6.5 with Python 3.3 from RPMs. This is assumed
+by some of the deployment scripts. However, the main codebase is written always
+to track the latest version of Python.
 
 Quick start
 :::::::::::
 
-Download and unpack the source distribution::
+Download and unpack the source distribution (version numbrs will differ)::
 
     $ tar -xzvf cloudhands-ops-0.001.tar.gz
     $ cd cloudhands-ops-0.001
 
 Run the `check` script to establish a working environment::
 
-    $ check.sh --nopep8 --notest
+    $ check.sh --nolint --nopep8 --notest
 
 Run the `build` script to create the documentation::
 
@@ -50,11 +56,6 @@ The API may change significantly as the project proceeds. At this early stage,
 you should only use the latest release, which may not be compatible with
 previous versions.
 
-Next release
-============
-
-TBD
-
 Can you help?
 =============
 
@@ -69,5 +70,4 @@ Can you help?
 :licence:   BSD
 
 .. _setuptools: https://pypi.python.org/pypi/setuptools
-.. _compile Python 3.4: http://www.python.org/download/source/
 .. _BSD licence: http://opensource.org/licenses/BSD-3-Clause
