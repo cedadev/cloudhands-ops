@@ -25,7 +25,7 @@ This procedure tests various paths through the user registration process.
 
 * Set up a `free external email address`_.
   You should record login details and store them in a protected location
-  (not in code repository like this example)::
+  (not in a code repository as this example does)::
 
     Address: dominic.enderby@contractor.net
     Customer number: 211828816
@@ -149,7 +149,8 @@ This procedure tests various paths through the user registration process.
 
    Use the `G` key to navigate to the end of the file.
 
-    * An LDAP record has been created as follows::
+    * An LDAP record has been created as follows (numbers and password will
+      vary)::
 
         cn=denderby,ou=jasmin2,ou=People,o=hpc,dc=rl,dc=ac,dc=uk
         objectClass: top
