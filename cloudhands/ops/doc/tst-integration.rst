@@ -151,16 +151,22 @@ This procedure tests various paths through the user registration process.
 
     * An LDAP record has been created as follows::
 
-          cn=denderby,ou=jasmin2,ou=People,o=hpc,dc=rl,dc=ac,dc=uk
-          description: JASMIN2 vCloud registration
-          mail: dominic.enderby@contractor.net
-          objectClass: top
-          objectClass: organizationalPerson
-          objectClass: inetOrgPerson
-          objectClass: person
-          sn: UNKNOWN
-          cn: denderby
-          userPassword: {SSHA}+UgJZlNMgaQ2aJbw3U9NNJpi/4bTQMpn
+        cn=denderby,ou=jasmin2,ou=People,o=hpc,dc=rl,dc=ac,dc=uk
+        objectClass: top
+        objectClass: person
+        objectClass: inetOrgPerson
+        objectClass: organizationalPerson
+        objectClass: posixAccount
+        description: JASMIN2 vCloud registration
+        sn: UNKNOWN
+        cn: denderby
+        uid: denderby
+        uidNumber: 7010002
+        gidNumber: 7010002
+        homeDirectory: /home/denderby
+        mail: dominic.enderby@contractor.net
+        userPassword: {SSHA}Psxobi4ydMILrlSjufFzlyi/4d6Bo8ko
+
 
 Appliance lifecycle
 ~~~~~~~~~~~~~~~~~~~
