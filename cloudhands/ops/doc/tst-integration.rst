@@ -169,6 +169,26 @@ This procedure tests various paths through the user registration process.
         userPassword: {SSHA}Psxobi4ydMILrlSjufFzlyi/4d6Bo8ko
 
 
+6. Successful key add to account
+--------------------------------
+
+0. Prerequisites
+    * `1. Successful registration`_.
+    * `2. Successful confirmation`_.
+    * `3. Successful login`_.
+
+1. Visit the `Account` page.
+
+    * The account shows a `UId`.
+    * The account shows a `Name`.
+    * The account shows a `Email`.
+    * The account shows a `Password` (obscured).
+    * The account has a form entitled `Paste your key`.
+
+2. Paste a `ssh-rsa` key into the form and click `Add`.
+
+    * The key is added to the account.
+
 Appliance lifecycle
 ~~~~~~~~~~~~~~~~~~~
 
