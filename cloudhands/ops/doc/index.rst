@@ -26,4 +26,3 @@ packages which conform to one of the JASMIN plugin APIs.
    ops-guide
    prj-guide
    tst-guide
-   graphtest

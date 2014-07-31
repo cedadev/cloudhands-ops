@@ -11,6 +11,11 @@ We know that as our understanding grows, we will need to change the business
 rules we operate in JASMIN. And we expect that others using this software
 will have entirely different logic to implement.
 
+State Machines
+~~~~~~~~~~~~~~
+
+.. automodule:: cloudhands.burst.appliance
+
 Operations
 ~~~~~~~~~~
 
