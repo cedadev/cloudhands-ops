@@ -1,5 +1,5 @@
-Chameleon==2.14
-Jinja2==2.7.2
+Chameleon==2.16
+Jinja2==2.7.3
 MarkupSafe==0.23
 PasteDeploy==1.5.0
 PyBrowserID==0.9.1
@@ -14,7 +14,7 @@ apache-libcloud==0.14.0-beta3
 asyncio==0.4.1
 beautifulsoup4==4.3.2
 colorama==0.2.7
-docutils==0.11
+docutils==0.12
 macauthlib==0.6.0
 mando==0.3.1
 pathfinder==0.5.3
@@ -26,7 +26,7 @@ pyramid-authstack==1.0.1
 pyramid-chameleon==0.1
 pyramid-macauth==0.3.0
 pyramid-persona==1.5
-python3-ldap==0.9.5
+python3-ldap==0.9.5.1
 radon==0.5.1
 repoze.lru==0.6
 requests==2.0.1
