@@ -67,6 +67,8 @@ class Vcd55TestCloudClient(unittest.TestCase):
     NETWORK_NAME = environ.get('TEST_CLOUD_CLIENT_NETWORK_NAME') or \
                                                 'proxied-external-network'
     
+    EX_SCRIPT_FILEPATH = path.join(CONFIG_DIR, 'ex_script.sh')
+    
     # Disable SSL verification for testing ONLY
 #    security.CA_CERTS_PATH = [CA_CERTS_PATH]
     security.VERIFY_SSL_CERT = False
@@ -253,10 +255,39 @@ class Vcd55TestCloudClient(unittest.TestCase):
         log.info('Destroying vApp %r ...', image.name)
         self.driver.destroy_node(node) 
         log.info('Destroyed vApp %r', image.name)
+                
+    def test10_create_node_adding_execute_script(self):
         
+        # Query images
+        image = self._get_image()
+
+        ex_script_filepath = self.__class__.EX_SCRIPT_FILEPATH
+        
+        # Create node with specific network setting
+        network_r = self.__class__.NETWORK_NAME
+        log.info('Creating vApp %r with network %r ...', image, network_r)
+        try:
+            node = self.driver.create_node(
+                                       name='phil-test10-node-with-ex-script', 
+                                       image=image,
+                                       ex_vm_network='Net-Test',
+                                       ex_vm_fence='bridged',
+                                       ex_network=network_r,
+                                       ex_vm_script=ex_script_filepath)
+        except Exception as e:
+            self.fail(e)
+            
+        log.info('Completed vApp creation for %r', node.name)
+        
+        self._check_node(node)
+         
+        # Destroy the node
+        log.info('Destroying vApp %r ...', image.name)
+        self.driver.destroy_node(node)
+        log.info('Destroyed vApp %r', image.name)        
               
 if __name__ == "__main__":
     import sys;sys.argv = [
         '', 
-        'Vcd55TestCloudClient.test08_create_and_destroy_node_with_ex_network']
+        'Vcd55TestCloudClient.test10_create_node_adding_execute_script']
     unittest.main()
