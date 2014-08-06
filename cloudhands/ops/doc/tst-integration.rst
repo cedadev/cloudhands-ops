@@ -275,10 +275,10 @@ is only available in the `Lab` environment.
     * `2. Launch an item from the catalogue`_.
     * `3. Monitor the appliance lifecycle`_.
 
-1. Check the VApp in the vDirector GUI.
+1. Check the VApp in the `vCloud Director` GUI.
 
     * The vApp called `test_01` exists.
-    * The vApp state is `Running`.
+    * The vApp state is `Stopped`.
 
 2. Check the customization script as follows:
 
@@ -290,7 +290,7 @@ is only available in the `Lab` environment.
 
     * The script contains an RSA public key.
 
-3. Check the Edge gateway in the vDirector GUI as follows:
+3. Check the Edge gateway in the `vCloud Director` GUI as follows:
 
    #. Click the `Administration` tab and select the item named
       `un-managed_tenancy_test_org-std-compute-PAYG`.
@@ -302,6 +302,25 @@ is only available in the `Lab` environment.
       Note the public IP it routes to.
     * The `Firewall` tab shows a rule for the routable IP you noted here.
       It allows port 22 only.
+
+5. Set the appliance running
+----------------------------
+
+0. Prerequisites
+    * `1. Login (demo user)`_.
+    * `2. Launch an item from the catalogue`_.
+    * `3. Monitor the appliance lifecycle`_.
+    * `4. Check the deployed appliance`_.
+
+1. Click the button `Start`.
+
+    * The appliance state updates itself to show `pre_start`.
+    * The appliance state updates itself to show `running` (~2s).
+    * The buttons are displayed as follows; `Stop`, `Check`.
+
+1. Refresh the view `vCloud Director` GUI. Check the VApp status.
+
+    * The vApp state is `Running`.
 
 .. _free external email address: http://www.mail.com/int/
 .. _resource exhaustion: https://www.owasp.org/index.php/Resource_exhaustion 
