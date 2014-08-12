@@ -20,12 +20,14 @@ to admit others to the organisation, giving them use of the resources allocated
 to it.
 
 In order to identify a prospective member, the administrator must at a
-miniumum:
+minimum:
 
 * know the surname of the individual
 * know an email address where he can be reached
 
 .. seqdiag::
+   :alt: A sequence diagram is missing from your view
+   :caption: Sequence: Administrator invites Guest. Guest activates Membership.
 
    seqdiag {
     default_fontsize = 14;
@@ -41,7 +43,19 @@ miniumum:
 Account properties
 ~~~~~~~~~~~~~~~~~~
 
+A new User must complete the details of his Registration before he can
+make use of portal services. The information required corresponds to that
+stored in an LDAP record for a POSIX account.
+
+The portal will prompt the user with the necessary forms until the information
+is supplied. Then the LDAP record is created.
+
+Subsequent additions to the account (for example, a new SSH public key) will
+cause the LDAP record to be modified.
+
 .. seqdiag::
+   :alt: A sequence diagram is missing from your view
+   :caption: Sequence: User edits account. Registration writes to LDAP record.
 
    seqdiag {
     default_fontsize = 14;
@@ -52,10 +66,12 @@ Account properties
     Registration -> Registration [note="PosixUId"];
     Registration -> Registration [note="PosixUIdNumber"];
     Registration -> Registration [note="PosixGIdNumber"];
+    Registration -> LDAP [label="add"];
+    Registration <-- LDAP;
     User <-- Registration;
     User -> Registration [label="edit"];
     Registration -> Registration [note="PublicKey"];
-    Registration -> LDAP [label="add"];
+    Registration -> LDAP [label="modify"];
     Registration <-- LDAP;
     User <-- Registration;
    }
@@ -63,15 +79,17 @@ Account properties
 Session credentials
 ~~~~~~~~~~~~~~~~~~~
 
-Elaboration
-~~~~~~~~~~~
+.. seqdiag::
+   :alt: A sequence diagram is missing from your view
+   :caption: Sequence: User session expires. Membership retains API token.
 
-* PI requires Membership with admin role
-* PI searches for new user from LDAP records
-* PI selects user and generates an invitation
-* (Out of band) PI sends to user a link to the invitation
-* New user signs on with email address
-
-LDAP
-~~~~
+   seqdiag {
+    default_fontsize = 14;
+    User; Membership; Provider;
+    User -> Membership [label="session", failed];
+    User -> Membership [label="login"];
+    Membership -> Provider [label="authenticate"];
+    Membership <-- Provider [label="token"];
+    Membership -> Membership [note="Token"];
+   }
 
