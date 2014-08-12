@@ -11,5 +11,5 @@ Project guide
    prj-style
    prj-rest
    prj-story01
-   prj-story02
+   prj-user_lifecycle
 
