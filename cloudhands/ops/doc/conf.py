@@ -35,7 +35,7 @@ extensions = [
     #'rst2pdf.pdfbuilder']
 
 # Fontpath for seqdiag (truetype font)
-seqdiag_fontpath = "/usr/share/fonts/truetype/ipafont/ipagp.ttf"
+seqdiag_fontpath = "/usr/share/fonts/liberation/LiberationSans-Bold.ttf"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

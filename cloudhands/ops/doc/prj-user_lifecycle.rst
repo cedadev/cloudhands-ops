@@ -20,26 +20,48 @@ to admit others to the organisation, giving them use of the resources allocated
 to it.
 
 In order to identify a prospective member, the administrator must at a
-miniumu:
+miniumum:
 
 * know the surname of the individual
 * know an email address where he can be reached
 
+.. seqdiag::
+
+   seqdiag {
+    default_fontsize = 14;
+    Guest; Registration; Membership; Administrator;
+    Administrator -> Membership [label="create"];
+    Membership --> Guest [rightnote="Invitation"];
+    Membership <<-- Guest [rightnote="Activation"];
+    Membership -> Registration [label="create"];
+    Registration -> Registration [note="EmailAddress"];
+    Registration -> Registration [note="BcryptedPassword"];
+   }
+
 Account properties
 ~~~~~~~~~~~~~~~~~~
 
-Session credentials
-~~~~~~~~~~~~~~~~~~~
-
 .. seqdiag::
-   :desctable:
 
    seqdiag {
-      A -> B -> C;
-      A [description = "browsers in each client"];
-      B [description = "web server"];
-      C [description = "database server"];
+    default_fontsize = 14;
+    User; Registration; LDAP;
+    User -> Registration [label="edit"];
+    Registration -> LDAP [label="query"];
+    Registration <-- LDAP;
+    Registration -> Registration [note="PosixUId"];
+    Registration -> Registration [note="PosixUIdNumber"];
+    Registration -> Registration [note="PosixGIdNumber"];
+    User <-- Registration;
+    User -> Registration [label="edit"];
+    Registration -> Registration [note="PublicKey"];
+    Registration -> LDAP [label="add"];
+    Registration <-- LDAP;
+    User <-- Registration;
    }
+
+Session credentials
+~~~~~~~~~~~~~~~~~~~
 
 Elaboration
 ~~~~~~~~~~~
@@ -53,10 +75,3 @@ Elaboration
 LDAP
 ~~~~
 
-This query finds the list of live users::
-
-    ldapsearch -x -H ldap://homer.esc.rl.ac.uk -s sub -b 'ou=ceda,ou=People,o=hpc,dc=rl,dc=ac,dc=uk' '(&(objectclass=posixAccount)(objectclass=ldapPublicKey))'
-
-It might also be possible to `search Exchange for emails with LDAP`_.
-
-.. _search Exchange for emails with LDAP: https://gist.github.com/liveaverage/4503265
