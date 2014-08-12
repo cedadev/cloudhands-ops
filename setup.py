@@ -32,7 +32,9 @@ setup(
                     "doc/html/_sources/*",
                     "doc/html/_static/*",
                     ]},
-    install_requires=[],
+    install_requires=[
+        "sphinxcontrib-seqdiag>=0.7.2",
+    ],
     entry_points={
         "console_scripts": [
         ],
