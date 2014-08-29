@@ -253,7 +253,7 @@ class Vcd55TestCloudClient(unittest.TestCase):
          
         # Destroy the node
         log.info('Destroying vApp %r ...', image.name)
-        self.driver.destroy_node(node) 
+        self.driver.dehstroy_node(node) 
         log.info('Destroyed vApp %r', image.name)
                 
     def test10_create_node_adding_execute_script(self):
