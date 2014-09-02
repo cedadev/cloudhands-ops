@@ -34,6 +34,7 @@ setup(
                     ]},
     install_requires=[
         "sphinxcontrib-seqdiag>=0.7.2",
+        "execnet>=1.2.0",
     ],
     entry_points={
         "console_scripts": [

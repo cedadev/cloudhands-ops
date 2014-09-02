@@ -2,6 +2,7 @@ Chameleon==2.16
 Jinja2==2.7.3
 MarkupSafe==0.23
 PasteDeploy==1.5.0
+Pillow==2.5.1
 PyBrowserID==0.9.1
 Pygments==1.6
 SQLAlchemy==0.8.3
@@ -13,8 +14,11 @@ aiohttp==0.8.2
 apache-libcloud==0.14.0-beta3
 asyncio==0.4.1
 beautifulsoup4==4.3.2
+blockdiag==1.4.3
 colorama==0.2.7
 docutils==0.12
+execnet==1.2.0
+funcparserlib==0.3.6
 macauthlib==0.6.0
 mando==0.3.1
 pathfinder==0.5.3
@@ -30,12 +34,15 @@ python3-ldap==0.9.5.1
 radon==0.5.1
 repoze.lru==0.6
 requests==2.0.1
+seqdiag==0.9.3
 singledispatch==3.4.0.2
 six==1.4.1
+sphinxcontrib-seqdiag==0.7.2
 tokenlib==0.2.0
 translationstring==1.1
 venusian==1.0a8
 waitress==0.8.8
+webcolors==1.4
 wheel==0.22.0
 zope.deprecation==4.0.2
 zope.interface==4.0.5
