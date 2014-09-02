@@ -37,6 +37,7 @@ requests==2.0.1
 seqdiag==0.9.3
 singledispatch==3.4.0.2
 six==1.4.1
+sphinx-argparse==0.1.13
 sphinxcontrib-seqdiag==0.7.2
 tokenlib==0.2.0
 translationstring==1.1

@@ -31,7 +31,7 @@ import cloudhands.ops
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     'sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.viewcode',
-    "sphinx.ext.graphviz", "sphinxcontrib.seqdiag"]
+    "sphinx.ext.graphviz", "sphinxarg.ext", "sphinxcontrib.seqdiag"]
     #'rst2pdf.pdfbuilder']
 
 # Fontpath for seqdiag (truetype font)

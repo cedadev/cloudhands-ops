@@ -7,9 +7,7 @@ import logging
 from cloudhands.ops import __version__
 
 __doc__ = """
-cloudhands-orgadmin doc
-
-.. program:: check.sh
+.. program:: clpudhands-orgadmin
 
 .. option:: --novenv
 
@@ -83,14 +81,14 @@ def parser(description=__doc__):
         const=logging.DEBUG, default=logging.INFO,
         help="Increase the verbosity of output")
     rv.add_argument(
+        "--host", required=True,
+        help="Specify the name of the database host")
+    rv.add_argument(
         "--port", type=int, default=DFLT_PORT,
         help="Set the port number [{}]".format(DFLT_PORT))
     rv.add_argument(
         "--db", default=DFLT_DB,
         help="Set the path to the database [{}]".format(DFLT_DB))
-    rv.add_argument(
-        "--host", required=True,
-        help="Specify the name of the database host")
     rv.add_argument(
         "--log", default=None, dest="log_path",
         help="Set a file path for log output")
