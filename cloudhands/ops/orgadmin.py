@@ -3,25 +3,16 @@
 
 import argparse
 import logging
+import sys
 
 from cloudhands.ops import __version__
 
 __doc__ = """
-.. program:: clpudhands-orgadmin
 
-.. option:: --novenv
+This command-line utility enables remote creation of Organisations and
+Admin users. It mekes changes to the cloudhands database.
 
-   Disables the creation of a fresh virtual environment.
-
-.. option:: --nopep8
-
-   Disables the PEP8 checks.
-
-.. option:: --notest
-
-   Disables the unit tests.
-
-Eg::
+eg::
 
     cloudhands-orgadmin --host=http://jasmin-cloud.jc.rl.ac.uk
 """
@@ -30,12 +21,6 @@ import execnet
 
 DFLT_PORT = 22
 DFLT_DB = ":memory:"
-
-def multiplier(channel, factor):
-    while not channel.isclosed():
-        param = channel.receive()
-        channel.send(param * factor)
-
 
 def main(args):
     log = logging.getLogger("cloudhands.ops")
@@ -59,12 +44,8 @@ def main(args):
     log.addHandler(ch)
 
     gw = execnet.makegateway()
-    channel = gw.remote_exec(multiplier, factor=10)
-
-    for i in range(5):
-        channel.send(i)
-        result = channel.receive()
-        assert result == i * 10
+    ch = gw.remote_exec(sys.modules[__name__])
+    print(ch.receive())
 
     gw.exit()
     return 0
@@ -109,4 +90,4 @@ if __name__ == "__main__":
     run()
 
 if __name__ == "__channelexec__":
-    pass
+    channel.send("Executed remotely")
