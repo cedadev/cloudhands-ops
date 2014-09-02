@@ -6,6 +6,7 @@ Operations guide
    :maxdepth: 1
 
    ops-packages
+   ops-onboard
 
 References
 ==========
