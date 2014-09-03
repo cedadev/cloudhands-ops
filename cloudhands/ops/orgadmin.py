@@ -3,24 +3,36 @@
 
 import argparse
 import logging
+import os.path
+import platform
 import sys
 
-from cloudhands.ops import __version__
+try:
+    from cloudhands.ops import __version__
+    import execnet
+except ImportError:
+    # Remote host
+    __version__ = None
 
 __doc__ = """
 
 This command-line utility enables remote creation of Organisations and
-Admin users. It mekes changes to the cloudhands database.
+Admin users. It makes changes to the cloudhands database.
 
 eg::
 
-    cloudhands-orgadmin --host=http://jasmin-cloud.jc.rl.ac.uk
-"""
+    cloudhands-orgadmin \
+    --host=jasmin-cloud.jc.rl.ac.uk --identity=~/.ssh/id_rsa-jasminvm.pub
 
-import execnet
+Help for each option is printed on the command::
+
+    cloudhands-orgadmin --help
+"""
 
 DFLT_PORT = 22
 DFLT_DB = ":memory:"
+DFLT_USER = "jasminuser"
+DFLT_VENV = "jasmin-py3.3"
 
 def main(args):
     log = logging.getLogger("cloudhands.ops")
@@ -43,11 +55,19 @@ def main(args):
     ch.setFormatter(formatter)
     log.addHandler(ch)
 
-    gw = execnet.makegateway()
-    ch = gw.remote_exec(sys.modules[__name__])
-    print(ch.receive())
-
-    gw.exit()
+    s = ("ssh=-i {identity} -p {0.port} {0.user}@{0.host}"
+        "//python=/home/{0.user}/{0.venv}/bin/python").format(
+        args,
+        identity=os.path.expanduser(args.identity))
+    gw = execnet.makegateway(s)
+    try:
+        ch = gw.remote_exec(sys.modules[__name__])
+        print(ch.receive())
+    except OSError as e:
+        log.error(s)
+        log.error(e)
+    finally:
+        gw.exit()
     return 0
 
 
@@ -68,8 +88,19 @@ def parser(description=__doc__):
         "--port", type=int, default=DFLT_PORT,
         help="Set the port number [{}]".format(DFLT_PORT))
     rv.add_argument(
+        "--user", default=DFLT_USER,
+        help="Specify the login user [{}]".format(DFLT_USER))
+    rv.add_argument(
+        "--venv", default=DFLT_VENV,
+        help="Specify the Python environment on the remote host [{}]".format(
+            DFLT_VENV)
+        )
+    rv.add_argument(
         "--db", default=DFLT_DB,
         help="Set the path to the database [{}]".format(DFLT_DB))
+    rv.add_argument(
+        "--identity", default="",
+        help="Specify the path to an SSH public key file")
     rv.add_argument(
         "--log", default=None, dest="log_path",
         help="Set a file path for log output")
@@ -90,4 +121,4 @@ if __name__ == "__main__":
     run()
 
 if __name__ == "__channelexec__":
-    channel.send("Executed remotely")
+    channel.send("Executed remotely from {}.".format(platform.node()))

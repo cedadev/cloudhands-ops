@@ -49,10 +49,12 @@ then
     done
 fi
 
+$PYENV/bin/pip uninstall -y cloudhands-ops
 echoerr "Installing Ops package to $PYENV ..."
 $PYENV/bin/python3 setup.py install > /dev/null
 
 echoerr "Building Ops guide ..."
+rm -rf $PARENT/cloudhands-ops/cloudhands/ops/doc/html
 $PYENV/bin/sphinx-build -c $PARENT/cloudhands-ops/cloudhands/ops/doc \
     $PARENT/cloudhands-ops/cloudhands/ops/doc \
     $PARENT/cloudhands-ops/cloudhands/ops/doc/html
