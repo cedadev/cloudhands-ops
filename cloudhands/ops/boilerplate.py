@@ -16,23 +16,30 @@ except ImportError:
 
 __doc__ = """
 
-This command-line utility enables remote creation of Organisations and
-Admin users. It makes changes to the cloudhands database.
+This module contains boilerplate for devops utilities.
 
-eg::
-
-    cloudhands-orgadmin \
-    --host=jasmin-cloud.jc.rl.ac.uk --identity=~/.ssh/id_rsa-jasminvm.pub
+It's your starting point for command-line tools which invoke Python functions
+on remote hosts.
 
 Help for each option is printed on the command::
 
-    cloudhands-orgadmin --help
+    boilerplate.py --help
+
+Don't forget you can supply command line-options from a file as described
+here:
+
+https://docs.python.org/3/library/argparse.html#fromfile-prefix-chars
+
+This gives a way of 'baking in' certain options to suit particular environments
+or configurations of the system.
+
 """
 
 DFLT_PORT = 22
 DFLT_DB = ":memory:"
 DFLT_USER = "jasminuser"
 DFLT_VENV = "jasmin-py3.3"
+
 
 def main(args):
     log = logging.getLogger("cloudhands.ops")
@@ -56,9 +63,8 @@ def main(args):
     log.addHandler(ch)
 
     s = ("ssh=-i {identity} -p {0.port} {0.user}@{0.host}"
-        "//python=/home/{0.user}/{0.venv}/bin/python").format(
-        args,
-        identity=os.path.expanduser(args.identity))
+         "//python=/home/{0.user}/{0.venv}/bin/python").format(
+        args, identity=os.path.expanduser(args.identity))
     gw = execnet.makegateway(s)
     try:
         ch = gw.remote_exec(sys.modules[__name__])
