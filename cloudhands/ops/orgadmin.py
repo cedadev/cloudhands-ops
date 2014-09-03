@@ -62,7 +62,13 @@ def main(args):
     gw = execnet.makegateway(s)
     try:
         ch = gw.remote_exec(sys.modules[__name__])
-        print(ch.receive())
+        ch.send(vars(args))
+
+        msg = ch.receive()
+        while msg is not None:
+            log.info(msg)
+            msg = ch.receive()
+
     except OSError as e:
         log.error(s)
         log.error(e)
@@ -121,4 +127,7 @@ if __name__ == "__main__":
     run()
 
 if __name__ == "__channelexec__":
-    channel.send("Executed remotely from {}.".format(platform.node()))
+    channel.send("Executing remotely from {}.".format(platform.node()))
+    args = channel.receive()
+    channel.send("Received args {}.".format(args))
+    channel.send(None)
