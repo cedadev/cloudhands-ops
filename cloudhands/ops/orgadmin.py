@@ -34,6 +34,63 @@ DFLT_DB = ":memory:"
 DFLT_USER = "jasminuser"
 DFLT_VENV = "jasmin-py3.3"
 
+def user(session, surname, email, name=None):
+    return None
+
+def organisation(sessionm name):
+    return None
+
+def membership(session, org):
+    actor = session.query(Component).filter(
+        Component.handle=="ops.orgadmin").one()
+    return None
+
+def registration(session, user):
+    return None
+
+def main(args):
+    log = logging.getLogger("cloudhands.ops")
+
+    log.setLevel(args.log_level)
+
+    formatter = logging.Formatter(
+        "%(asctime)s %(levelname)-7s %(name)s|%(message)s")
+    ch = logging.StreamHandler()
+
+    if args.log_path is None:
+        ch.setLevel(args.log_level)
+    else:
+        fh = WatchedFileHandler(args.log_path)
+        fh.setLevel(args.log_level)
+        fh.setFormatter(formatter)
+        log.addHandler(fh)
+        ch.setLevel(logging.WARNING)
+
+    ch.setFormatter(formatter)
+    log.addHandler(ch)
+
+    s = ("ssh=-i {identity} -p {0.port} {0.user}@{0.host}"
+        "//python=/home/{0.user}/{0.venv}/bin/python").format(
+        args,
+        identity=os.path.expanduser(args.identity))
+    gw = execnet.makegateway(s)
+    try:
+        ch = gw.remote_exec(sys.modules[__name__])
+        ch.send(vars(args))
+
+        msg = ch.receive()
+        while msg is not None:
+            log.info(msg)
+            msg = ch.receive()
+
+    except OSError as e:
+        log.error(s)
+        log.error(e)
+    finally:
+        gw.exit()
+    return 0
+
+
 def main(args):
     log = logging.getLogger("cloudhands.ops")
 
