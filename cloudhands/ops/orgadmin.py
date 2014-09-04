@@ -35,18 +35,22 @@ DFLT_USER = "jasminuser"
 DFLT_VENV = "jasmin-py3.3"
 
 def user(session, surname, email, name=None):
-    return None
+    act = None
+    return act
 
-def organisation(sessionm name):
-    return None
+def subscriptions(session, name):
+    act = None
+    return act
 
 def membership(session, org):
+    act = None
     actor = session.query(Component).filter(
         Component.handle=="ops.orgadmin").one()
-    return None
+    return act
 
 def registration(session, user):
-    return None
+    act = None
+    return act
 
 def main(args):
     log = logging.getLogger("cloudhands.ops")

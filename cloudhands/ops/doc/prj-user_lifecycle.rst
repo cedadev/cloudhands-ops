@@ -27,17 +27,31 @@ minimum:
 
 .. seqdiag::
    :alt: A sequence diagram is missing from your view
-   :caption: Sequence: Administrator invites Guest. Guest activates Membership.
+   :caption:    Sequence: Administrator creates Registration.
+                Guest activates Registration.
+                Guest logs in as User.
 
    seqdiag {
     default_fontsize = 14;
-    Guest; Registration; Membership; Administrator;
+    Guest; User; Registration; Membership; Administrator;
+    Administrator -> User [label="create"];
+    Administrator <<-- User [label="uuid"];
     Administrator -> Membership [label="create"];
-    Membership --> Guest [rightnote="Invitation"];
-    Membership <<-- Guest [rightnote="Activation"];
-    Membership -> Registration [label="create"];
+    Membership -> User [label="attach"];
+    Membership <<-- User;
+    Administrator <<-- Membership [label="uuid"];
+    Administrator -> Registration [label="create"];
+    Registration -> User [label="attach"];
+    Registration <<-- User;
     Registration -> Registration [note="EmailAddress"];
-    Registration -> Registration [note="BcryptedPassword"];
+    Administrator <<-- Registration [label="uuid"];
+    Administrator ->> Guest [rightnote="Invitation (automated)"]{
+        Guest -> Registration [rightnote="Activation"];
+        Registration -> Registration [note="BcryptedPassword"];
+        Guest <<-- Registration [label="account url"];
+        Guest -> Registration [label="login"];
+        Registration -->> User [label="authenticate"];
+    }
    }
 
 Account properties

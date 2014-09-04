@@ -52,6 +52,7 @@ fi
 $PYENV/bin/pip uninstall -y cloudhands-ops
 echoerr "Installing Ops package to $PYENV ..."
 $PYENV/bin/python3 setup.py install > /dev/null
+$PYENV/bin/python3 -m unittest cloudhands.ops.test.test_orgadmin
 
 echoerr "Building Ops guide ..."
 rm -rf $PARENT/cloudhands-ops/cloudhands/ops/doc/html
