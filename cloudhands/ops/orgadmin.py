@@ -2,10 +2,12 @@
 # encoding: UTF-8
 
 import argparse
+import datetime
 import logging
 import os.path
 import platform
 import sys
+import uuid
 
 try:
     from cloudhands.ops import __version__
@@ -13,6 +15,19 @@ try:
 except ImportError:
     # Remote host
     __version__ = None
+
+from cloudhands.common.fsm import MembershipState
+from cloudhands.common.fsm import RegistrationState
+from cloudhands.common.fsm import SubscriptionState
+from cloudhands.common.schema import Component
+from cloudhands.common.schema import EmailAddress
+from cloudhands.common.schema import Membership
+from cloudhands.common.schema import Organisation
+from cloudhands.common.schema import Provider
+from cloudhands.common.schema import Registration
+from cloudhands.common.schema import Subscription
+from cloudhands.common.schema import Touch
+from cloudhands.common.schema import User
 
 __doc__ = """
 
@@ -34,65 +49,107 @@ DFLT_DB = ":memory:"
 DFLT_USER = "jasminuser"
 DFLT_VENV = "jasmin-py3.3"
 
-def user(session, surname, email, name=None):
-    act = None
-    return act
-
-def subscriptions(session, name):
-    act = None
-    return act
-
-def membership(session, org):
-    act = None
-    actor = session.query(Component).filter(
-        Component.handle=="ops.orgadmin").one()
-    return act
-
-def registration(session, user):
-    act = None
-    return act
-
-def main(args):
-    log = logging.getLogger("cloudhands.ops")
-
-    log.setLevel(args.log_level)
-
-    formatter = logging.Formatter(
-        "%(asctime)s %(levelname)-7s %(name)s|%(message)s")
-    ch = logging.StreamHandler()
-
-    if args.log_path is None:
-        ch.setLevel(args.log_level)
-    else:
-        fh = WatchedFileHandler(args.log_path)
-        fh.setLevel(args.log_level)
-        fh.setFormatter(formatter)
-        log.addHandler(fh)
-        ch.setLevel(logging.WARNING)
-
-    ch.setFormatter(formatter)
-    log.addHandler(ch)
-
-    s = ("ssh=-i {identity} -p {0.port} {0.user}@{0.host}"
-        "//python=/home/{0.user}/{0.venv}/bin/python").format(
-        args,
-        identity=os.path.expanduser(args.identity))
-    gw = execnet.makegateway(s)
+def component(session, handle):
+    actor = Component(handle=handle, uuid=uuid.uuid4().hex)
     try:
-        ch = gw.remote_exec(sys.modules[__name__])
-        ch.send(vars(args))
-
-        msg = ch.receive()
-        while msg is not None:
-            log.info(msg)
-            msg = ch.receive()
-
-    except OSError as e:
-        log.error(s)
-        log.error(e)
+        session.add(actor)
+        session.commit()
+    except Exception:
+        session.rollback()
+        session.flush()
     finally:
-        gw.exit()
-    return 0
+        return session.query(Component).filter(Component.handle == handle).first()
+
+def user(session, handle, surname=None):
+    user = User(handle=handle, uuid=uuid.uuid4().hex)
+    try:
+        session.add(user)
+        session.commit()
+    except Exception:
+        session.rollback()
+        session.flush()
+    finally:
+        return session.query(User).filter(User.handle == handle).first()
+
+def subscriptions(session, orgName, providers, version):
+    actor = session.merge(component(session, handle="org.orgadmin"))
+    maintenance = session.query(
+        SubscriptionState).filter(
+        SubscriptionState.name=="maintenance").one()
+
+    org = session.query(Organisation).filter(
+        Organisation.name == orgName).first()
+    if not org:
+        org = Organisation(
+            uuid=uuid.uuid4().hex,
+            name=orgName)
+        session.add(org)
+
+    for p in providers:
+        provider = session.query(Provider).filter(
+            Provider.name == p).first()
+        if not provider:
+            provider = Provider(
+                name=p, uuid=uuid.uuid4().hex)
+            session.add(provider)
+
+        subs = session.query(Subscription).join(Organisation).join(
+            Provider).filter(Organisation.id==org.id).filter(
+            Provider.id==provider.id).first()
+        if subs:
+            yield subs
+        else:
+
+            subs = Subscription(
+                uuid=uuid.uuid4().hex,
+                model=version,
+                organisation=org,
+                provider=provider)
+            act = Touch(
+                artifact=subs, actor=actor, state=maintenance,
+                at=datetime.datetime.utcnow())
+
+            session.add(act)
+            session.commit()
+
+            yield subs
+
+
+def membership(session, user, org, version, role="admin"):
+    actor = session.merge(component(session, handle="org.orgadmin"))
+    active = session.query(MembershipState).filter(
+        MembershipState.name == "active").one()
+    mship = Membership(
+        uuid=uuid.uuid4().hex,
+        model=version,
+        organisation=org,
+        role=role)
+    act = Touch(artifact=mship, actor=actor, state=active,
+                at=datetime.datetime.utcnow())
+    session.add(act)
+    session.commit()
+    return mship
+
+
+def registration(session, user, email, version):
+    preconfirm = session.query(RegistrationState).filter(
+        RegistrationState.name == "pre_registration_inetorgperson").one()
+    reg = Registration(
+        uuid=uuid.uuid4().hex,
+        model=version)
+    now = datetime.datetime.utcnow()
+    act = Touch(artifact=reg, actor=user, state=preconfirm, at=now)
+    ea = EmailAddress(touch=act, value=email)
+    try:
+        session.add(ea)
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        reg = None
+    finally:
+        session.flush()
+
+    return reg
 
 
 def main(args):
@@ -123,7 +180,9 @@ def main(args):
     gw = execnet.makegateway(s)
     try:
         ch = gw.remote_exec(sys.modules[__name__])
-        ch.send(vars(args))
+        data = vars(args)
+        data["__version__"] = __version__
+        ch.send(data)
 
         msg = ch.receive()
         while msg is not None:

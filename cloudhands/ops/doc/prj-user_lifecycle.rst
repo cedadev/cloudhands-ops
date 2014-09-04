@@ -99,11 +99,15 @@ Session credentials
 
    seqdiag {
     default_fontsize = 14;
-    User; Membership; Provider;
+    User; Membership; "Provider A"; "Provider B";
     User -> Membership [label="session", failed];
     User -> Membership [label="login"];
-    Membership -> Provider [label="authenticate"];
-    Membership <-- Provider [label="token"];
+    Membership -> "Provider A" [label="credentials"];
+    Membership <-- "Provider A" [label="token"];
     Membership -> Membership [note="Token"];
+    Membership -> "Provider B" [label="credentials"];
+    Membership <-- "Provider B" [label="token"];
+    Membership -> Membership [note="Token"];
+    User <-- Membership [label="session"];
    }
 
