@@ -38,6 +38,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
+            "cloudhands-orgadmin = cloudhands.ops.orgadmin:run",
         ],
     },
     zip_safe=False

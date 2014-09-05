@@ -39,8 +39,15 @@ Admin users. It makes changes to the cloudhands database.
 
 eg::
 
-    cloudhands-orgadmin \
-    --host=jasmin-cloud.jc.rl.ac.uk --identity=~/.ssh/id_rsa-jasminvm.pub
+    cloudhands-orgadmin \\
+    --host=jasmin-cloud.jc.rl.ac.uk --identity=~/.ssh/id_rsa-jasminvm.pub \\
+    --db=/home/jasminuser/jasmin-web.sl3 \\
+    --account=denderby \\
+    --email=dominic.enderby@contractor.net \\
+    --surname=enderby \\
+    --organisation=STFCloud \\
+    --providers=cloudhands.jasmin.vcloud.phase04.cfg \
+    cloudhands.jasmin.amazon.ae40331.cfg
 
 Help for each option is printed on the command::
 
@@ -212,6 +219,43 @@ def parser(description=__doc__):
         fromfile_prefix_chars="@"
     )
     rv.add_argument(
+        "--host", required=False,
+        help="Specify the name of the database host")
+    rv.add_argument(
+        "--port", type=int, default=DFLT_PORT,
+        help="Specify the port number [{}] to the host".format(DFLT_PORT))
+    rv.add_argument(
+        "--user", default=DFLT_USER,
+        help="Specify the user login [{}] on the host".format(DFLT_USER))
+    rv.add_argument(
+        "--venv", default=DFLT_VENV,
+        help="Specify the Python environment [{}] on the host".format(
+            DFLT_VENV)
+        )
+    rv.add_argument(
+        "--db", default=DFLT_DB,
+        help="Specify the path to the database [{}] on the host".format(DFLT_DB))
+    rv.add_argument(
+        "--identity", default="",
+        help="Specify the path to a SSH public key authorised on the host")
+
+    rv.add_argument(
+        "--account", required=True,
+        help="Set the account name for the administrator")
+    rv.add_argument(
+        "--email", required=True,
+        help="Set the email address of the administrator")
+    rv.add_argument(
+        "--surname", required=True,
+        help="Set the surname of the administrator")
+    rv.add_argument(
+        "--organisation", required=True,
+        help="Set the name of the organisation to be created")
+    rv.add_argument(
+        "--providers", nargs="+",
+        help="Set one or more subscribed providers")
+
+    rv.add_argument(
         "--version", action="store_true", default=False,
         help="Print the current version number")
     rv.add_argument(
@@ -220,45 +264,8 @@ def parser(description=__doc__):
         const=logging.DEBUG, default=logging.INFO,
         help="Increase the verbosity of output")
     rv.add_argument(
-        "--host", required=False,
-        help="Specify the name of the database host")
-    rv.add_argument(
-        "--port", type=int, default=DFLT_PORT,
-        help="Set the port number [{}]".format(DFLT_PORT))
-    rv.add_argument(
-        "--user", default=DFLT_USER,
-        help="Specify the login user [{}]".format(DFLT_USER))
-    rv.add_argument(
-        "--venv", default=DFLT_VENV,
-        help="Specify the Python environment on the remote host [{}]".format(
-            DFLT_VENV)
-        )
-    rv.add_argument(
-        "--db", default=DFLT_DB,
-        help="Set the path to the database [{}]".format(DFLT_DB))
-    rv.add_argument(
-        "--identity", default="",
-        help="Specify the path to an SSH public key file")
-
-    rv.add_argument(
-        "--account", required=True,
-        help="Set the account name for the administrator.")
-    rv.add_argument(
-        "--email", required=True,
-        help="Set the email address of the administrator.")
-    rv.add_argument(
-        "--surname", required=True,
-        help="Set the surname of the administrator.")
-    rv.add_argument(
-        "--organisation", required=True,
-        help="Set the name of the organisation to be created.")
-    rv.add_argument(
-        "--providers", nargs="*",
-        help="Specify subscribed providers.")
-
-    rv.add_argument(
         "--log", default=None, dest="log_path",
-        help="Set a file path for log output")
+        help="Specify a file path for log output")
     return rv
 
 
