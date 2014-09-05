@@ -6,6 +6,7 @@ import datetime
 import logging
 import os.path
 import platform
+import sqlite3
 import sys
 import uuid
 
@@ -16,6 +17,8 @@ except ImportError:
     # Remote host
     __version__ = None
 
+from cloudhands.common.connectors import initialise
+from cloudhands.common.connectors import Registry
 from cloudhands.common.fsm import MembershipState
 from cloudhands.common.fsm import RegistrationState
 from cloudhands.common.fsm import SubscriptionState
@@ -61,7 +64,7 @@ def component(session, handle):
         return session.query(Component).filter(Component.handle == handle).first()
 
 def user(session, handle, surname=None):
-    user = User(handle=handle, uuid=uuid.uuid4().hex)
+    user = User(handle=handle, surname=surname, uuid=uuid.uuid4().hex)
     try:
         session.add(user)
         session.commit()
@@ -153,7 +156,7 @@ def registration(session, user, email, version):
 
 
 def main(args):
-    log = logging.getLogger("cloudhands.ops")
+    log = logging.getLogger("cloudhands.ops.orgadmin")
 
     log.setLevel(args.log_level)
 
@@ -164,7 +167,7 @@ def main(args):
     if args.log_path is None:
         ch.setLevel(args.log_level)
     else:
-        fh = WatchedFileHandler(args.log_path)
+        fh = logging.handlers.WatchedFileHandler(args.log_path)
         fh.setLevel(args.log_level)
         fh.setFormatter(formatter)
         log.addHandler(fh)
@@ -173,15 +176,21 @@ def main(args):
     ch.setFormatter(formatter)
     log.addHandler(ch)
 
-    s = ("ssh=-i {identity} -p {0.port} {0.user}@{0.host}"
-        "//python=/home/{0.user}/{0.venv}/bin/python").format(
-        args,
-        identity=os.path.expanduser(args.identity))
+    if not args.host:
+        log.debug("Executing locally.")
+        s = "popen//dont_write_bytecode"
+    else:
+        s = ("ssh=-i {identity} -p {0.port} {0.user}@{0.host}"
+            "//python=/home/{0.user}/{0.venv}/bin/python").format(
+            args,
+            identity=os.path.expanduser(args.identity))
+
     gw = execnet.makegateway(s)
     try:
         ch = gw.remote_exec(sys.modules[__name__])
         data = vars(args)
         data["__version__"] = __version__
+        log.debug("Supplying args {}.".format(data))
         ch.send(data)
 
         msg = ch.receive()
@@ -211,7 +220,7 @@ def parser(description=__doc__):
         const=logging.DEBUG, default=logging.INFO,
         help="Increase the verbosity of output")
     rv.add_argument(
-        "--host", required=True,
+        "--host", required=False,
         help="Specify the name of the database host")
     rv.add_argument(
         "--port", type=int, default=DFLT_PORT,
@@ -230,6 +239,23 @@ def parser(description=__doc__):
     rv.add_argument(
         "--identity", default="",
         help="Specify the path to an SSH public key file")
+
+    rv.add_argument(
+        "--account", required=True,
+        help="Set the account name for the administrator.")
+    rv.add_argument(
+        "--email", required=True,
+        help="Set the email address of the administrator.")
+    rv.add_argument(
+        "--surname", required=True,
+        help="Set the surname of the administrator.")
+    rv.add_argument(
+        "--organisation", required=True,
+        help="Set the name of the organisation to be created.")
+    rv.add_argument(
+        "--providers", nargs="*",
+        help="Specify subscribed providers.")
+
     rv.add_argument(
         "--log", default=None, dest="log_path",
         help="Set a file path for log output")
@@ -250,7 +276,31 @@ if __name__ == "__main__":
     run()
 
 if __name__ == "__channelexec__":
-    channel.send("Executing remotely from {}.".format(platform.node()))
+    channel.send("Sending from {}.".format(platform.node()))
+
     args = channel.receive()
-    channel.send("Received args {}.".format(args))
+
+    session = Registry().connect(sqlite3, args["db"]).session
+    initialise(session)
+
+    admin = user(session, args["account"], args["surname"])
+    channel.send((admin.typ, admin.handle, admin.uuid))
+
+    org = None
+    for subs in subscriptions(
+        session, args["organisation"], args["providers"], args["version"]
+    ):
+        org = session.merge(subs.organisation)
+        channel.send(("provider", subs.provider.name, subs.provider.uuid))
+        channel.send((subs.typ, subs.uuid))
+
+    channel.send(("organisation", org.name, org.uuid))
+
+    mship = membership(session, admin, org, args["version"])
+    channel.send((mship.typ, mship.role, mship.uuid))
+
+    reg = registration(session, admin, args["email"], args["version"])
+    if reg is not None:
+        channel.send((reg.typ, reg.uuid))
+
     channel.send(None)

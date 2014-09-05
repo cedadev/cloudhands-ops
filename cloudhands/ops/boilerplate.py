@@ -53,7 +53,7 @@ def main(args):
     if args.log_path is None:
         ch.setLevel(args.log_level)
     else:
-        fh = WatchedFileHandler(args.log_path)
+        fh = logging.handlers.WatchedFileHandler(args.log_path)
         fh.setLevel(args.log_level)
         fh.setFormatter(formatter)
         log.addHandler(fh)
