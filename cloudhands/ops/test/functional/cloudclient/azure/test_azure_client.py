@@ -47,9 +47,9 @@ class AzureTestCloudClient(unittest.TestCase):
     
     # Pick image name from environment variable or accept default
     IMAGE_NAME = environ.get('TEST_CLOUD_CLIENT_IMAGE_NAME') or \
-                        'Ubuntu Server 14.04 LTS'
+'b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu-14_04-LTS-amd64-server-20140606.1-en-us-30GB'
     
-    CLOUD_SERVICE_NAME = 'ubuntu-1404-t8'
+    CLOUD_SERVICE_NAME = 'ubuntu1404t8'
     
     # Disable SSL verification for testing ONLY
 #    security.CA_CERTS_PATH = [CA_CERTS_PATH]
@@ -65,7 +65,7 @@ class AzureTestCloudClient(unittest.TestCase):
         images = self.driver.list_images()
 
         for image in images:
-            if image.name == self.__class__.IMAGE_NAME:
+            if image.id == self.__class__.IMAGE_NAME:
                 return image   
                      
         self.fail('No %r image found in list of images available: %r' % 
@@ -124,11 +124,11 @@ class AzureTestCloudClient(unittest.TestCase):
         # FIXME: fudge for now - the image arg should be type NodeImage 
         node = self.driver.create_node(
                        name=appl_name, 
-                       image=image.name, 
+                       image=image.id, 
                        size='Medium',
                        auth=NodeAuthPassword("Pa55w0rd", False),
                        ex_cloud_service_name=self.__class__.CLOUD_SERVICE_NAME,
-                       ex_storage_service_name="storage_account_name",
+                       ex_storage_service_name=self.__class__.CLOUD_SERVICE_NAME,
                        ex_deployment_name="deployment_name",
                        ex_deployment_slot="Production",
                        ex_admin_user_id="azure")
