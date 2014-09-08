@@ -35,6 +35,7 @@ setup(
     install_requires=[
         "sphinxcontrib-seqdiag>=0.7.2",
         "execnet>=1.2.0",
+        "cloudhands-common>=0.29",
     ],
     entry_points={
         "console_scripts": [
