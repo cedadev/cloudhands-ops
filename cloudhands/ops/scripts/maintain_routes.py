@@ -2,10 +2,11 @@
 # encoding: UTF-8
 __author__ = 'cl'
 
-import parse_yaml as plat
 import re
 import subprocess
 import sys
+
+import cloudhands.ops.scripts.parse_yaml as plat
 
 host = plat.GetHost(sys.argv[2])
 vcenter = plat.GetVcenter()

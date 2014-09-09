@@ -2,7 +2,8 @@
 # encoding: UTF-8
 import re
 import sys
-import parse_yaml as plat
+
+import cloudhands.ops.scripts.parse_yaml as plat
 
 host=plat.GetHost(sys.argv[1])
 

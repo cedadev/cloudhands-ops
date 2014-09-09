@@ -10,6 +10,7 @@ blockdiag==1.4.3
 docutils==0.12
 execnet==1.2.0
 funcparserlib==0.3.6
+python3-ldap==0.9.5.1
 seqdiag==0.9.3
 singledispatch>=3.4.0.2
 six>=1.4.1

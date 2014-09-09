@@ -3,16 +3,18 @@
 
 __author__ = 'cl'
 
-import parse_yaml as plat
 import csv
-from vCloudHTTP import vCloudHTTP
-from vCloudXMLReader import vCloudXMLReader
-import re
-import time
-import sys
 import os.path
+import re
+import sys
+import time
+
 from ldap3 import Server, Connection, STRATEGY_SYNC, AUTH_SIMPLE
 from ldap3 import SEARCH_SCOPE_WHOLE_SUBTREE, SEARCH_DEREFERENCE_ALWAYS, STRATEGY_LDIF_PRODUCER
+
+from cloudhands.ops.scripts.vCloudHTTP import vCloudHTTP
+from cloudhands.ops.scripts.vCloudXMLReader import vCloudXMLReader
+import cloudhands.ops.scripts.parse_yaml as plat
 
 class setupOrg(object):
 

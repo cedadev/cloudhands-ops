@@ -11,8 +11,9 @@ import os
 import time
 import shutil
 import subprocess
-import parse_yaml as plat
-import maintain_routes
+
+import cloudhands.ops.scripts.parse_yaml as plat
+import cloudhands.ops.scripts.maintain_routes as maintain_routes
 
 identity=sys.argv[1]
 hostNum = str(sys.argv[2])
