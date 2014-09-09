@@ -23,7 +23,11 @@ setup(
         "License :: OSI Approved :: BSD License"
     ],
     namespace_packages=["cloudhands"],
-    packages=["cloudhands.ops"],
+    packages=[
+        "cloudhands.ops",
+        "cloudhands.ops.scripts",
+        "cloudhands.ops.test"
+    ],
     package_data={"cloudhands.ops": [
                     "doc/*.rst",
                     "doc/_templates/*.css",
@@ -35,10 +39,12 @@ setup(
     install_requires=[
         "sphinxcontrib-seqdiag>=0.7.2",
         "execnet>=1.2.0",
+        "PyYAML==3.11",
         "cloudhands-common>=0.29",
     ],
     entry_points={
         "console_scripts": [
+            "cloudhands-orgsetup = cloudhands.ops.scripts.organisation_setup",
             "cloudhands-orgadmin = cloudhands.ops.orgadmin:run",
         ],
     },
