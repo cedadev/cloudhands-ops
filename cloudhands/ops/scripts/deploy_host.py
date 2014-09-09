@@ -255,6 +255,7 @@ def buildEsxHost(server, key):
 	addRoutes()
 	updateNetapp()""")
 	enterMaint()
+	checkMaint()
 	esxReboot()
 	checkServerAvail()
 	exitMaint()
