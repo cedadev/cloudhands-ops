@@ -47,6 +47,7 @@ eg::
     --email=dominic.enderby@contractor.net \\
     --surname=enderby \\
     --organisation=STFCloud \\
+    --activator=/root/bootstrap.sh \\
     --providers=cloudhands.jasmin.vcloud.phase04.cfg \
     cloudhands.jasmin.amazon.ae40331.cfg
 
@@ -253,8 +254,14 @@ def parser(description=__doc__):
         "--organisation", required=True,
         help="Set the name of the organisation to be created")
     rv.add_argument(
-        "--providers", nargs="+",
+        "--activator", required=True,
+        help="Specify the path to the appliance activator script.")
+    rv.add_argument(
+        "--providers", nargs="+", required=True,
         help="Set one or more subscribed providers")
+    rv.add_argument(
+        "--public", nargs="+",
+        help="Specify one or more public IP addresses")
 
     rv.add_argument(
         "--version", action="store_true", default=False,

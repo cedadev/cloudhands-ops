@@ -169,6 +169,7 @@ class OnboardingTests(unittest.TestCase):
         surname = "Body"
         eMail = "some.body@somewhere.net"
         orgName = "test"
+        activator = "/root/bootstrap.sh"
         providers = [
             "cloudhands.jasmin.vcloud.phase04.cfg",
             "cloudhands.jasmin.amazon.ae40331.cfg",
@@ -181,6 +182,7 @@ class OnboardingTests(unittest.TestCase):
             "--email", eMail,
             "--surname", surname,
             "--organisation", orgName,
+            "--activator", activator,
             "--providers", providers[0], providers[1],
             "--verbose",
             "--log", logFile.name])
