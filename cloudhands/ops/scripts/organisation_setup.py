@@ -433,6 +433,7 @@ class setupOrg(object):
                                                                   'gidNumber': GID + 2, 'cn': orgName + '-vcloud_console'})
 
     def redeployVse(self, newEdgeRef):
+        time.sleep(30)
         vCloudHTTP.httpPOST(newEdgeRef + "/action/redeploy", "application/vnd.vmware.admin.edgeGateway+xml", self.auth(), "", self.connectionStr().version)
 
 def createEntireTennacy(filename):
