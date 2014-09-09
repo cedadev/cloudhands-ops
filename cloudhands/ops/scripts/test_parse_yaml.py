@@ -3,8 +3,9 @@
 __author__ = 'cl'
 
 import unittest
-import parse_yaml
 import yaml
+
+import cloudhands.ops.scripts.parse_yaml as parse_yaml
 
 class RegexTest(unittest.TestCase):
 
@@ -48,6 +49,10 @@ clusters:
     - 100-150
         """)
         self.assertEqual("rack3-1", parse_yaml.evaluateData(fragment, "cluster", "rack3-1").Name)
+
+    def test_finding_yaml(self):
+        rv = parse_yaml.get_config()
+        self.assertTrue(rv)
 
 if __name__ == "__main__":
    unittest.main()

@@ -6,11 +6,14 @@ import pprint
 import re
 import subprocess
 
+import pkg_resources
+
 Count=0
 
 class Cluster(object):
     def __init__(self, Name, StorageGW, VxlanGW, HostRange):
         self.Name = Name
+        # TODO: self.storageGW = storageGW
         self.StorageGW = StorageGW
         self.VxlanGW = VxlanGW
         self.HostRange = HostRange
@@ -114,27 +117,31 @@ def evaluateData( config, resource, value ):
         vcloudparams = Vcloudparams(url=Vcloudyaml["url"], username=Vcloudyaml["username"], password=Vcloudyaml["password"], version=Vcloudyaml["version"], NERCvSEGW=Vcloudyaml["extNets"]["NERCvSEGW"], NERCvSENet=Vcloudyaml["extNets"]["NERCvSENet"], Net129GW=Vcloudyaml["extNets"]["Net129GW"], Net129Net=Vcloudyaml["extNets"]["Net129Net"], Net130GW=Vcloudyaml["extNets"]["Net130GW"], Net130Net=Vcloudyaml["extNets"]["Net130Net"], Dns1=Vcloudyaml["extNets"]["Dns1"], Dns2=Vcloudyaml["extNets"]["Dns2"], Suffix=Vcloudyaml["extNets"]["Suffix"])
         return vcloudparams
 
-def GetVcenter():
-    return evaluateData(yaml.safe_load(open('platform.yml')), "vcenter", "prod")
+def get_config():
+    return pkg_resources.resource_string(
+        "cloudhands.jasmin", "platform.yml").decode("utf-8")
 
+def GetVcenter():
+    return evaluateData(yaml.safe_load(get_config()), "vcenter", "prod")
+    
 def GetIpmi():
-    return evaluateData(yaml.safe_load(open('platform.yml')), "ipmi", "prod")
+    return evaluateData(yaml.safe_load(get_config()), "ipmi", "prod")
 
 def GetStorage():
-    return evaluateData(yaml.safe_load(open('platform.yml')), "storage", "prod")
+    return evaluateData(yaml.safe_load(get_config()), "storage", "prod")
 
 def GetLdap():
-    return evaluateData(yaml.safe_load(open('platform.yml')), "ldap", "prod")
+    return evaluateData(yaml.safe_load(get_config()), "ldap", "prod")
 
 def GetVcloud():
-    return evaluateData(yaml.safe_load(open('platform.yml')), "vcloud", "prod")
+    return evaluateData(yaml.safe_load(get_config()), "vcloud", "prod")
 
 def GetCluster( ClusterName ):
-    return evaluateData(yaml.safe_load(open('platform.yml')), "cluster", ClusterName)
+    return evaluateData(yaml.safe_load(get_config()), "cluster", ClusterName)
 
 #HostNumber must be quoted
 def GetHost( HostNumber ):
-    return evaluateData(yaml.safe_load(open('platform.yml')), "host", HostNumber)
+    return evaluateData(yaml.safe_load(get_config()), "host", HostNumber)
 
 def ExecSshCommand(server, key, command):
     result = subprocess.Popen([
