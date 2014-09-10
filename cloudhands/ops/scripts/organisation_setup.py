@@ -528,9 +528,12 @@ try:
 except IOError as e:
 	print( "File does not exist. Please input the full file path" )
 	exit(1)
-		
-createEntireTennacy(file)
 
+def run():
+    main()
 
+if __name__ == "__main__":
+    run()
 
-
+def main():
+    createEntireTennacy(file)

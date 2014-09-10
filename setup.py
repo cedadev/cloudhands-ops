@@ -44,7 +44,8 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "cloudhands-orgsetup = cloudhands.ops.scripts.organisation_setup",
+            "cloudhands-orgsetup = cloudhands.ops.scripts.organisation_setup:run",
+            "cloudhands-deployhost = cloudhands.ops.scripts.deployhost:run",
             "cloudhands-orgadmin = cloudhands.ops.orgadmin:run",
         ],
     },

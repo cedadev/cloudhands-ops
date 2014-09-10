@@ -256,7 +256,6 @@ def buildEsxHost(server, key):
 	addRoutes()
 	updateNetapp()""")
 	enterMaint()
-	checkMaint()
 	esxReboot()
 	checkServerAvail()
 	exitMaint()
@@ -269,6 +268,12 @@ def decomissionEsxHost(server, key):
         restartDhcp(server, key)
         RebootHost()
         exit(0)
+
+def run():
+    main()
+
+if __name__ == "__main__":
+    run()
 
 def main():
 	server = "vjasmin-dhcp01.jc.rl.ac.uk"
