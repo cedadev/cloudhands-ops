@@ -4,10 +4,66 @@
 Integration tests
 =================
 
-These instructions help check that the JASMIN portal is correctly deployed
+These instructions help check that the JASMIN portal can be correctly deployed
 and integrated with other subsystems. The integration tests should be
-performed in the Reference environment and are a gate to promotion in to
+performed in the Reference environment and are a gate to promotion into
 Production.
+
+JVO Onboarding
+~~~~~~~~~~~~~~
+
+This procedure begins with a fresh database. It tests that a new JVO can be
+created along with its controlling admin user.
+
+0. Prerequisites
+----------------
+
+    * Access to your on-site email account.
+    * A running portal with a fresh database.
+
+1. Verify guest access
+----------------------
+
+0. Prerequisites
+
+    * Web portal is running
+
+1. Visit https://jasmin-cloud.jc.rl.ac.uk
+
+    * The home page is displayed.
+    * The `Organisations` menu has no entries.
+
+2. Run the `orgadmin` script
+----------------------------
+
+0. Prerequisites
+
+    * You are logged in to the management node as a devops user
+    * You have installed the devops tools according the site-specific
+      documentation
+
+1. Invoke the `orgadmin` script to create a fictional user and JVO, supplying your
+   own email address for confirmation::
+
+        ~/pyops-3.3/bin/cloudhands-orgadmin \
+        --host=jasmin-cloud.jc.rl.ac.uk --identity=~/.ssh/id_rsa-jasminvm.pub \
+        --db=/home/jasminuser/jasmin-web.sl3 \
+        --account=bcampbel\
+        --email=<your_email_address> \
+        --surname=Campbell \
+        --organisation=STFCloud \
+        --activator=/root/bootstrap.sh \
+        --providers=cloudhands.jasmin.vcloud.stfccloud-ref.cfg
+
+   * The utility runs and emits a log trace similar to the following::
+
+        2014-09-11 09:57:34,154 INFO    cloudhands.ops.orgadmin|Sending from jasmin-cloud.jc.rl.ac.uk.
+        2014-09-11 09:57:35,759 INFO    cloudhands.ops.orgadmin|('user', 'bcampbel', '52ebc31e02d74d1d9ec36fde6e4fe37d')
+        2014-09-11 09:57:35,814 INFO    cloudhands.ops.orgadmin|('provider', 'cloudhands.jasmin.vcloud.stfccloud-ref.cfg', 'ac336c7059ef40eabd139f0aa133c474')
+        2014-09-11 09:57:35,814 INFO    cloudhands.ops.orgadmin|('subscription', '1095d56df5c3430fa14dc139202a1cd7')
+        2014-09-11 09:57:35,814 INFO    cloudhands.ops.orgadmin|('organisation', 'STFCloud', '8df90b357f0f46e89f1c558a6cd7e78f')
+        2014-09-11 09:57:35,841 INFO    cloudhands.ops.orgadmin|('membership', 'admin', '8edcf1c4a28c45279b0498808e14e86d')
+        2014-09-11 09:57:35,874 INFO    cloudhands.ops.orgadmin|('registration', '651ff2f1822948dcbd7e76212359ea82')
 
 User registration
 ~~~~~~~~~~~~~~~~~
