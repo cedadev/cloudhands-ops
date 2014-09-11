@@ -33,8 +33,8 @@ created along with its controlling admin user.
     * The home page is displayed.
     * The `Organisations` menu has no entries.
 
-2. Run the `orgadmin` script
-----------------------------
+2. Add a JVO admin with the `orgadmin` script
+---------------------------------------------
 
 0. Prerequisites
 
@@ -64,6 +64,14 @@ created along with its controlling admin user.
         2014-09-11 09:57:35,814 INFO    cloudhands.ops.orgadmin|('organisation', 'STFCloud', '8df90b357f0f46e89f1c558a6cd7e78f')
         2014-09-11 09:57:35,841 INFO    cloudhands.ops.orgadmin|('membership', 'admin', '8edcf1c4a28c45279b0498808e14e86d')
         2014-09-11 09:57:35,874 INFO    cloudhands.ops.orgadmin|('registration', '651ff2f1822948dcbd7e76212359ea82')
+
+2. Visit email account and check Inbox
+
+    * The Inbox contains a new message entitled `JASMIN notification`.
+    * The message contains a link to a resource under
+      https://jasmin-cloud.jc.rl.ac.uk/registration
+       
+      *NB: messages can take several minutes to be delivered*.
 
 User registration
 ~~~~~~~~~~~~~~~~~

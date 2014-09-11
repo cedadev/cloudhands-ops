@@ -144,13 +144,13 @@ def membership(session, user, org, version, role="admin"):
 
 
 def registration(session, user, email, version):
-    preconfirm = session.query(RegistrationState).filter(
-        RegistrationState.name == "pre_registration_inetorgperson").one()
+    unknown = session.query(RegistrationState).filter(
+        RegistrationState.name == "pre_registration_person").one()
     reg = Registration(
         uuid=uuid.uuid4().hex,
         model=version)
     now = datetime.datetime.utcnow()
-    act = Touch(artifact=reg, actor=user, state=preconfirm, at=now)
+    act = Touch(artifact=reg, actor=user, state=unknown, at=now)
     ea = EmailAddress(touch=act, value=email)
     try:
         session.add(ea)
