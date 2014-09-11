@@ -16,6 +16,8 @@ State Machines
 
 .. automodule:: cloudhands.burst.appliance
 
+.. automodule:: cloudhands.identity.registration
+
 Operations
 ~~~~~~~~~~
 
