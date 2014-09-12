@@ -20,9 +20,7 @@ except ImportError:
 
 from cloudhands.common.connectors import initialise
 from cloudhands.common.connectors import Registry
-from cloudhands.common.fsm import MembershipState
-from cloudhands.common.fsm import RegistrationState
-from cloudhands.common.fsm import SubscriptionState
+import cloudhands.common.factories
 from cloudhands.common.schema import Component
 from cloudhands.common.schema import EmailAddress
 from cloudhands.common.schema import Membership
@@ -32,6 +30,10 @@ from cloudhands.common.schema import Registration
 from cloudhands.common.schema import Subscription
 from cloudhands.common.schema import Touch
 from cloudhands.common.schema import User
+from cloudhands.common.states import MembershipState
+from cloudhands.common.states import RegistrationState
+from cloudhands.common.states import SubscriptionState
+
 
 __doc__ = """
 
@@ -61,30 +63,9 @@ DFLT_DB = ":memory:"
 DFLT_USER = "jasminuser"
 DFLT_VENV = "jasmin-py3.3"
 
-def component(session, handle):
-    actor = Component(handle=handle, uuid=uuid.uuid4().hex)
-    try:
-        session.add(actor)
-        session.commit()
-    except Exception:
-        session.rollback()
-        session.flush()
-    finally:
-        return session.query(Component).filter(Component.handle == handle).first()
-
-def user(session, handle, surname=None):
-    user = User(handle=handle, surname=surname, uuid=uuid.uuid4().hex)
-    try:
-        session.add(user)
-        session.commit()
-    except Exception:
-        session.rollback()
-        session.flush()
-    finally:
-        return session.query(User).filter(User.handle == handle).first()
-
 def subscriptions(session, orgName, providers, version):
-    actor = session.merge(component(session, handle="org.orgadmin"))
+    actor = session.merge(cloudhands.common.factories.component(
+        session, handle="org.orgadmin"))
     maintenance = session.query(
         SubscriptionState).filter(
         SubscriptionState.name=="maintenance").one()
@@ -128,7 +109,8 @@ def subscriptions(session, orgName, providers, version):
 
 
 def membership(session, user, org, version, role="admin"):
-    actor = session.merge(component(session, handle="org.orgadmin"))
+    actor = session.merge(cloudhands.common.factories.component(
+        session, handle="org.orgadmin"))
     active = session.query(MembershipState).filter(
         MembershipState.name == "active").one()
     mship = Membership(
@@ -298,7 +280,8 @@ if __name__ == "__channelexec__":
     session = Registry().connect(sqlite3, args["db"]).session
     initialise(session)
 
-    admin = user(session, args["account"], args["surname"])
+    admin = cloudhands.common.factories.user(
+        session, args["account"], args["surname"])
     channel.send((admin.typ, admin.handle, admin.uuid))
 
     org = None

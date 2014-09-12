@@ -81,11 +81,11 @@ The nature of Artifacts_ is that they take some effort to establish, and they
 change over time. Each artifact table has its own State class so that business
 logic can make transitions and persist state in the database.
  
-.. autoclass:: cloudhands.common.fsm.MembershipState
+.. autoclass:: cloudhands.common.states.MembershipState
    :members: table, values
    :undoc-members:
 
-.. autoclass:: cloudhands.common.fsm.HostState
+.. autoclass:: cloudhands.common.states.HostState
    :members: table, values
    :undoc-members:
 

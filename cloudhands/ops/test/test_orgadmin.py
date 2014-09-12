@@ -10,6 +10,8 @@ import uuid
 from cloudhands.common.connectors import initialise
 from cloudhands.common.connectors import Registry
 
+import cloudhands.common.factories
+
 from cloudhands.common.schema import Membership
 from cloudhands.common.schema import Provider
 from cloudhands.common.schema import Registration
@@ -30,7 +32,7 @@ class OnboardingTests(unittest.TestCase):
         Registry().disconnect(sqlite3, ":memory:")
 
     def test_user_new(self):
-        rv = cloudhands.ops.orgadmin.user(self.session, "Test", "User")
+        rv = cloudhands.common.factories.user(self.session, "Test", "User")
         self.assertIsInstance(rv, User)
         user = self.session.merge(rv)
         self.assertEqual("Test", user.handle)
@@ -44,7 +46,7 @@ class OnboardingTests(unittest.TestCase):
         self.session.add(user)
         self.session.commit()
 
-        rv = cloudhands.ops.orgadmin.user(self.session, "test")
+        rv = cloudhands.common.factories.user(self.session, "test")
         self.assertIsInstance(rv, User)
         user = self.session.merge(rv)
         self.assertEqual(1, self.session.query(User).count())
@@ -121,7 +123,7 @@ class OnboardingTests(unittest.TestCase):
             for s in cloudhands.ops.orgadmin.subscriptions(
                 self.session, orgName, providers, version)))
         user = self.session.merge(
-            cloudhands.ops.orgadmin.user(self.session, "test"))
+            cloudhands.common.factories.user(self.session, "test"))
         rv = cloudhands.ops.orgadmin.membership(
             self.session, user, org, version)
         self.assertIsInstance(rv, Membership)
@@ -131,7 +133,7 @@ class OnboardingTests(unittest.TestCase):
         version = "0.32"
         email = "some.body@somewhere.net"
         user = self.session.merge(
-            cloudhands.ops.orgadmin.user(self.session, "test"))
+            cloudhands.common.factories.user(self.session, "test"))
         reg = self.session.merge(cloudhands.ops.orgadmin.registration(
             self.session, user, email, version))
         self.assertIsInstance(reg, Registration)
@@ -141,7 +143,7 @@ class OnboardingTests(unittest.TestCase):
         version = "0.32"
         email = "some.body@somewhere.net"
         user = self.session.merge(
-            cloudhands.ops.orgadmin.user(self.session, "test"))
+            cloudhands.common.factories.user(self.session, "test"))
         self.assertTrue(cloudhands.ops.orgadmin.registration(
             self.session, user, email, version))
 
@@ -155,7 +157,7 @@ class OnboardingTests(unittest.TestCase):
         oldEmail = "some.body@somewhere.net"
         newEmail = "some.body@elsewhere.net"
         user = self.session.merge(
-            cloudhands.ops.orgadmin.user(self.session, "test"))
+            cloudhands.common.factories.user(self.session, "test"))
         self.assertTrue(cloudhands.ops.orgadmin.registration(
             self.session, user, oldEmail, version))
 

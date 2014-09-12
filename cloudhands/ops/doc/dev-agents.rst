@@ -35,11 +35,11 @@ corresponding :py:func:`cloudhands.common.schema.Touch` object.
 Membership operations
 ---------------------
 
-.. autoclass:: cloudhands.burst.membership.Invitation
+.. autoclass:: cloudhands.identity.membership.Invitation
    :members: __init__, __call__
    :special-members:
 
-.. autoclass:: cloudhands.burst.membership.Activation
+.. autoclass:: cloudhands.identity.membership.Activation
    :members: __init__, __call__
    :special-members:
 
