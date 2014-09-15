@@ -43,7 +43,7 @@ Admin users. It makes changes to the cloudhands database.
 eg::
 
     cloudhands-orgadmin \\
-    --host=jasmin-cloud.jc.rl.ac.uk --identity=~/.ssh/id_rsa-jasminvm.pub \\
+    --host=jasmin-cloud.jc.rl.ac.uk --identity=~/.ssh/id_rsa-jasminvm \\
     --db=/home/jasminuser/jasmin-web.sl3 \\
     --account=denderby \\
     --email=dominic.enderby@contractor.net \\
