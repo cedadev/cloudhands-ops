@@ -111,39 +111,22 @@ def subscriptions(session, orgName, providers, version):
 def membership(session, user, org, version, role="admin"):
     actor = session.merge(cloudhands.common.factories.component(
         session, handle="org.orgadmin"))
-    active = session.query(MembershipState).filter(
-        MembershipState.name == "active").one()
+    created = session.query(MembershipState).filter(
+        MembershipState.name == "created").one()
     mship = Membership(
         uuid=uuid.uuid4().hex,
         model=version,
         organisation=org,
         role=role)
-    act = Touch(artifact=mship, actor=actor, state=active,
+    acts = (
+        Touch(artifact=mship, actor=actor, state=created,
+                at=datetime.datetime.utcnow()),
+        Touch(artifact=mship, actor=user, state=created,
                 at=datetime.datetime.utcnow())
-    session.add(act)
+    )
+    session.add_all(acts)
     session.commit()
     return mship
-
-
-def registration(session, user, email, version):
-    unknown = session.query(RegistrationState).filter(
-        RegistrationState.name == "pre_registration_person").one()
-    reg = Registration(
-        uuid=uuid.uuid4().hex,
-        model=version)
-    now = datetime.datetime.utcnow()
-    act = Touch(artifact=reg, actor=user, state=unknown, at=now)
-    ea = EmailAddress(touch=act, value=email)
-    try:
-        session.add(ea)
-        session.commit()
-    except Exception as e:
-        session.rollback()
-        reg = None
-    finally:
-        session.flush()
-
-    return reg
 
 
 def main(args):
@@ -297,7 +280,8 @@ if __name__ == "__channelexec__":
     mship = membership(session, admin, org, args["version"])
     channel.send((mship.typ, mship.role, mship.uuid))
 
-    reg = registration(session, admin, args["email"], args["version"])
+    reg = cloudhands.common.factories.registration(
+        session, admin, args["email"], args["version"])
     if reg is not None:
         channel.send((reg.typ, reg.uuid))
 
