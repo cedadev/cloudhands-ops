@@ -134,7 +134,7 @@ class OnboardingTests(unittest.TestCase):
         email = "some.body@somewhere.net"
         user = self.session.merge(
             cloudhands.common.factories.user(self.session, "test"))
-        reg = self.session.merge(cloudhands.ops.orgadmin.registration(
+        reg = self.session.merge(cloudhands.common.factories.registration(
             self.session, user, email, version))
         self.assertIsInstance(reg, Registration)
         self.assertEqual(1, self.session.query(Registration).count())
@@ -144,10 +144,10 @@ class OnboardingTests(unittest.TestCase):
         email = "some.body@somewhere.net"
         user = self.session.merge(
             cloudhands.common.factories.user(self.session, "test"))
-        self.assertTrue(cloudhands.ops.orgadmin.registration(
+        self.assertTrue(cloudhands.common.factories.registration(
             self.session, user, email, version))
 
-        reg = cloudhands.ops.orgadmin.registration(
+        reg = cloudhands.common.factories.registration(
             self.session, user, email, version)
         self.assertIs(reg, None)
         self.assertEqual(1, self.session.query(Registration).count())
@@ -158,10 +158,10 @@ class OnboardingTests(unittest.TestCase):
         newEmail = "some.body@elsewhere.net"
         user = self.session.merge(
             cloudhands.common.factories.user(self.session, "test"))
-        self.assertTrue(cloudhands.ops.orgadmin.registration(
+        self.assertTrue(cloudhands.common.factories.registration(
             self.session, user, oldEmail, version))
 
-        reg = cloudhands.ops.orgadmin.registration(
+        reg = cloudhands.common.factories.registration(
             self.session, user, newEmail, version)
         self.assertIsInstance(reg, Registration)
         self.assertEqual(2, self.session.query(Registration).count())

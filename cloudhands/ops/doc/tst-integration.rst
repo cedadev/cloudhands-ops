@@ -9,6 +9,12 @@ and integrated with other subsystems. The integration tests should be
 performed in the Reference environment and are a gate to promotion into
 Production.
 
+.. note::
+
+   You can perform these tests in the development environment, but all URLs
+   will have their root at http://jasmin-cloud.jc.rl.ac.uk:8080, not as
+   specified below.
+
 JVO Onboarding
 ~~~~~~~~~~~~~~
 
@@ -65,24 +71,24 @@ created along with its controlling admin user.
         2014-09-11 09:57:35,841 INFO    cloudhands.ops.orgadmin|('membership', 'admin', '8edcf1c4a28c45279b0498808e14e86d')
         2014-09-11 09:57:35,874 INFO    cloudhands.ops.orgadmin|('registration', '651ff2f1822948dcbd7e76212359ea82')
 
-2. Visit email account and check Inbox
+2. Visit your email account and check the Inbox
 
     * The Inbox contains a new message entitled `JASMIN notification`.
     * The message contains a link to a resource under
-      https://jasmin-cloud.jc.rl.ac.uk/registration
+      https://jasmin-cloud.jc.rl.ac.uk/membership.
        
       *NB: messages can take several minutes to be delivered*.
+
+3. Click the confirmation link.
+
+    * The linked page redirects you to a resource under
+      https://jasmin-cloud.jc.rl.ac.uk/registration.
+    * The `Organisations` menu has the entry `STFCloud`.
 
 User registration
 ~~~~~~~~~~~~~~~~~
 
 This procedure tests various paths through the user registration process.
-
-.. note::
-
-   You can perform these tests in the development environment, but all URLs
-   will have their root at http://jasmin-cloud.jc.rl.ac.uk:8080, not as
-   specified below.
 
 0. Prerequisites
 ----------------
