@@ -39,7 +39,7 @@ setup(
         "sphinxcontrib-seqdiag>=0.7.2",
         "execnet>=1.2.0",
         "PyYAML==3.11",
-        "cloudhands-common>=0.30",
+        "cloudhands-common>=0.31",
     ],
     entry_points={
         "console_scripts": [
