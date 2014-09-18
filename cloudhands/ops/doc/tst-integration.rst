@@ -32,7 +32,8 @@ created along with its controlling admin user.
 
 0. Prerequisites
 
-    * Web portal is running
+    * Web portal is running.
+    * Identity controller is running.
 
 1. Visit https://jasmin-cloud.jc.rl.ac.uk
 
@@ -44,9 +45,9 @@ created along with its controlling admin user.
 
 0. Prerequisites
 
-    * You are logged in to the management node as a devops user
+    * You are logged in to the management node as a devops user.
     * You have installed the devops tools according the site-specific
-      documentation
+      documentation.
 
 1. Invoke the `orgadmin` script to create a fictional user and JVO, supplying your
    own email address for confirmation::
@@ -54,9 +55,9 @@ created along with its controlling admin user.
         ~/pyops-3.3/bin/cloudhands-orgadmin \
         --host=jasmin-cloud.jc.rl.ac.uk --identity=~/.ssh/id_rsa-jasminvm.pub \
         --db=/home/jasminuser/jasmin-web.sl3 \
-        --account=bcampbel\
+        --account=bcumberbat \
         --email=<your_email_address> \
-        --surname=Campbell \
+        --surname=Cumberbatch \
         --organisation=STFCloud \
         --activator=/root/bootstrap.sh \
         --providers=cloudhands.jasmin.vcloud.stfccloud-ref.cfg
@@ -64,14 +65,17 @@ created along with its controlling admin user.
    * The utility runs and emits a log trace similar to the following::
 
         2014-09-11 09:57:34,154 INFO    cloudhands.ops.orgadmin|Sending from jasmin-cloud.jc.rl.ac.uk.
-        2014-09-11 09:57:35,759 INFO    cloudhands.ops.orgadmin|('user', 'bcampbel', '52ebc31e02d74d1d9ec36fde6e4fe37d')
+        2014-09-11 09:57:35,759 INFO    cloudhands.ops.orgadmin|('user', 'bcumberbat', '52ebc31e02d74d1d9ec36fde6e4fe37d')
         2014-09-11 09:57:35,814 INFO    cloudhands.ops.orgadmin|('provider', 'cloudhands.jasmin.vcloud.stfccloud-ref.cfg', 'ac336c7059ef40eabd139f0aa133c474')
         2014-09-11 09:57:35,814 INFO    cloudhands.ops.orgadmin|('subscription', '1095d56df5c3430fa14dc139202a1cd7')
         2014-09-11 09:57:35,814 INFO    cloudhands.ops.orgadmin|('organisation', 'STFCloud', '8df90b357f0f46e89f1c558a6cd7e78f')
         2014-09-11 09:57:35,841 INFO    cloudhands.ops.orgadmin|('membership', 'admin', '8edcf1c4a28c45279b0498808e14e86d')
         2014-09-11 09:57:35,874 INFO    cloudhands.ops.orgadmin|('registration', '651ff2f1822948dcbd7e76212359ea82')
 
-2. Visit your email account and check the Inbox
+3. Activate the administrator account
+-------------------------------------
+
+1. Visit your email account and check the Inbox
 
     * The Inbox contains a new message entitled `JASMIN notification`.
     * The message contains a link to a resource under
@@ -79,11 +83,36 @@ created along with its controlling admin user.
        
       *NB: messages can take several minutes to be delivered*.
 
-3. Click the confirmation link.
+2. Click the confirmation link.
 
     * The linked page redirects you to a resource under
-      https://jasmin-cloud.jc.rl.ac.uk/registration.
+      https://jasmin-cloud.jc.rl.ac.uk/registration. The page is entitled
+      `bcumberbat`.
     * The `Organisations` menu has the entry `STFCloud`.
+    * A form is displayed with the title `Set your password`.
+      It has a `Password` field and a `Change` button.
+
+3. Enter a password for the user account.
+
+    * Password: ``Cumb3rb@tch``
+
+4. Click the button `Change`.
+
+    * You are redirected to the login page.
+    * A form is displayed with the title `User login`.
+      It has two fields and a `Log in` button.
+      The fields are `Username`, and `Password`.
+    * The Username field has the value `bcumberbat` and is styled green.
+    * The Password field is empty and styled red.
+
+5. Enter the account password.
+
+    * Password: ``Cumb3rb@tch``
+    * The Password field is styled green.
+
+6. Click `Log in`.
+
+    * You are redirected to the home page.
 
 User registration
 ~~~~~~~~~~~~~~~~~
