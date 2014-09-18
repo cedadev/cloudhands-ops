@@ -19,7 +19,7 @@ JVO Onboarding
 ~~~~~~~~~~~~~~
 
 This procedure begins with a fresh database. It tests that a new JVO can be
-created along with its controlling admin user.
+created along with its administrator account.
 
 0. Prerequisites
 ----------------
@@ -50,7 +50,7 @@ created along with its controlling admin user.
       documentation.
 
 1. Invoke the `orgadmin` script to create a fictional user and JVO, supplying your
-   own email address for confirmation::
+   own email address for activation::
 
         ~/pyops-3.3/bin/cloudhands-orgadmin \
         --host=jasmin-cloud.jc.rl.ac.uk --identity=~/.ssh/id_rsa-jasminvm.pub \
@@ -83,7 +83,7 @@ created along with its controlling admin user.
        
       *NB: messages can take several minutes to be delivered*.
 
-2. Click the confirmation link.
+2. Click the activation link.
 
     * The linked page redirects you to a resource under
       https://jasmin-cloud.jc.rl.ac.uk/registration. The page is entitled
@@ -135,32 +135,61 @@ This procedure tests various paths through the user registration process.
     Security question: What city where you born in?
     Security answer: Harwell
 
-1. Successful registration
---------------------------
+* Perform `JVO onboarding`_ of an administrator.
 
-1. Visit the JASMIN home page and click on the `Register` link.
-    
-    * The link takes you to https://jasmin-cloud.jc.rl.ac.uk/registration
-    * A form is displayed with three fields and a `Register me` button.
-      The fields are `Username`, `Password`, `Email`.
+1. Login (administrator)
+------------------------
 
-2. Enter registration details for a new user.
+1. Visit https://jasmin-cloud.jc.rl.ac.uk/login.
 
-    * Username: ``denderby``
-    * Password: ``D0m1n1c_Enderby``
-    * Email: ``dominic.enderby@contractor.net``
+    * A form is displayed with two fields and a `Log in` button.
+      The fields are `Username`, `Password`.
 
-3. Click the button `Register me`.
+2. Enter the adminstrator username: ``bcumberbat``.
+
+    * The Username field is styled green.
+
+3. Enter the password for the account: ``Cumb3rb@tch``.
+
+    * The Password field is styled green.
+
+4. Click `Log in`.
+
+    * You are redirected to the home page.
+
+2. Successful invitation
+------------------------
+
+1. From the `Organisations` dropdown, select `STFCloud`.
+
+    * You are sent to the STFCloud JVO page.
+    * A form is displayed with three fields and a `Create` button.
+      The fields are `Username`, `Surname`, and `Email`.
+    * The Username field is styled red and asks for a name 8 - 10 characters
+      long.
+    * The Email field is styled red.
+
+2. Enter the username: `denderby`.
+
+    * The Username field is styled green
+
+3. Enter the surname: `Enderby`. Enter the email: `dominic.enderby@contractor.net`.
+
+    * The Email field is styled green.
+
+4. Click `Create`.
 
     * You are redirected to a confirmation page.
     * You can navigate by link to the home page.
 
-2. Successful confirmation
+5. Click the button `Logout`.
+
+3. Successful activation
 --------------------------
 
 0. Prerequisites
-    * `1. Successful registration`_.
-
+    * `1. Login (administrator)`_.
+    * `2. Successful invitation`_.
 
 1. Visit email account and check Inbox
 
@@ -170,16 +199,17 @@ This procedure tests various paths through the user registration process.
 
     .. image:: _static/register_confirm_email-lab.png
 
-2. Click the confirmation link.
+2. Click the activation link.
 
     * The linked page redirects you to https://jasmin-cloud.jc.rl.ac.uk/login.
 
-3. Successful login
+4. Successful login
 -------------------
 
 0. Prerequisites
-    * `1. Successful registration`_.
-    * `2. Successful confirmation`_.
+    * `1. Login (administrator)`_.
+    * `2. Successful invitation`_.
+    * `3. Successful activation`_.
 
 1. Visit https://jasmin-cloud.jc.rl.ac.uk/login.
 
@@ -208,14 +238,15 @@ This procedure tests various paths through the user registration process.
 
     * You are redirected to the home page.
 
-4. Unsuccessful login (password)
+5. Unsuccessful login (password)
 --------------------------------
 
 0. Prerequisites
-    * `1. Successful registration`_.
-    * `2. Successful confirmation`_.
+    * `1. Login (administrator)`_.
+    * `2. Successful invitation`_.
+    * `3. Successful activation`_.
 
-1. Proceed with `3. Successful login`_, stopping before step 3.
+1. Proceed with `4. Successful login`_, stopping before step 3.
 
 2. Enter a false password which conforms to the password criteria.
    Example: ``N0t_MyPa55w0rd``.
@@ -227,7 +258,7 @@ This procedure tests various paths through the user registration process.
     * The Username field is empty and styled red.
     * The Password field is empty and styled red.
 
-5. LDAP entry created on first login
+6. LDAP entry created on first login
 ------------------------------------
 
 .. important::
@@ -237,9 +268,10 @@ This procedure tests various paths through the user registration process.
    and (ultimately) `uidNumbers`.
  
 0. Prerequisites
-    * `1. Successful registration`_.
-    * `2. Successful confirmation`_.
-    * `3. Successful login`_.
+    * `1. Login (administrator)`_.
+    * `2. Successful invitation`_.
+    * `3. Successful activation`_.
+    * `4. Successful login`_.
 
 1. View LDAP record for `denderby`. Use the `ldapvi` program like this::
 
@@ -268,13 +300,14 @@ This procedure tests various paths through the user registration process.
         userPassword: {SSHA}Psxobi4ydMILrlSjufFzlyi/4d6Bo8ko
 
 
-6. Successful key add to account
+7. Successful key add to account
 --------------------------------
 
 0. Prerequisites
-    * `1. Successful registration`_.
-    * `2. Successful confirmation`_.
-    * `3. Successful login`_.
+    * `1. Login (administrator)`_.
+    * `2. Successful invitation`_.
+    * `3. Successful activation`_.
+    * `4. Successful login`_.
 
 1. Visit the `Account` page.
 
