@@ -197,11 +197,38 @@ This procedure tests various paths through the user registration process.
        
       *NB: messages can take several minutes to be delivered*.
 
-    .. image:: _static/register_confirm_email-lab.png
+    .. image:: _static/invitation_email-dev.png
 
 2. Click the activation link.
 
-    * The linked page redirects you to https://jasmin-cloud.jc.rl.ac.uk/login.
+    * The linked page redirects you to a resource under
+      https://jasmin-cloud.jc.rl.ac.uk/registration. The page is entitled
+      `denderby`.
+    * The `Organisations` menu has the entry `STFCloud`.
+    * A form is displayed with the title `Set your password`.
+      It has a `Password` field and a `Change` button.
+
+3. Enter a password for the user account.
+
+    * Password: ``D0m1n1c_Enderby``
+
+4. Click the button `Change`.
+
+    * You are redirected to the login page.
+    * A form is displayed with the title `User login`.
+      It has two fields and a `Log in` button.
+      The fields are `Username`, and `Password`.
+    * The Username field has the value `denderby` and is styled green.
+    * The Password field is empty and styled red.
+
+5. Enter the account password.
+
+    * Password: ``D0m1n1c_Enderby``
+    * The Password field is styled green.
+
+6. Click `Log in`.
+
+    * You are redirected to the home page.
 
 4. Successful login
 -------------------
@@ -210,6 +237,7 @@ This procedure tests various paths through the user registration process.
     * `1. Login (administrator)`_.
     * `2. Successful invitation`_.
     * `3. Successful activation`_.
+    * You are logged out.
 
 1. Visit https://jasmin-cloud.jc.rl.ac.uk/login.
 
@@ -261,12 +289,6 @@ This procedure tests various paths through the user registration process.
 6. LDAP entry created on first login
 ------------------------------------
 
-.. important::
-
-   The behaviour described in this section is undesirable on a public facing
-   network as it constitutes `resource exhaustion`_ of unique `cn` names
-   and (ultimately) `uidNumbers`.
- 
 0. Prerequisites
     * `1. Login (administrator)`_.
     * `2. Successful invitation`_.
