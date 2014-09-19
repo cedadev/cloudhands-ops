@@ -315,8 +315,8 @@ This procedure tests various paths through the user registration process.
         sn: UNKNOWN
         cn: denderby
         uid: denderby
-        uidNumber: 7010002
-        gidNumber: 7010002
+        uidNumber: 7010003
+        gidNumber: 7010003
         homeDirectory: /home/denderby
         mail: dominic.enderby@contractor.net
         userPassword: {SSHA}Psxobi4ydMILrlSjufFzlyi/4d6Bo8ko
@@ -360,11 +360,11 @@ is only available in the `Lab` environment.
     * A form is displayed with two fields and a `Log in` button.
       The fields are `Username`, `Password`.
 
-2. Enter the admin username for the demo: ``bcampbel``.
+2. Enter the admin username for the demo: ``denderby``.
 
     * The Username field is styled green.
 
-3. Enter the password for the demo: ``IWannaS33TheDemo!``.
+3. Enter the password for the demo: ``D0m1n1c_Enderby``.
 
     * The Password field is styled green.
 
