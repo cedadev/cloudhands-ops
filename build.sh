@@ -4,15 +4,7 @@
 # eg:
 # $ build.sh --novenv --nopush --nosign > build.out
 
-PYTHON=/usr/local/bin/python3.3
-PYENV=~/pyops-3.3
-SETUPTOOLS=setuptools-1.3.1
-PIP=pip-1.4.1
-
-DIR=$( cd "$( dirname "$0" )" && pwd )
-PARENT=$(readlink -e $DIR/..)
-
-echoerr() { echo "$@" 1>&2; }
+source "$( dirname "$0" )"/common.sh
 
 cd $PARENT/cloudhands-ops
 
@@ -21,6 +13,7 @@ then
     echo git push
 fi
 
+# --novenv means don't try to create the venv or install Sphinx/execnet/radon.
 if [[ "$*" != *--novenv* ]];
 then
     echoerr "Creating $PYENV ..."
@@ -42,7 +35,7 @@ then
         --no-index -f file://$PARENT/cloudhands-ops/vendor/ \
         Sphinx
 
-    for i in execnet radon; do
+    for i in sphinx-argparse execnet radon; do
         $PYENV/bin/pip install \
         --no-index -f file://$PARENT/cloudhands-ops/vendor/ \
         $i
