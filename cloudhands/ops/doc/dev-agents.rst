@@ -39,7 +39,7 @@ Membership operations
    :members: __init__, __call__
    :special-members:
 
-.. autoclass:: cloudhands.identity.membership.Activation
+.. autoclass:: cloudhands.identity.membership.Acceptance
    :members: __init__, __call__
    :special-members:
 
