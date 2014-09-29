@@ -59,18 +59,23 @@ created along with its administrator account.
         --email=<your_email_address> \
         --surname=Cumberbatch \
         --organisation=STFCloud \
+        --public=172.16.151.170/30 \
         --activator=/root/bootstrap.sh \
         --providers=cloudhands.jasmin.vcloud.stfccloud-ref.cfg
 
    * The utility runs and emits a log trace similar to the following::
 
-        2014-09-11 09:57:34,154 INFO    cloudhands.ops.orgadmin|Sending from jasmin-cloud.jc.rl.ac.uk.
-        2014-09-11 09:57:35,759 INFO    cloudhands.ops.orgadmin|('user', 'bcumberbat', '52ebc31e02d74d1d9ec36fde6e4fe37d')
-        2014-09-11 09:57:35,814 INFO    cloudhands.ops.orgadmin|('provider', 'cloudhands.jasmin.vcloud.stfccloud-ref.cfg', 'ac336c7059ef40eabd139f0aa133c474')
-        2014-09-11 09:57:35,814 INFO    cloudhands.ops.orgadmin|('subscription', '1095d56df5c3430fa14dc139202a1cd7')
-        2014-09-11 09:57:35,814 INFO    cloudhands.ops.orgadmin|('organisation', 'STFCloud', '8df90b357f0f46e89f1c558a6cd7e78f')
-        2014-09-11 09:57:35,841 INFO    cloudhands.ops.orgadmin|('membership', 'admin', '8edcf1c4a28c45279b0498808e14e86d')
-        2014-09-11 09:57:35,874 INFO    cloudhands.ops.orgadmin|('registration', '651ff2f1822948dcbd7e76212359ea82')
+        2014-09-29 15:43:06,935 INFO    cloudhands.ops.orgadmin|Sending from jasmin-cloud.jc.rl.ac.uk.
+        2014-09-29 15:43:08,565 INFO    cloudhands.ops.orgadmin|('user', '1fe4d56051ba48ed86f3b21ce878775d', 'bcumberbat')
+        2014-09-29 15:43:08,696 INFO    cloudhands.ops.orgadmin|('provider', '0460735f622247b198b7e3f60c9e9379', 'cloudhands.jasmin.vcloud.stfccloud-ref.cfg')
+        2014-09-29 15:43:08,696 INFO    cloudhands.ops.orgadmin|('subscription', '6dd7ff10e8f14f308ac39c367b82d51b')
+        2014-09-29 15:43:08,696 INFO    cloudhands.ops.orgadmin|('organisation', '3c26b7c8b3b44428988c310d2de877da', 'STFCloud')
+        2014-09-29 15:43:08,725 INFO    cloudhands.ops.orgadmin|('membership', 'e805f7939a8a4418a0261ed6d6cb5fab', 'admin')
+        2014-09-29 15:43:08,752 INFO    cloudhands.ops.orgadmin|('registration', '5f84cc5d9863447a9b38a5e16ab9b90e')
+        2014-09-29 15:43:08,758 INFO    cloudhands.ops.orgadmin|('subscription', '6dd7ff10e8f14f308ac39c367b82d51b', 'maintenance', 'org.orgadmin', [])
+        2014-09-29 15:43:08,760 INFO    cloudhands.ops.orgadmin|('subscription', '6dd7ff10e8f14f308ac39c367b82d51b', 'maintenance', 'org.orgadmin', [('ipaddress', '170.16.151.70')])
+        2014-09-29 15:43:08,763 INFO    cloudhands.ops.orgadmin|('subscription', '6dd7ff10e8f14f308ac39c367b82d51b', 'maintenance', 'org.orgadmin', [('ipaddress', '170.16.151.71')])
+        2014-09-29 15:43:08,765 INFO    cloudhands.ops.orgadmin|('subscription', '6dd7ff10e8f14f308ac39c367b82d51b', 'unchecked', 'org.orgadmin', [])
 
 3. Activate the administrator account
 -------------------------------------
