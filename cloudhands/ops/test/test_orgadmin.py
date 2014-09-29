@@ -55,16 +55,30 @@ class OnboardingTests(unittest.TestCase):
     def test_subscription_new(self):
         version = "0.32"
         orgName = "test"
+        public = "172.16.151.170/31"
         providers = [
             "cloudhands.jasmin.vcloud.phase04.cfg",
             "cloudhands.jasmin.amazon.ae40331.cfg",
         ]
-        rv = list(cloudhands.ops.orgadmin.subscriptions(
-            self.session, orgName, providers, version))
-        self.assertEqual(2, len(rv))
-        self.assertTrue(all(isinstance(i, Subscription) for i in rv))
-        self.assertTrue(all(i.provider.name in providers for i in rv))
-        self.assertTrue(all(i.organisation.name == orgName for i in rv))
+        acts = []
+        actions = cloudhands.ops.orgadmin.subscriptions(
+            self.session, orgName, public, providers, version)
+        while True:
+            try:
+                acts.append(next(actions))
+            except StopIteration as final:
+                self.assertTrue(
+                    all(isinstance(i, Subscription) for i in final.value)
+                )
+                self.assertTrue(
+                    all(i.provider.name in providers for i in final.value)
+                )
+                self.assertTrue(
+                    all(i.organisation.name == orgName for i in final.value)
+                )
+                break
+
+        self.assertEqual(6, len(acts))
 
         self.assertEqual(2, self.session.query(Subscription).count())
         self.assertEqual(2, self.session.query(Provider).count())
@@ -72,6 +86,7 @@ class OnboardingTests(unittest.TestCase):
     def test_subscriptions_create_providers_exist(self):
         version = "0.32"
         orgName = "test"
+        public = "172.16.151.170/31"
         providers = [
             "cloudhands.jasmin.vcloud.phase04.cfg",
             "cloudhands.jasmin.amazon.ae40331.cfg",
@@ -83,11 +98,12 @@ class OnboardingTests(unittest.TestCase):
         self.session.commit()
 
         rv = list(cloudhands.ops.orgadmin.subscriptions(
-            self.session, orgName, providers, version))
-        self.assertEqual(2, len(rv))
-        self.assertTrue(all(isinstance(i, Subscription) for i in rv))
-        self.assertTrue(all(i.provider.name in providers for i in rv))
-        self.assertTrue(all(i.organisation.name == orgName for i in rv))
+            self.session, orgName, public, providers, version))
+        self.assertEqual(2, len({i.artifact for i in rv}))
+        self.assertTrue(all(isinstance(i.artifact, Subscription) for i in rv))
+        self.assertTrue(all(i.artifact.provider.name in providers for i in rv))
+        self.assertTrue(
+            all(i.artifact.organisation.name == orgName for i in rv))
 
         self.assertEqual(2, self.session.query(Subscription).count())
         self.assertEqual(2, self.session.query(Provider).count())
@@ -95,19 +111,33 @@ class OnboardingTests(unittest.TestCase):
     def test_subscriptions_create_existing(self):
         version = "0.32"
         orgName = "test"
+        public = "172.16.151.170/31"
         providers = [
             "cloudhands.jasmin.vcloud.phase04.cfg",
             "cloudhands.jasmin.amazon.ae40331.cfg",
         ]
         self.assertTrue(list(cloudhands.ops.orgadmin.subscriptions(
-            self.session, orgName, providers, version)))
+            self.session, orgName, public, providers, version)))
 
-        rv = list(cloudhands.ops.orgadmin.subscriptions(
-            self.session, orgName, providers, version))
-        self.assertEqual(2, len(rv))
-        self.assertTrue(all(isinstance(i, Subscription) for i in rv))
-        self.assertTrue(all(i.provider.name in providers for i in rv))
-        self.assertTrue(all(i.organisation.name == orgName for i in rv))
+        acts = []
+        actions = cloudhands.ops.orgadmin.subscriptions(
+            self.session, orgName, public, providers, version)
+        while True:
+            try:
+                acts.append(next(actions))
+            except StopIteration as final:
+                self.assertTrue(
+                    all(isinstance(i, Subscription) for i in final.value)
+                )
+                self.assertTrue(
+                    all(i.provider.name in providers for i in final.value)
+                )
+                self.assertTrue(
+                    all(i.organisation.name == orgName for i in final.value)
+                )
+                break
+
+        self.assertEqual(0, len({i.artifact for i in acts}))
 
         self.assertEqual(2, self.session.query(Subscription).count())
         self.assertEqual(2, self.session.query(Provider).count())
@@ -115,13 +145,15 @@ class OnboardingTests(unittest.TestCase):
     def test_membership_create(self):
         version = "0.32"
         orgName = "test"
+        public = "172.16.151.170/31"
         providers = [
             "cloudhands.jasmin.vcloud.phase04.cfg",
             "cloudhands.jasmin.amazon.ae40331.cfg",
         ]
-        org = self.session.merge(next(s.organisation
-            for s in cloudhands.ops.orgadmin.subscriptions(
-                self.session, orgName, providers, version)))
+        acts = list(cloudhands.ops.orgadmin.subscriptions(
+            self.session, orgName, public, providers, version))
+        org = self.session.merge(acts[0].artifact.organisation)
+
         user = self.session.merge(
             cloudhands.common.factories.user(self.session, "test"))
         rv = cloudhands.ops.orgadmin.membership(
@@ -171,6 +203,7 @@ class OnboardingTests(unittest.TestCase):
         surname = "Body"
         eMail = "some.body@somewhere.net"
         orgName = "test"
+        public = "172.16.151.170/31"
         activator = "/root/bootstrap.sh"
         providers = [
             "cloudhands.jasmin.vcloud.phase04.cfg",
@@ -184,6 +217,7 @@ class OnboardingTests(unittest.TestCase):
             "--email", eMail,
             "--surname", surname,
             "--organisation", orgName,
+            "--public", public,
             "--activator", activator,
             "--providers", providers[0], providers[1],
             "--verbose",

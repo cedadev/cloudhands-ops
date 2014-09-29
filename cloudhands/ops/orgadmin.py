@@ -2,6 +2,7 @@
 # encoding: UTF-8
 
 import argparse
+from collections import namedtuple
 import datetime
 import ipaddress
 import logging
@@ -24,6 +25,7 @@ from cloudhands.common.connectors import Registry
 import cloudhands.common.factories
 from cloudhands.common.schema import Component
 from cloudhands.common.schema import EmailAddress
+from cloudhands.common.schema import IPAddress
 from cloudhands.common.schema import Membership
 from cloudhands.common.schema import Organisation
 from cloudhands.common.schema import Provider
@@ -50,7 +52,7 @@ eg::
     --email=dominic.enderby@contractor.net \\
     --surname=enderby \\
     --organisation=STFCloud \\
-    --public=172.16.151.170 172.16.151.171 \\
+    --public=172.16.151.170/30 \\
     --activator=/root/bootstrap.sh \\
     --providers=cloudhands.jasmin.vcloud.phase04.cfg
 
@@ -63,6 +65,9 @@ DFLT_PORT = 22
 DFLT_DB = ":memory:"
 DFLT_USER = "jasminuser"
 DFLT_VENV = "jasmin-py3.3"
+
+TouchRecord = namedtuple(
+    "Touch", ["fsm", "artifact", "state", "actor", "resources"])
 
 def subscriptions(session, orgName, public, providers, version):
     actor = session.merge(cloudhands.common.factories.component(
@@ -109,12 +114,12 @@ def subscriptions(session, orgName, public, providers, version):
             rv.append(subs)
             yield act
 
-            for val in public:
-                try:
-                    ipAddr = ipaddress.ip_address(val)
-                except ValueError:
-                    continue
+            try:
+                network = ipaddress.ip_network(public)
+            except ValueError:
+                continue
 
+            for ipAddr in network.hosts():
                 act = Touch(
                     artifact=subs, actor=actor, state=maintenance,
                     at=datetime.datetime.utcnow())
@@ -130,7 +135,15 @@ def subscriptions(session, orgName, public, providers, version):
                 finally:
                     session.flush()
 
+            unchecked = session.query(
+                SubscriptionState).filter(
+                SubscriptionState.name=="unchecked").one()
+            act = Touch(
+                artifact=subs, actor=actor, state=unchecked,
+                at=datetime.datetime.utcnow())
+            session.add(act)
             session.commit()
+            yield act
 
     return rv
 
@@ -252,8 +265,8 @@ def parser(description=__doc__):
         "--providers", nargs="+", required=True,
         help="Set one or more subscribed providers")
     rv.add_argument(
-        "--public", nargs="+",
-        help="Specify one or more public IP addresses")
+        "--public", required=False,
+        help="Specify a public IP address network")
 
     rv.add_argument(
         "--version", action="store_true", default=False,
@@ -292,31 +305,38 @@ if __name__ == "__channelexec__":
 
     admin = cloudhands.common.factories.user(
         session, args["account"], args["surname"])
-    channel.send((admin.typ, admin.handle, admin.uuid))
+    channel.send((admin.typ, admin.uuid, admin.handle))
 
     org = None
-    try:
-        for act in subscriptions(
-            session, args["organisation"], args["public"],
-            args["providers"], args["version"]
-        ):
-            channel.send((
-            act.state.fsm, act.state.name, act.artifact.uuid,
-            act.actor.handle))
-    except StopIteration as final:
-        for subs in final.value:
-            org = session.merge(subs.organisation)
-            channel.send(("provider", subs.provider.name, subs.provider.uuid))
-            channel.send((subs.typ, subs.uuid))
+    actions = subscriptions(
+        session, args["organisation"], args["public"],
+        args["providers"], args["version"])
 
-    channel.send(("organisation", org.name, org.uuid))
+    acts = []
+    while True:
+        try:
+            acts.append(next(actions))
+        except StopIteration as final:
+            for subs in final.value:
+                org = session.merge(subs.organisation)
+                channel.send(
+                    ("provider", subs.provider.uuid, subs.provider.name))
+                channel.send((subs.typ, subs.uuid))
+            break
+
+    channel.send(("organisation", org.uuid, org.name))
 
     mship = membership(session, admin, org, args["version"])
-    channel.send((mship.typ, mship.role, mship.uuid))
+    channel.send((mship.typ, mship.uuid, mship.role))
 
     reg = cloudhands.common.factories.registration(
         session, admin, args["email"], args["version"])
     if reg is not None:
         channel.send((reg.typ, reg.uuid))
+
+    for act in acts:
+        channel.send(tuple(TouchRecord(
+        act.state.fsm, act.artifact.uuid, act.state.name,
+        act.actor.handle, [(r.typ, r.value) for r in act.resources])))
 
     channel.send(None)
