@@ -3,6 +3,7 @@
 
 import argparse
 import datetime
+import ipaddress
 import logging
 import logging.handlers
 import os.path
@@ -49,9 +50,9 @@ eg::
     --email=dominic.enderby@contractor.net \\
     --surname=enderby \\
     --organisation=STFCloud \\
+    --public=172.16.151.170 172.16.151.171 \\
     --activator=/root/bootstrap.sh \\
-    --providers=cloudhands.jasmin.vcloud.phase04.cfg \
-    cloudhands.jasmin.amazon.ae40331.cfg
+    --providers=cloudhands.jasmin.vcloud.phase04.cfg
 
 Help for each option is printed on the command::
 
@@ -63,7 +64,7 @@ DFLT_DB = ":memory:"
 DFLT_USER = "jasminuser"
 DFLT_VENV = "jasmin-py3.3"
 
-def subscriptions(session, orgName, providers, version):
+def subscriptions(session, orgName, public, providers, version):
     actor = session.merge(cloudhands.common.factories.component(
         session, handle="org.orgadmin"))
     maintenance = session.query(
@@ -78,6 +79,7 @@ def subscriptions(session, orgName, providers, version):
             name=orgName)
         session.add(org)
 
+    rv = []
     for p in providers:
         provider = session.query(Provider).filter(
             Provider.name == p).first()
@@ -90,7 +92,7 @@ def subscriptions(session, orgName, providers, version):
             Provider).filter(Organisation.id==org.id).filter(
             Provider.id==provider.id).first()
         if subs:
-            yield subs
+            rv.append(subs)
         else:
 
             subs = Subscription(
@@ -104,8 +106,33 @@ def subscriptions(session, orgName, providers, version):
 
             session.add(act)
             session.commit()
+            rv.append(subs)
+            yield act
 
-            yield subs
+            for val in public:
+                try:
+                    ipAddr = ipaddress.ip_address(val)
+                except ValueError:
+                    continue
+
+                act = Touch(
+                    artifact=subs, actor=actor, state=maintenance,
+                    at=datetime.datetime.utcnow())
+                publicIP = IPAddress(
+                    value=str(ipAddr), provider=provider, touch=act)
+
+                try:
+                    session.add(publicIP)
+                    session.commit()
+                    yield act
+                except Exception as e:
+                    session.rollback()
+                finally:
+                    session.flush()
+
+            session.commit()
+
+    return rv
 
 
 def membership(session, user, org, version, role="admin"):
@@ -268,12 +295,19 @@ if __name__ == "__channelexec__":
     channel.send((admin.typ, admin.handle, admin.uuid))
 
     org = None
-    for subs in subscriptions(
-        session, args["organisation"], args["providers"], args["version"]
-    ):
-        org = session.merge(subs.organisation)
-        channel.send(("provider", subs.provider.name, subs.provider.uuid))
-        channel.send((subs.typ, subs.uuid))
+    try:
+        for act in subscriptions(
+            session, args["organisation"], args["public"],
+            args["providers"], args["version"]
+        ):
+            channel.send((
+            act.state.fsm, act.state.name, act.artifact.uuid,
+            act.actor.handle))
+    except StopIteration as final:
+        for subs in final.value:
+            org = session.merge(subs.organisation)
+            channel.send(("provider", subs.provider.name, subs.provider.uuid))
+            channel.send((subs.typ, subs.uuid))
 
     channel.send(("organisation", org.name, org.uuid))
 
