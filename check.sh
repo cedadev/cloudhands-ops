@@ -6,7 +6,7 @@
 
 #PYTHON=/usr/local/bin/python3.3
 PYTHON=`which python3.3`
-PYENV=~/pyops-3.3
+PYENV=~/pydev-3.3
 SETUPTOOLS=setuptools-5.7
 PIP=pip-1.4.1
 
