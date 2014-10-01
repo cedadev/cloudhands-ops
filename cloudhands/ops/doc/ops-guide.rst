@@ -5,6 +5,7 @@ Operations guide
 .. toctree::
    :maxdepth: 1
 
+   ops-platform
    ops-packages
    ops-onboard
 

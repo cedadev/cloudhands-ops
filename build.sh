@@ -72,7 +72,8 @@ then
 fi
 
 echoerr "Creating source packages ..."
-for i in cloudhands-common cloudhands-burst cloudhands-jasmin cloudhands-web; do
+for i in cloudhands-common cloudhands-burst cloudhands-ops \
+    cloudhands-jasmin cloudhands-web; do
     cd $PARENT/$i
     rm -rf dist
     rm -rf build

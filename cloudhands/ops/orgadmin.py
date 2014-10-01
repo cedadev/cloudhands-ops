@@ -63,7 +63,7 @@ Help for each option is printed on the command::
 
 DFLT_PORT = 22
 DFLT_DB = ":memory:"
-DFLT_USER = "jasminuser"
+DFLT_USER = "jasminportal"
 DFLT_VENV = "jasmin-py3.3"
 
 TouchRecord = namedtuple(
