@@ -15,14 +15,14 @@ platform for scientific applications.
 
 The software is written in Python_. Componentisation is a key architectural
 feature, allowing contributors to extend the core functionality by writing
-packages which conform to one of the JASMIN plugin APIs.
+packages which conform to one of several plugin APIs.
 
 .. _Python: http://python.org
 
 .. toctree::
    :maxdepth: 3
 
-   dev-guide
    ops-guide
-   prj-guide
    tst-guide
+   prj-guide
+   dev-guide

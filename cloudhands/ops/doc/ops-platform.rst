@@ -1,11 +1,55 @@
 ..  Titling
     ##++::==~~--''``
 
-Establishing a platform for services
+Establishing operations environments
 ::::::::::::::::::::::::::::::::::::
 
-* adduser jasminportal
-* add public key to /home/jasminportal/.ssh/authorized_keys
+There are two working environments required for operating a `cloudhands`
+installation:
+
+1. `The build environment`_ is a place to build software packages. This is
+   necessary every time a provider configuration changes or a new operations
+   script is written.
+
+2. `The administration environment`_ is a place from which to monitor and
+   administer a running installation.
+
+The build environment
+=====================
+
+First follow these procedures:
+
+* `Install platform requirements`_
+* `Create a non-privileged account`_
+
+Check out the source code of the following packages from the locations shown
+at the beginning of the :ref:`operations-guide`:
+
+* cloudhands-burst
+* cloudhands-common
+* cloudhands-jasmin
+* cloudhands-ops
+* cloudhands-web
+
+Change directory to the `cloudhands-ops` package::
+
+    $ cd src/cloudhands-ops
+
+Run the `check.sh`_ script to establish a working build environment::
+
+    $ ./check.sh --nolint --nopep8 --notest
+
+Run the `build.sh`_ script to create the documentation::
+
+    $ ./build.sh --novenv --nopush --nosign
+
+The administration environment
+===============================
+
+First follow these procedures:
+
+* `Install platform requirements`_
+* `Create a non-privileged account`_
 
 * $ check.sh
 * $ build.sh
@@ -13,13 +57,6 @@ Establishing a platform for services
 * $ wget http://wget http://130.246.189.180:8000/jasmin-bundle.tar
 * $ mkdir deploy
 * $ tar xvf jasmin-bundle.tar -C deploy/
-* $ wget wget
-http://jur-linux.org/download/el-updates/6/x86_64/python3-3.3.2-2.el6.x86_64.rpm
-* $ wget
-http://jur-linux.org/download/el-updates/6/x86_64/python3-libs-3.3.2-2.el6.x86_64.rpm
-* # yum localinstall -y
-/home/jasminportal/deploy/python3-3.3.2-2.el6.x86_64.rpm
-/home/jasminportal/deploy/python3-libs-3.3.2-2.el6.x86_64.rpm
 * $ untar setuptools,tar -xzvf setuptools-5.7.tar.gz install
  $ untar pip, install
 * cd ~ 
@@ -63,64 +100,34 @@ cloudhands.burst.session.token|'NoneType' object is not subscriptable
 Portal host
 ===========
 
-+-------------------+------------------------------------------+-----------------------------+
-| Package           | Repository URL                           | Description                 |
-+===================+==========================================+=============================+
-| cloudhands-common | git@proj.badc.rl.ac.uk:cloudhands-common | Common types, utilities and |
-|                   |                                          | database schema             |
-+-------------------+------------------------------------------+-----------------------------+
-| cloudhands-web    | git@proj.badc.rl.ac.uk:cloudhands-web    | LDAP indexer and Web portal |
-|                   |                                          | application                 |
-+-------------------+------------------------------------------+-----------------------------+
-| cloudhands-jasmin | git@proj.badc.rl.ac.uk:cloudhands-jasmin | Site-specific configuration |
-|                   |                                          | for JASMIN infrastructure   |
-|                   |                                          | (private)                   |
-+-------------------+------------------------------------------+-----------------------------+
-| cloudhands-ops    | git@proj.badc.rl.ac.uk:cloudhands-ops    | Contains this manual, some  |
-|                   |                                          | operations scripts and all  |
-|                   |                                          | third-party dependencies    |
-+-------------------+------------------------------------------+-----------------------------+
+Common operations
+=================
 
-This guide assumes the source repositories are checked out under a common
-directory `src` as shown::
+Install platform requirements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    src
-    |-- cloudhands-burst
-    |   `-- cloudhands
-    |       `-- burst
-    |           |-- main.py
-    |           `-- test
-    |-- cloudhands-common
-    |   `-- cloudhands
-    |       `-- common
-    |           `-- test
-    |-- cloudhands-jasmin
-    |   `-- cloudhands
-    |       `-- jasmin
-    |-- cloudhands-ops
-    |   |-- build.sh
-    |   |-- check.sh
-    |   |-- cloudhands
-    |   |   `-- ops
-    |   |       `-- doc
-    |   |-- design
-    |   `-- vendor
-    `-- cloudhands-web
-        `-- cloudhands
-            `-- web
-                |-- demo.py
-                |-- indexer.py
-                |-- main.py
-                |-- static
-                |   |-- css
-                |   `-- img
-                |-- templates
-                `-- test
+The reference platform is Red Hat Enterprise Linux 6.5 with Python 3.3 from RPMs.
+To install Python 3.3 on a RHEL platform, execute the following commands::
 
-The working directory for the operations scripts is ``src/cloudhands-ops``.
+    $ wget http://jur-linux.org/download/el-updates/6/x86_64/python3-3.3.2-2.el6.x86_64.rpm
+    $ wget http://jur-linux.org/download/el-updates/6/x86_64/python3-libs-3.3.2-2.el6.x86_64.rpm
 
-Tests and checks
-================
+Then, as superuser::
+
+    $ yum localinstall -y python3-3.3.2-2.el6.x86_64.rpm python3-libs-3.3.2-2.el6.x86_64.rpm
+
+Create a non-privileged account
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Create an account for portal operation like this::
+
+    $ adduser jasminportal
+
+Add your public key to ``/home/jasminportal/.ssh/authorized_keys`` to enable
+`ssh` access.
+
+Reference
+=========
 
 Check.sh
 ~~~~~~~~
@@ -153,11 +160,9 @@ The following JASMIN executables will be installed in ``~/pyops-3.3/bin``:
 
 * LDAP indexer (``cloud-index``)
 * Burst controller (``cloud-burst``)
+* Identity controller (``cloud-identity``)
 * Web server application (``cloud-webserve``) 
 * Web server demo (``cloud-demoserve``) 
-
-Packaging
-=========
 
 Build.sh
 ~~~~~~~~
@@ -188,37 +193,3 @@ Outcome
 The `dist` directory of each JASMIN package will contain a Python source
 distribution (`tar.gz`).
 
-Staging
-=======
-
-Revisions and Versions
-~~~~~~~~~~~~~~~~~~~~~~
-
-* A revision is a commit reference in a code repository (ie: git).
-* A version is package metadata which complies with PEP-0386. 
-
-The Bundle
-~~~~~~~~~~
-
-A bundle consists of the following:
-
-The Release
-    A Python source distribution (tar.gz) for each of the namespace packages in
-    the JASMIN project.
- 
-Vendor packages
-    A copy of all Python dependency packages (these are to be found in the
-    'vendor' directory of ​git@proj.badc.rl.ac.uk:cloudhands-ops) 
-
-How to deploy the bundle?
-
-1. Create a fresh Python virtualenv
-2. Install setuptools and pip from bundle
-3. Install cloudhands-jasmin package via pip 
-
-Platform requirements
-~~~~~~~~~~~~~~~~~~~~~
-
-* Python 3.3
-* A reverse proxy cache suitable for a RESTful API (must do etags)
-* A process management service (eg: upstart, supervisord) 
