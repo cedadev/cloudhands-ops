@@ -5,7 +5,7 @@
 # $ build.sh --novenv --nopush --nosign > build.out
 
 PYTHON=/usr/local/bin/python3.3
-PYENV=~/pydev-3.3
+PYENV=~/pyops-3.3
 SETUPTOOLS=setuptools-1.3.1
 PIP=pip-1.4.1
 
