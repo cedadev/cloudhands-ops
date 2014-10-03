@@ -14,6 +14,8 @@ installation:
 2. `The administration environment`_ is a place from which to monitor and
    administer a running installation.
 
+.. _build-environment:
+
 The build environment
 =====================
 
@@ -21,6 +23,7 @@ First follow these procedures:
 
 * `Install platform requirements`_
 * `Create a non-privileged account`_
+*  Log in as non-privileged user
 
 Check out the source code of the following packages from the locations shown
 at the beginning of the :ref:`operations-guide`:
@@ -41,7 +44,7 @@ Run the `check.sh`_ script to establish a working build environment::
 
 Run the `build.sh`_ script to create the documentation::
 
-    $ ./build.sh --novenv --nopush --nosign
+    $ ./build.sh --novenv --nopush --nosign --nobundle
 
 The administration environment
 ===============================
@@ -50,55 +53,38 @@ First follow these procedures:
 
 * `Install platform requirements`_
 * `Create a non-privileged account`_
+*  Log in as non-privileged user
 
-* $ check.sh
-* $ build.sh
-* $ publish with droopy
-* $ wget http://wget http://130.246.189.180:8000/jasmin-bundle.tar
-* $ mkdir deploy
-* $ tar xvf jasmin-bundle.tar -C deploy/
-* $ untar setuptools,tar -xzvf setuptools-5.7.tar.gz install
- $ untar pip, install
-* cd ~ 
-* ~/jasmin-py3.3/bin/pip install --upgrade --use-wheel --no-index -f
-file:///home/jasminportal/deploy -r deploy/requirements.txt
-* ~/jasmin-py3.3/bin/pip install --upgrade --use-wheel --no-index -f
-file:///home/jasminportal/deploy cloudhands-ops cloudhands-web cloudhands-burst cloudhands-jasmin
+Check out the source code of the following packages from the locations shown
+at the beginning of the :ref:`operations-guide`:
 
-::
+* cloudhands-common
+* cloudhands-jasmin
+* cloudhands-ops
 
-    cloudhands-orgadmin --host=jasmin-ref-portal01.jc.rl.ac.uk
-    --identity=~/.ssh/id_rsa.pub --user=jasminportal
-    --db=/home/jasminportal/jasmin-web.sl3
-    --account=cjllewellyn --email=charlie.j.llewellyn@gmail.com --surname=Llewellyn
-    --organisation='Portal Test Organisation'
-    --activator=/root/un-managed-post-cust.sh
-    --providers=cloudhands.jasmin.vcloud.ref-portalTest-U.cfg
+Create a Python virtual environment, and visit the cloudhands-ops `vendor`
+directory::
 
-::
+    $ python3.3 -m venv pyops-3.3
+    $ cd ~/src/cloudhands-ops/vendor
 
-    2014-09-29 09:03:17,152 INFO    cloudhands.ops.orgadmin|Sending from jasmin-ref-portal01.jc.rl.ac.uk.
-    2014-09-29 09:03:17,233 INFO    cloudhands.ops.orgadmin|('user', '536f9d385be64e8b89967c9f370d2fc2', 'cjllewellyn')
-    2014-09-29 09:03:17,256 INFO    cloudhands.ops.orgadmin|('provider', '1e6d8ac3130246a6b6964eaf1d4f3515',
-    'cloudhands.jasmin.vcloud.ref-portalTest-U.cfg') 2014-09-29 09:03:17,256 INFO    cloudhands.ops.orgadmin|('subscription',
-    'd504222102d94e449024c090549e039e') 2014-09-29 09:03:17,256 INFO    cloudhands.ops.orgadmin|('organisation',
-    '63c0f3bc3a3c4c8ab37bbe034ec6c91b', 'Portal Test Organisation') 2014-09-29 09:03:17,268 INFO    cloudhands.ops.orgadmin|('membership',
-    '2ba8010aad6448828dee2e4f6d139e66', 'admin') 2014-09-29 09:03:17,280 INFO    cloudhands.ops.orgadmin|('registration',
-    'e5834448f23947e8acd2136d3ebcd67d') 2014-09-29 09:03:17,286 INFO    cloudhands.ops.orgadmin|('subscription',
-    'd504222102d94e449024c090549e039e', 'maintenance', 'org.orgadmin', [])
+Install `setuptools` from the vendor directory::
 
-::
+    $ tar -xzvf setuptools-5.7.tar.gz
+    $ cd setuptools-5.7
+    $ ~/pyops3.3/bin/python3 setup.py install
 
-    ~/jasmin-py3.3/bin/cloud-demoserve -v --port=8080 --db=jasmin-web.sl3
-    --log=cloud-demoserve.log
+Install `pip` from the vendor directory::
 
-cloudhands.burst.membership|'cloudhands.jasmin.vcloud.ref-portalTest-U.cfg'
-2014-10-01 17:51:38,788 ERROR   cloudhands.web.login_update|'NoneType' object
-has no attribute 'value'
-cloudhands.burst.session.token|'NoneType' object is not subscriptable
+    $ tar -xzvf /pip-1.4.1.tar.gz
+    $ cd pip-1.4.1
+    $ ~/pyops3.3/bin/python3 setup.py install
 
-Portal host
-===========
+Install the packages required for cloudhands administration::
+
+    $ ~/pyops3.3/bin/pip install --use-wheel --no-index \
+      -f file:///home/jasminportal/src/cloudhands-ops/vendor \
+      -r ops-requirements.txt
 
 Common operations
 =================
@@ -128,6 +114,8 @@ Add your public key to ``/home/jasminportal/.ssh/authorized_keys`` to enable
 
 Reference
 =========
+
+.. _check-script:
 
 Check.sh
 ~~~~~~~~
@@ -163,6 +151,8 @@ The following JASMIN executables will be installed in ``~/pyops-3.3/bin``:
 * Identity controller (``cloud-identity``)
 * Web server application (``cloud-webserve``) 
 * Web server demo (``cloud-demoserve``) 
+
+.. _build-script:
 
 Build.sh
 ~~~~~~~~

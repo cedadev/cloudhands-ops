@@ -96,6 +96,7 @@ Procedures
 
    ops-platform
    ops-packages
+   ops-deploy
    ops-onboard
 
 References
