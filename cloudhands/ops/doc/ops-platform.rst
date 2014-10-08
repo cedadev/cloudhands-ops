@@ -21,8 +21,8 @@ The build environment
 
 First follow these procedures:
 
-* `Install platform requirements`_
-* `Create a non-privileged account`_
+* :ref:`install-platform`
+* :ref:`portal-account`
 *  Log in as non-privileged user
 
 Check out the source code of the following packages from the locations shown
@@ -51,8 +51,8 @@ The administration environment
 
 First follow these procedures:
 
-* `Install platform requirements`_
-* `Create a non-privileged account`_
+* :ref:`install-platform`
+* :ref:`portal-account`
 *  Log in as non-privileged user
 
 Check out the source code of the following packages from the locations shown
@@ -85,32 +85,6 @@ Install the packages required for cloudhands administration::
     $ ~/pyops3.3/bin/pip install --use-wheel --no-index \
       -f file:///home/jasminportal/src/cloudhands-ops/vendor \
       -r ops-requirements.txt
-
-Common operations
-=================
-
-Install platform requirements
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The reference platform is Red Hat Enterprise Linux 6.5 with Python 3.3 from RPMs.
-To install Python 3.3 on a RHEL platform, execute the following commands::
-
-    $ wget http://jur-linux.org/download/el-updates/6/x86_64/python3-3.3.2-2.el6.x86_64.rpm
-    $ wget http://jur-linux.org/download/el-updates/6/x86_64/python3-libs-3.3.2-2.el6.x86_64.rpm
-
-Then, as superuser::
-
-    $ yum localinstall -y python3-3.3.2-2.el6.x86_64.rpm python3-libs-3.3.2-2.el6.x86_64.rpm
-
-Create a non-privileged account
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Create an account for portal operation like this::
-
-    $ adduser jasminportal
-
-Add your public key to ``/home/jasminportal/.ssh/authorized_keys`` to enable
-`ssh` access.
 
 Reference
 =========

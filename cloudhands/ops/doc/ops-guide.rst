@@ -94,6 +94,7 @@ Procedures
 .. toctree::
    :maxdepth: 1
 
+   ops-common
    ops-platform
    ops-packages
    ops-deploy
