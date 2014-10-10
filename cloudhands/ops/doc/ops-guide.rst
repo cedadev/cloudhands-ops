@@ -4,7 +4,7 @@ Operations guide
 ::::::::::::::::
 
 This guide gives you the ability to deploy and administer services with the
-cloudhands software. The software consists of several separate packages:
+`cloudhands` software. The software consists of several separate packages:
 
 +-------------------+-----------------------------------------------+-----------------------------+
 | Package           | git clone `<url>`                             | Description                 |
@@ -88,6 +88,9 @@ Vendor packages
     A copy of all Python dependency packages. These are to be found in the
     `vendor` directory of the `cloudhands-ops` source tree. 
 
+All these items are packed together in a file archive, typically named
+`jasmin-bundle.tar`.
+
 Procedures
 ==========
 
@@ -98,6 +101,7 @@ Procedures
    ops-platform
    ops-packages
    ops-deploy
+   ops-services
    ops-onboard
 
 References

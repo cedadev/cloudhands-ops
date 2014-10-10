@@ -17,3 +17,5 @@ Invoke the :ref:`check-script` script to run the unit tests::
 Invoke the :ref:`build-script` script to create the package bundle::
 
     $ ./build.sh --novenv --nopush --nosign
+
+The bundle will be created as a `tar` archive named `jasmin-bundle.tar`.

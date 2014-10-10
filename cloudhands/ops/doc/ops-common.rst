@@ -1,8 +1,8 @@
 ..  Titling
     ##++::==~~--''``
 
-Common operations
-=================
+Essential tasks
+===============
 
 .. _install-platform:
 
