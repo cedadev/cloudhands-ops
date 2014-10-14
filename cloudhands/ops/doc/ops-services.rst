@@ -4,6 +4,26 @@
 Running services
 ::::::::::::::::
 
+All services should run as the `jasminportal` user. They should be started
+sequentially (all of them access the database on startup and locking may
+prevent correct initialisation).
+
+First start the indexer::
+
+    $ ~/jasmin-py3.3/bin/cloud-index --interval=15 --index=jasmin-index.wsh --log=cloud-index.log
+
+Then the web service::
+
+    $ ~/jasmin-py3.3/bin/cloud-webserve --port=8080 --db=jasmin-web.sl3 --index=jasmin-index.wsh
+
+Identity manager::
+
+    $ ~/jasmin-py3.3/bin/cloud-identity --interval=20 --db=jasmin-web.sl3 --log=cloud-identity.log
+
+Burst controller::
+
+    $ ~/jasmin-py3.3/bin/cloud-burst --interval=6 --db=jasmin-web.sl3 --log=cloud-burst.log
+
 Reference
 =========
 
