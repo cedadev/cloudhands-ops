@@ -2,11 +2,15 @@
 # encoding: UTF-8
 
 import argparse
+from collections import namedtuple
+import json
 import logging
 import logging.handlers
 import os.path
 import platform
 import sys
+import textwrap
+import urllib
 import uuid
 
 try:
@@ -26,6 +30,36 @@ Functions which produce puppet manifest entries from web API data.
 DFLT_PORT = 22
 DFLT_USER = "jasminportal"
 DFLT_VENV = "jasmin-py3.3"
+
+def appliance_authorized_keys(data):
+    Key = namedtuple("Key", ["type", "value", "name"])
+    tmplt = textwrap.dedent("""
+    ssh_authorized_key {{ '{parent.scheme}://{parent.netloc}{path}': 
+      name     => '{key.name}',
+      ensure   => present,
+      key      => '{key.value}',
+      type     => '{key.type}',
+      user     => '{user}',
+    }}
+    """)
+    tree = json.loads(data)
+    try:
+        url = tree["info"]["page"]["url"]
+    except KeyError:
+        raise StopIteration
+    else:
+        host = urllib.parse.urlparse(url)
+
+    objs = (i for i in tree.get("items", {}).values()
+            if i.get("_type", None) == "publickey")
+    for obj in objs:
+        key = Key(*obj["public_key"].split(None, 2))
+        user = obj["account"].split("/")[-1]
+        link = next((i for i in obj.get("_links", [])
+                    if i[1] == "canonical"), None)
+        yield tmplt.format(
+            user=user, key=key, parent=host, path=link[2].format(link[3]))
+        
 
 def main(args):
     log = logging.getLogger("cloudhands.ops.orgadmin")
