@@ -145,10 +145,12 @@ class FormattingTests(unittest.TestCase):
         expected = textwrap.dedent("""
             hostname: b1d0fe9485074c079d2fc524275a949d_bastion_host
             type: bastion_host
-            /group_workspaces/stfcloud/eumetsat/2014: rw
-            /group_workspaces/stfcloud/moum/scratch: ro 
-        """)
-        self.fail(expected)
+            /group_workspaces/stfcloud/eumetsat/2014: ${options}
+            /group_workspaces/stfcloud/moum/scratch: ${options}
+        """).strip()
+        rv = cloudhands.ops.puppet.appliance_environment_variables(
+            APPLIANCE_API_RESPONSE)
+        self.assertEqual(expected, rv)
 
     @unittest.skip("To be confirmed")
     def test_manifest_mount_point(self):

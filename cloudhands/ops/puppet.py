@@ -3,6 +3,7 @@
 
 import argparse
 from collections import namedtuple
+from collections import OrderedDict
 import json
 import logging
 import logging.handlers
@@ -60,6 +61,34 @@ def appliance_authorized_keys(data):
         yield tmplt.format(
             user=user, key=key, parent=host, path=link[2].format(link[3]))
         
+def appliance_environment_variables(data):
+    tmplt = textwrap.dedent("""
+    ssh_authorized_key {{ '{parent.scheme}://{parent.netloc}{path}': 
+      name     => '{key.name}',
+      ensure   => present,
+      key      => '{key.value}',
+      type     => '{key.type}',
+      user     => '{user}',
+    }}
+    """)
+    tree = json.loads(data)
+    try:
+        url = tree["info"]["page"]["url"]
+    except KeyError:
+        raise StopIteration
+    else:
+        host = urllib.parse.urlparse(url).path.split('/')[-1]
+
+    choice = next((i for i in tree.get("items", {}).values()
+            if i.get("_type", None) == "cataloguechoice"), None)
+    content = OrderedDict([
+        ("hostname", "{}_{}".format(host, choice["template"])),
+        ("type", choice["template"])])
+    dirs = (i for i in tree.get("items", {}).values()
+            if i.get("_type", None) == "directory")
+    for i in dirs:
+        content[i["mount_path"]] = "${options}"
+    return "\n".join("{}: {}".format(k, v) for k, v in content.items())
 
 def main(args):
     log = logging.getLogger("cloudhands.ops.orgadmin")
