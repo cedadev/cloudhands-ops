@@ -141,6 +141,15 @@ class FormattingTests(unittest.TestCase):
         self.assertEqual(2, len(rv))
         self.assertIn(expected, rv)
 
+    def test_ini_mount_point(self):
+        expected = textwrap.dedent("""
+            hostname: b1d0fe9485074c079d2fc524275a949d_bastion_host
+            type: bastion_host
+            /group_workspaces/stfcloud/eumetsat/2014: rw
+            /group_workspaces/stfcloud/moum/scratch: ro 
+        """)
+        self.fail(expected)
+
     @unittest.skip("To be confirmed")
     def test_manifest_mount_point(self):
         expected = textwrap.dedent("""
