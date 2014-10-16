@@ -30,3 +30,26 @@ Create an account for portal operation like this::
 
 Add your public key to ``/home/jasminportal/.ssh/authorized_keys`` to enable
 `ssh` access.
+
+Interrogate a database
+~~~~~~~~~~~~~~~~~~~~~~
+
+Cloudhands is designed to be a distributed system, comprising agents which
+behave according to the messages they get. The history of the state of the
+system is stored in one place; the portal database.
+
+The database is therefore an essential reference when investigating system
+issues. Knowledge of some simple SQL queries will come in handy.
+
+Here's one useful query which you can run from the command line. It generates a
+kind of log of all state changes and resource allocation::
+
+    $ sqlite3 jasmin-web.sl3 "select s.fsm, s.name, art.uuid, a.handle, r.typ
+    from
+      touches as t left outer join
+      resources as r on r.touch_id = t.id join
+      actors as a on t.actor_id = a.id join
+      artifacts as art on t.artifact_id = art.id join
+      states as s on t.state_id = s.id
+    order by t.at;"
+

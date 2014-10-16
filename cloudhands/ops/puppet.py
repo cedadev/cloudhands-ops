@@ -7,6 +7,7 @@ from collections import OrderedDict
 import json
 import logging
 import logging.handlers
+import operator
 import os.path
 import platform
 import sys
@@ -84,8 +85,9 @@ def appliance_environment_variables(data):
     content = OrderedDict([
         ("hostname", "{}_{}".format(host, choice["template"])),
         ("type", choice["template"])])
-    dirs = (i for i in tree.get("items", {}).values()
-            if i.get("_type", None) == "directory")
+    dirs = sorted((i for i in tree.get("items", {}).values()
+            if i.get("_type", None) == "directory"),
+            key=operator.methodcaller("get", "mount_path", None))
     for i in dirs:
         content[i["mount_path"]] = "${options}"
     return "\n".join("{}: {}".format(k, v) for k, v in content.items())
