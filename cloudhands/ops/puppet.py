@@ -63,15 +63,6 @@ def appliance_authorized_keys(data):
             user=user, key=key, parent=host, path=link[2].format(link[3]))
         
 def appliance_environment_variables(data):
-    tmplt = textwrap.dedent("""
-    ssh_authorized_key {{ '{parent.scheme}://{parent.netloc}{path}': 
-      name     => '{key.name}',
-      ensure   => present,
-      key      => '{key.value}',
-      type     => '{key.type}',
-      user     => '{user}',
-    }}
-    """)
     tree = json.loads(data)
     try:
         url = tree["info"]["page"]["url"]
