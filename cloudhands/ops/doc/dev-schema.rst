@@ -10,7 +10,7 @@ as a schema in third-normal form using the SQLAlchemy_ ORM.
 
 .. _SQLAlchemy: http://docs.sqlalchemy.org
 
-There are about 20 tables in the database schema. Of these, four fundamental
+There are about 30 tables in the database schema. Of these, four fundamental
 types provide the basis for implementing business logic:
 
 * Actors_
@@ -46,9 +46,11 @@ request of the user. They can be complex, compound objects.
 
 .. autoclass:: cloudhands.common.schema.Artifact
 
+.. autoclass:: cloudhands.common.schema.Registration
+
 .. autoclass:: cloudhands.common.schema.Membership
 
-.. autoclass:: cloudhands.common.schema.Host
+.. autoclass:: cloudhands.common.schema.Appliance
 
 
 Resources
@@ -59,15 +61,33 @@ system. Their existence is transitory, and has to be continually verified.
 
 .. autoclass:: cloudhands.common.schema.Resource
 
+.. autoclass:: cloudhands.common.schema.EmailAddress
+
+.. autoclass:: cloudhands.common.schema.BcryptedPassword
+
+.. autoclass:: cloudhands.common.schema.TimeInterval
+
+.. autoclass:: cloudhands.common.schema.PublicKey
+
+.. autoclass:: cloudhands.common.schema.CatalogueChoice
+
+.. autoclass:: cloudhands.common.schema.ProviderToken
+
 .. autoclass:: cloudhands.common.schema.Node
+
+.. autoclass:: cloudhands.common.schema.Label
 
 .. autoclass:: cloudhands.common.schema.IPAddress
 
-.. autoclass:: cloudhands.common.schema.EmailAddress
+.. autoclass:: cloudhands.common.schema.NATRouting
 
 .. autoclass:: cloudhands.common.schema.PosixUId
 
+.. autoclass:: cloudhands.common.schema.PosixUIdNumber
+
 .. autoclass:: cloudhands.common.schema.PosixGId
+
+.. autoclass:: cloudhands.common.schema.ProviderReport
 
 Resources have a base type, `Touch` which carries no contextual data
 but which can be used to signal changes in States_.
