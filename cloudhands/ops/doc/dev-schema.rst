@@ -50,6 +50,8 @@ request of the user. They can be complex, compound objects.
 
 .. autoclass:: cloudhands.common.schema.Membership
 
+.. autoclass:: cloudhands.common.schema.Subscription
+
 .. autoclass:: cloudhands.common.schema.Appliance
 
 
