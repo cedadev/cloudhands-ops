@@ -8,8 +8,11 @@ There are two working environments required for operating a `cloudhands`
 installation:
 
 1. `The build environment`_ is a place to build software packages. This is
-   necessary every time a provider configuration changes or a new operations
-   script is written.
+   necessary whenever:
+
+    * new code is to be released
+    * a provider configuration changes
+    * you write or modify an operations script.
 
 2. `The administration environment`_ is a place from which to monitor and
    administer a running installation.
@@ -150,6 +153,10 @@ Options
 .. option:: --nosign
 
    Disables GPG signing of packages.
+
+.. option:: --nobundle
+
+   Disables the creation of the bundle.
 
 Outcome
 -------

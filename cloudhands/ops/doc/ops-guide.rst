@@ -69,16 +69,25 @@ You should check out the source repositories under a common directory `src` as s
 Essential concepts
 ==================
 
+If you already have experience of systems administration, you may be used to
+a different  terminology than is used in this guide. Here's what you need to
+know:
+ 
 Revisions and Versions
 ~~~~~~~~~~~~~~~~~~~~~~
 
-* A revision is a commit reference in a code repository (ie: git).
-* A version is package metadata which complies with `PEP 440`_. 
+* A revision is an integer or a commit id like `0dbf4c8ba484756563f0dfece9ed25552fab2095`.
+  A revision is used to reference the state of code in a source repository.
+* A version is an identifier with numerical fields and other modifiers, like `0.44c1`.
+  This is a label we apply to a package of software we intend to deploy.
+  The format for Python package versioning is defined in `PEP 440`_.
 
 The Bundle
 ~~~~~~~~~~
 
-A bundle consists of the following:
+We will describe later on how to create a bundle of the `cloudhands` software,
+as a means of easy transportation and deployment. A bundle consists of the
+following:
 
 The Release
     A Python source distribution (tar.gz) for each of the namespace packages in
