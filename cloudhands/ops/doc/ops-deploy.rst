@@ -4,6 +4,9 @@
 Deploying the bundle
 ::::::::::::::::::::
 
+Deploying a bundle consists simply of transferring it across to the
+`cloudhands` portal host.
+
 You can transfer the bundle using a variety of methods, `scp` being an obvious
 choice. In a benign environment, it can be useful to launch a simple web
 server like this::
@@ -25,10 +28,14 @@ Installing the bundle
 * :ref:`portal-account`
 * Log in as non-privileged user
 
-::
+If this is to be a fresh installation on the host, it's first necessary to
+create a Python virtual environment, and a directory to hold the packages::
 
     $ python3.3 -m venv pyops-3.3
     $ mkdir deploy
+
+Unpack the bundle into that directory::
+
     $ tar -xvf jasmin-bundle.tar -C deploy/
 
 Install `setuptools` from the bundle::

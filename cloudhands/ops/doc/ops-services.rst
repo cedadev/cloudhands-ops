@@ -5,8 +5,8 @@ Running services
 ::::::::::::::::
 
 All services should run as the `jasminportal` user. They should be started
-sequentially (all of them access the database on startup and locking may
-prevent correct initialisation).
+sequentially (they write to the database on startup) to ensure correct
+initialisation.
 
 First start the indexer::
 
