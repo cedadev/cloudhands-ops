@@ -124,43 +124,6 @@ APPLIANCE_API_RESPONSE = """
 }
 """
 
-class FormattingTests(unittest.TestCase):
+class ActivatorTests(unittest.TestCase):
 
-    def test_manifest_sshkey(self):
-        expected = textwrap.dedent("""
-            ssh_authorized_key { 'http://jasmin-cloud.jc.rl.ac.uk/resource/54': 
-              name     => 'dehaynes@snow.badc.rl.ac.uk',
-              ensure   => present,
-              key      => 'AAAAB3NzaC1yc2EAAAABIwAAAQEAuOg/gIR9szQ0IcPjqD1jlY9enJETyppW39MAH0WV1LqR+/ULulG4uBUS/HBwvS7ggu3P6mj4i2hH9Kz9JGwnkuhxMJu3d/b/2Z7/1hBkQls5BKTzSoYnPCVYfvPyNXzRHEcRPjyfGcrIYz2CU4g5Ei2f0IgRngamDQrTU33QLosoaJqfw0pvX2SdFyFRmJkY6vH7j66ciXl2bfUUdf1KaoadkD+n59U6EiURrholSlaZp0gECjx0dM4mZUD0DqjWGll0NmnM4NIpCl+lTOrFLicJBgPuAnsrqp8HjGEHweRoPwFkKpcPkfyV+k0o/bltu3Lyd8KLJrVzYAUXRnLRpw==',
-              type     => 'ssh-rsa',
-              user     => 'bcumberbat',
-            }
-        """)
-        rv = list(cloudhands.ops.activator.appliance_authorized_keys(
-            APPLIANCE_API_RESPONSE))
-        self.assertEqual(2, len(rv))
-        self.assertIn(expected, rv)
-
-    def test_ini_mount_point(self):
-        expected = textwrap.dedent("""
-            hostname: b1d0fe9485074c079d2fc524275a949d_bastion_host
-            type: bastion_host
-            /group_workspaces/stfcloud/eumetsat/2014: ${options}
-            /group_workspaces/stfcloud/moum/scratch: ${options}
-        """).strip()
-        rv = cloudhands.ops.activator.appliance_environment_variables(
-            APPLIANCE_API_RESPONSE)
-        self.assertEqual(expected, rv)
-
-    @unittest.skip("To be confirmed")
-    def test_manifest_mount_point(self):
-        expected = textwrap.dedent("""
-            mount { 'http://jasmin-cloud.jc.rl.ac.uk/resource/33': 
-              name        => '/group_workspaces/stfcloud/eumetsat/2014',
-              ensure      => mounted,
-              device      => ${::device},
-              fstype      => 'panfs';
-              options     => ${::options},
-            }
-        """)
-        print(expected)
+    pass
