@@ -39,6 +39,7 @@ CONFIG_DIR = path.join(HERE_DIR, 'config')
 CREDS_FILEPATH = path.join(CONFIG_DIR, 'creds.txt')
 
     
+@unittest.skip("Site-specific code. To go into cloudhands-jasmin.")
 class AzureTestCloudClient(unittest.TestCase):
     '''Test Azure against Apache Libcloud 
     '''

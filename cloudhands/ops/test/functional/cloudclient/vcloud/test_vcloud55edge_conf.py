@@ -148,6 +148,7 @@ class NatRule(object):
         self._rule_type = val
            
     
+@unittest.skip("Site-specific code. To go into cloudhands-jasmin.")
 class Vcd55TestCloudClient(unittest.TestCase):
     '''Test vCloud Director API v5.5 network configuration 
      

@@ -47,7 +47,7 @@ CREDS_FILEPATH = path.join(CONFIG_DIR, 'v55creds.txt')
 # place the FQDN on a single line and save the file.
 CLOUD_HOSTNAME_FILEPATH = path.join(CONFIG_DIR, 'v55cloud-host.txt')
 
-    
+@unittest.skip("Site-specific code. To go into cloudhands-jasmin.")
 class Vcd55TestCloudClient(unittest.TestCase):
     '''Test vCloud Director API v5.5 against Apache Libcloud - requires
     patched version of the latter: 
