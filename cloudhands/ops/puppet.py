@@ -10,6 +10,7 @@ import logging.handlers
 import operator
 import os.path
 import platform
+import re
 import sys
 import textwrap
 import urllib
@@ -32,6 +33,16 @@ Functions which produce puppet manifest entries from web API data.
 DFLT_PORT = 22
 DFLT_USER = "jasminportal"
 DFLT_VENV = "jasmin-py3.3"
+
+
+class TypeEncoder(json.JSONEncoder):
+
+    def default(self, obj):
+        if isinstance(obj, type(re.compile(""))):
+            return obj.pattern
+            # Let the base class default method raise the TypeError
+        return json.JSONEncoder.default(self, obj)
+
 
 def appliance_authorized_keys(data):
     Key = namedtuple("Key", ["type", "value", "name"])
@@ -71,17 +82,25 @@ def appliance_environment_variables(data):
     else:
         host = urllib.parse.urlparse(url).path.split('/')[-1]
 
+    jvo = next((i for i in tree.get("nav", {}).values()
+            if i.get("_type", None) == "organisation"), None)
     choice = next((i for i in tree.get("items", {}).values()
             if i.get("_type", None) == "cataloguechoice"), None)
+
+    if not (jvo and choice):
+        raise StopIteration
+
     content = OrderedDict([
         ("hostname", "{}_{}".format(host, choice["template"])),
-        ("type", choice["template"])])
+        ("type", choice["template"]),
+        ("jvo", jvo["name"])])
     dirs = sorted((i for i in tree.get("items", {}).values()
             if i.get("_type", None) == "directory"),
             key=operator.methodcaller("get", "mount_path", None))
     for i in dirs:
         content[i["mount_path"]] = "${options}"
-    return "\n".join("{}: {}".format(k, v) for k, v in content.items())
+    return content
+
 
 def main(args):
     log = logging.getLogger("cloudhands.ops.orgadmin")
