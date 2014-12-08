@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # encoding: UTF-8
 
+import json
 import textwrap
 import unittest
 
@@ -19,7 +20,8 @@ APPLIANCE_API_RESPONSE = """
     }, 
     "nav": {
         "nav_01": {
-            "name": "EOSCloud", 
+            "name": "EOSCloud",
+            "_type": "organisation", 
             "_links": [
                 [
                     "EOSCloud", 
@@ -142,15 +144,15 @@ class FormattingTests(unittest.TestCase):
         self.assertIn(expected, rv)
 
     def test_ini_mount_point(self):
-        expected = textwrap.dedent("""
-            hostname: b1d0fe9485074c079d2fc524275a949d_bastion_host
-            type: bastion_host
-            /group_workspaces/stfcloud/eumetsat/2014: ${options}
-            /group_workspaces/stfcloud/moum/scratch: ${options}
-        """).strip()
+        expected = {
+            "hostname": "b1d0fe9485074c079d2fc524275a949d_bastion_host",
+            "type": "bastion_host",
+            "/group_workspaces/stfcloud/eumetsat/2014": "${options}",
+            "/group_workspaces/stfcloud/moum/scratch": "${options}",
+        }
         rv = cloudhands.ops.puppet.appliance_environment_variables(
             APPLIANCE_API_RESPONSE)
-        self.assertEqual(expected, rv)
+        self.assertTrue(set(expected.items()) <= set(rv.items()))
 
     @unittest.skip("To be confirmed")
     def test_manifest_mount_point(self):
