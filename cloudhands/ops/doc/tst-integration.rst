@@ -352,7 +352,7 @@ Appliance lifecycle
 ~~~~~~~~~~~~~~~~~~~
 
 This procedure allows a test of the integration with the VMWare back end. It
-is only available in the `Lab` environment.
+is only available in the `Ref` environment.
 
 1. Login (demo user)
 --------------------
