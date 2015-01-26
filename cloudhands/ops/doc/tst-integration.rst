@@ -58,10 +58,10 @@ created along with its administrator account.
         --account=bcumberbat \
         --email=<your_email_address> \
         --surname=Cumberbatch \
-        --organisation=STFCloud \
-        --public=172.16.151.170/30 \
-        --activator=/root/bootstrap.sh \
-        --providers=cloudhands.jasmin.vcloud.stfccloud-ref.cfg
+        --organisation="Portal Test Organisation" \
+        --public=172.26.9.70/31 \
+        --activator=/root/activator.sh \
+        --providers=cloudhands.jasmin.vcloud.ref-portalTest-M.cfg
 
    * The utility runs and emits a log trace similar to the following::
 
@@ -69,7 +69,7 @@ created along with its administrator account.
         2014-09-29 15:43:08,565 INFO    cloudhands.ops.orgadmin|('user', '1fe4d56051ba48ed86f3b21ce878775d', 'bcumberbat')
         2014-09-29 15:43:08,696 INFO    cloudhands.ops.orgadmin|('provider', '0460735f622247b198b7e3f60c9e9379', 'cloudhands.jasmin.vcloud.stfccloud-ref.cfg')
         2014-09-29 15:43:08,696 INFO    cloudhands.ops.orgadmin|('subscription', '6dd7ff10e8f14f308ac39c367b82d51b')
-        2014-09-29 15:43:08,696 INFO    cloudhands.ops.orgadmin|('organisation', '3c26b7c8b3b44428988c310d2de877da', 'STFCloud')
+        2014-09-29 15:43:08,696 INFO    cloudhands.ops.orgadmin|('organisation', '3c26b7c8b3b44428988c310d2de877da', 'Portal Test Organisation')
         2014-09-29 15:43:08,725 INFO    cloudhands.ops.orgadmin|('membership', 'e805f7939a8a4418a0261ed6d6cb5fab', 'admin')
         2014-09-29 15:43:08,752 INFO    cloudhands.ops.orgadmin|('registration', '5f84cc5d9863447a9b38a5e16ab9b90e')
         2014-09-29 15:43:08,758 INFO    cloudhands.ops.orgadmin|('subscription', '6dd7ff10e8f14f308ac39c367b82d51b', 'maintenance', 'org.orgadmin', [])
@@ -93,7 +93,7 @@ created along with its administrator account.
     * The linked page redirects you to a resource under
       https://jasmin-cloud.jc.rl.ac.uk/registration. The page is entitled
       `bcumberbat`.
-    * The `Organisations` menu has the entry `STFCloud`.
+    * The `Organisations` menu has the entry `Portal Test Organisation`.
     * A form is displayed with the title `Set your password`.
       It has a `Password` field and a `Change` button.
 
@@ -165,9 +165,9 @@ This procedure tests various paths through the user registration process.
 2. Successful invitation
 ------------------------
 
-1. From the `Organisations` dropdown, select `STFCloud`.
+1. From the `Organisations` dropdown, select `Portal Test Organisation`.
 
-    * You are sent to the STFCloud JVO page.
+    * You are sent to the Portal Test Organisation JVO page.
     * A form is displayed with three fields and a `Create` button.
       The fields are `Username`, `Surname`, and `Email`.
     * The Username field is styled red and asks for a name 8 - 10 characters
@@ -209,7 +209,7 @@ This procedure tests various paths through the user registration process.
     * The linked page redirects you to a resource under
       https://jasmin-cloud.jc.rl.ac.uk/registration. The page is entitled
       `denderby`.
-    * The `Organisations` menu has the entry `STFCloud`.
+    * The `Organisations` menu has the entry `Portal Test Organisation`.
     * A form is displayed with the title `Set your password`.
       It has a `Password` field and a `Change` button.
 
@@ -383,21 +383,21 @@ is only available in the `Lab` environment.
 0. Prerequisites
     * `1. Login (demo user)`_.
 
-1. From the `Organisations` dropdown, select `EOSCloud`.
+1. From the `Organisations` dropdown, select `Portal Test Organisation`.
 
-    * You are sent to the EOSCloud JVO page.
+    * You are sent to the Portal Test Organisation JVO page.
 
 2. From the breadcrumb menu, select `Catalogue`.
 
-    * The catalogue page is populated with five items.
+    * The catalogue page is populated with two items.
     * Clicking each item shows a name in bold, a description, and an `OK`
       button.
 
 3. Select a catalogue item and click `OK`.
 
-    * You are sent to the `Configure appliance` page.
-    * There is a form called `General information` with three fields and an
-      `OK` button. The fields are `Name`, `Description`, and `Ipaddr`.
+    * You are sent to the `Configure appliance` page. Note this URL for later.
+    * There is a form called `General information` with two fields and an
+      `OK` button. The fields are `Name`, and `Description`.
 
 4. Create a new appliance by filling the fields as follows:
 
@@ -406,7 +406,7 @@ is only available in the `Lab` environment.
 
 5. Click the button `OK`.
 
-    * You are redirected to the EOSCloud JVO page.
+    * You are redirected to the Portal Test Organisation JVO page.
 
 3. Monitor the appliance lifecycle
 ----------------------------------
@@ -447,20 +447,21 @@ is only available in the `Lab` environment.
    #. Click the `Guest OS Customization` tab.
    #. Scroll down to the `Customization Script` section.
 
-    * The script contains an RSA public key.
+    * The script invokes ``/usr/local/bin/activator.sh``
+    * The script passes an argument which is the URL you noted above.
 
 3. Check the Edge gateway in the `vCloud Director` GUI as follows:
 
-   #. Click the `Administration` tab and select the item named
-      `un-managed_tenancy_test_org-std-compute-PAYG`.
-   #. Click the `Edge Gateways` tab and select `jasmin-priv-external-network`.
+   #. Click the `Administration` tab and select the item named `stfcmanaged-M-std-compute`.
+   #. Click the `Edge Gateways` tab and select the one beginning
+      `stfcmanaged-M`.
    #. Click the dropdown settings menu and select `Edge Gateway Services...`
 
     * The `NAT` tab shows a DNAT rule for the IP address you noted in
-      `3. Monitor the appliance lifecycle`_ above. It allows port 22 only.
+      `3. Monitor the appliance lifecycle`_ above. It allows any port over TCP.
       Note the public IP it routes to.
     * The `Firewall` tab shows a rule for the routable IP you noted here.
-      It allows port 22 only.
+      It allows all ports over TCP.
 
 5. Set the appliance running
 ----------------------------
