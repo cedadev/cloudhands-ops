@@ -47,12 +47,12 @@ then
     done
 fi
 
-for i in cloudhands-common cloudhands-burst cloudhands-web \
-    cloudhands-ops cloudhands-jasmin; do
-    cd $PARENT/$i
+for sub in common burst web ops jasmin; do
+    pkg=cloudhands-$sub
+    cd $PARENT/$pkg
 
     version=`$PYENV/bin/python setup.py --version`
-    echoerr "Installing $i $version from source ..."
+    echoerr "Installing $pkg $version from source ..."
     $PYENV/bin/python setup.py install > /dev/null
 
     if [[ "$*" != *--nopep8* ]];
