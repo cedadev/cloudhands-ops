@@ -26,7 +26,11 @@ except ImportError:
 
 __doc__ = """
 
-Functions which produce puppet manifest entries from web API data.
+Puppet_ is a configuration management utility for Unix and Windows systems.
+It has a declarative language to define the desired state of a host under
+management. Such declarations are stored in files called `manifests`.
+
+.. _Puppet: http://puppetlabs.com/
 
 """
 
@@ -44,7 +48,14 @@ class TypeEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def appliance_authorized_keys(data):
+def appliance_authorized_keys(data:str):
+    """
+    This function consumes the data from the `Appliance` API endpoint to produce
+    a manifest for Puppet. It extracts the public keys of Organisation members
+    and generates a sshauthorizedkey_ directive for each one.
+
+    .. _sshauthorizedkey: https://docs.puppetlabs.com/references/latest/type.html#sshauthorizedkey
+    """
     Key = namedtuple("Key", ["type", "value", "name"])
     tmplt = textwrap.dedent("""
     ssh_authorized_key {{ '{parent.scheme}://{parent.netloc}{path}': 

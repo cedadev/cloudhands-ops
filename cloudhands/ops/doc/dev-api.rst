@@ -25,6 +25,7 @@ practice. See References_ for more details.
 *   Web API can return both JSON or HTML, as requested
 *   Our JSON contains hypermedia links in the `_links` attribute of each
     object
+*   JSON objects have a `_type` attribute which references the Python schema
 *   We use the IANA `canonical`, `self`, and `create-form` link relations
     to describe hypermedia targets
 *   Our HTML is semantic HTML5 written as well-formed XHTML
@@ -103,6 +104,21 @@ In these cases, we always add a link to the `canonical` URI, as shown below:
     </li>
     </ul>
 
+Usage
+~~~~~
+
+There are many opportunities during the lifecycle of an Appliance to make use of the
+Cloudhands Web API. To begin with, the data exposed through this API can be used to
+configure a VM during provisioning.
+
+You can see an example of this technique in :py:mod:`cloudhands.ops.puppet`.
+
+.. automodule:: cloudhands.ops.puppet
+   :members: appliance_authorized_keys
+
+With such techniques, you can allow automated management systems like
+Puppet to act on configuration data provided from the Cloudhands portal.
+
 References
 ~~~~~~~~~~
 
@@ -119,6 +135,3 @@ http://www.infoq.com/presentations/web-api-html
 https://www.iana.org/assignments/link-relations/link-relations.xhtml
     IANA has started to formalise the terms used to describe the types of link
     relations used in Web APIs.
-
-* https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement.dataset
-* http://24ways.org/2011/displaying-icons-with-fonts-and-data-attributes

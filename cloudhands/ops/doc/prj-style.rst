@@ -13,8 +13,8 @@ criteria:
 * Favouring a RESTful architecture rather than one-page web apps.
 * Compatible with a Python framework (not tied to back ends like node.js or PHP).
 
-Style templates
-~~~~~~~~~~~~~~~
+Style templates and frameworks
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * https://sprresponsive.com/sprinvoice/
     A single-page template for an invoice document.
@@ -30,6 +30,8 @@ Style templates
     Simple styling for widgets with some typography.
 * http://code.google.com/p/css3-action-framework/
     A library of CSS effects.
+* http://getbootstrap.com/
+    A popular and comprehensive web GUI library.
 
 Theming
 ~~~~~~~
@@ -39,6 +41,12 @@ Theming
 * Picked a `matching background texture`_.
 * Selected a `layout for the landing page`_ and `one for the main workflow`_.
 * Identified a `free font icon set`_ for control icons.
+
+Wireframes
+~~~~~~~~~~
+
+* Selected `Pencil wireframe tool`_ (free and cross-platform).
+* Customer-generated Wireframes can be found in `cloudhands/ops/design`.
  
 .. _webgranth: http://www.webgranth.com/best-html5-and-css3-frameworks-you-would-know-ever
 .. _codegeekz: http://codegeekz.com/css-frameworks-for-accelerated-development/

@@ -10,7 +10,6 @@ Project guide
 
    prj-workflow
    prj-style
-   prj-rest
    prj-story01
    prj-user_lifecycle
 
