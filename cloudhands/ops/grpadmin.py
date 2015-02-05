@@ -23,17 +23,17 @@ except ImportError:
 from cloudhands.common.connectors import initialise
 from cloudhands.common.connectors import Registry
 import cloudhands.common.factories
+from cloudhands.common.schema import Access
 from cloudhands.common.schema import Component
 from cloudhands.common.schema import EmailAddress
 from cloudhands.common.schema import IPAddress
-from cloudhands.common.schema import Membership
 from cloudhands.common.schema import Organisation
 from cloudhands.common.schema import Provider
 from cloudhands.common.schema import Registration
 from cloudhands.common.schema import Subscription
 from cloudhands.common.schema import Touch
 from cloudhands.common.schema import User
-from cloudhands.common.states import MembershipState
+from cloudhands.common.states import AccessState
 from cloudhands.common.states import RegistrationState
 from cloudhands.common.states import SubscriptionState
 
@@ -45,20 +45,18 @@ Admin users. It makes changes to the cloudhands database.
 
 eg::
 
-    cloudhands-orgadmin \\
+    cloudhands-grpadmin \\
     --host=jasmin-cloud.jc.rl.ac.uk --identity=~/.ssh/id_rsa-jasminvm \\
     --db=/home/jasminuser/jasmin-web.sl3 \\
     --account=denderby \\
     --email=dominic.enderby@contractor.net \\
     --surname=enderby \\
-    --organisation=STFCloud \\
-    --public=172.16.151.170/30 \\
-    --activator=/root/bootstrap.sh \\
-    --providers=cloudhands.jasmin.vcloud.phase04.cfg
+    --group=STFCloud \\
+    --number=54321
 
 Help for each option is printed on the command::
 
-    cloudhands-orgadmin --help
+    cloudhands-grpadmin --help
 """
 
 DFLT_PORT = 22
@@ -69,94 +67,15 @@ DFLT_VENV = "jasmin-py3.3"
 TouchRecord = namedtuple(
     "Touch", ["fsm", "artifact", "state", "actor", "resources"])
 
-def subscriptions(session, orgName, public, providers, version):
+def access(session, user, group, version, role="admin"):
     actor = session.merge(cloudhands.common.factories.component(
         session, handle="org.orgadmin"))
-    maintenance = session.query(
-        SubscriptionState).filter(
-        SubscriptionState.name=="maintenance").one()
-
-    org = session.query(Organisation).filter(
-        Organisation.name == orgName).first()
-    if not org:
-        org = Organisation(
-            uuid=uuid.uuid4().hex,
-            name=orgName)
-        session.add(org)
-
-    rv = []
-    for p in providers:
-        provider = session.query(Provider).filter(
-            Provider.name == p).first()
-        if not provider:
-            provider = Provider(
-                name=p, uuid=uuid.uuid4().hex)
-            session.add(provider)
-
-        subs = session.query(Subscription).join(Organisation).join(
-            Provider).filter(Organisation.id==org.id).filter(
-            Provider.id==provider.id).first()
-        if subs:
-            rv.append(subs)
-        else:
-
-            subs = Subscription(
-                uuid=uuid.uuid4().hex,
-                model=version,
-                organisation=org,
-                provider=provider)
-            act = Touch(
-                artifact=subs, actor=actor, state=maintenance,
-                at=datetime.datetime.utcnow())
-
-            session.add(act)
-            session.commit()
-            rv.append(subs)
-            yield act
-
-            try:
-                network = ipaddress.ip_network(public)
-            except ValueError:
-                continue
-
-            for ipAddr in network.hosts():
-                act = Touch(
-                    artifact=subs, actor=actor, state=maintenance,
-                    at=datetime.datetime.utcnow())
-                publicIP = IPAddress(
-                    value=str(ipAddr), provider=provider, touch=act)
-
-                try:
-                    session.add(publicIP)
-                    session.commit()
-                    yield act
-                except Exception as e:
-                    session.rollback()
-                finally:
-                    session.flush()
-
-            unchecked = session.query(
-                SubscriptionState).filter(
-                SubscriptionState.name=="unchecked").one()
-            act = Touch(
-                artifact=subs, actor=actor, state=unchecked,
-                at=datetime.datetime.utcnow())
-            session.add(act)
-            session.commit()
-            yield act
-
-    return rv
-
-
-def membership(session, user, org, version, role="admin"):
-    actor = session.merge(cloudhands.common.factories.component(
-        session, handle="org.orgadmin"))
-    created = session.query(MembershipState).filter(
-        MembershipState.name == "created").one()
-    mship = Membership(
+    created = session.query(AccessState).filter(
+        AccessState.name == "created").one()
+    mship = Access(
         uuid=uuid.uuid4().hex,
         model=version,
-        organisation=org,
+        group=group,
         role=role)
     acts = (
         Touch(artifact=mship, actor=actor, state=created,
