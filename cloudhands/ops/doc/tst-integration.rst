@@ -129,7 +129,7 @@ This procedure tests various paths through the user registration process.
 
 * Set up a `free external email address`_.
   You should record login details and store them in a protected location
-  (not in a code repository as this example does)::
+  (not in a public code repository as this example does)::
 
     Address: dominic.enderby@contractor.net
     Customer number: 211828816
@@ -302,8 +302,8 @@ This procedure tests various paths through the user registration process.
 
 1. View LDAP record for `denderby`. Use the `ldapvi` program like this::
 
-    ldapvi -d -h ldap-test.jc.rl.ac.uk -w password \
-    --user "cn=dehaynes,ou=ceda,ou=People,o=hpc,dc=rl,dc=ac,dc=uk"
+    ldapvi -Z -v -d -h ldap-ref.jc.rl.ac.uk -w <password> \
+    --user "cn=jasminportal,ou=software,ou=People,o=hpc,dc=rl,dc=ac,dc=uk"
 
    Use the `G` key to navigate to the end of the file.
 
