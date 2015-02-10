@@ -54,13 +54,13 @@ created along with its administrator account.
 
         ~/pyops-3.3/bin/cloudhands-orgadmin \
         --host=jasmin-cloud.jc.rl.ac.uk --identity=~/.ssh/id_rsa-jasminvm.pub \
-        --db=/home/jasminuser/jasmin-web.sl3 \
+        --db=/home/jasminportal/jasmin-web.sl3 \
         --account=bcumberbat \
         --email=<your_email_address> \
         --surname=Cumberbatch \
         --organisation="Portal Test Organisation" \
         --public=172.26.9.70/31 \
-        --activator=/root/activator.sh \
+        --activator=/usr/local/bin/activator.sh \
         --providers=cloudhands.jasmin.vcloud.ref-portalTest-M.cfg
 
    * The utility runs and emits a log trace similar to the following::
