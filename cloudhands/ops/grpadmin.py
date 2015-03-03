@@ -175,17 +175,11 @@ def parser(description=__doc__):
         "--surname", required=True,
         help="Set the surname of the administrator")
     rv.add_argument(
-        "--organisation", required=True,
-        help="Set the name of the organisation to be created")
+        "--group", required=True,
+        help="Set the name of the group to be created")
     rv.add_argument(
-        "--activator", required=True,
-        help="Specify the path to the appliance activator script.")
-    rv.add_argument(
-        "--providers", nargs="+", required=True,
-        help="Set one or more subscribed providers")
-    rv.add_argument(
-        "--public", required=False,
-        help="Specify a public IP address network")
+        "--number", required=True,
+        help="Set the POSIX number of the group.")
 
     rv.add_argument(
         "--version", action="store_true", default=False,
@@ -226,36 +220,16 @@ if __name__ == "__channelexec__":
         session, args["account"], args["surname"])
     channel.send((admin.typ, admin.uuid, admin.handle))
 
-    org = None
-    actions = subscriptions(
-        session, args["organisation"], args["public"],
-        args["providers"], args["version"])
+    group = cloudhands.common.factories.group(
+        session, args["group"], args["number"])
+    channel.send(("group", group.uuid, group.name))
+    artifact = access(session, admin, group, args["version"])
 
-    acts = []
-    while True:
-        try:
-            acts.append(next(actions))
-        except StopIteration as final:
-            for subs in final.value:
-                org = session.merge(subs.organisation)
-                channel.send(
-                    ("provider", subs.provider.uuid, subs.provider.name))
-                channel.send((subs.typ, subs.uuid))
-            break
-
-    channel.send(("organisation", org.uuid, org.name))
-
-    mship = membership(session, admin, org, args["version"])
-    channel.send((mship.typ, mship.uuid, mship.role))
+    channel.send((artifact.typ, artifact.uuid, artifact.role))
 
     reg = cloudhands.common.factories.registration(
         session, admin, args["email"], args["version"])
     if reg is not None:
         channel.send((reg.typ, reg.uuid))
-
-    for act in acts:
-        channel.send(tuple(TouchRecord(
-        act.state.fsm, act.artifact.uuid, act.state.name,
-        act.actor.handle, [(r.typ, r.value) for r in act.resources])))
-
+    
     channel.send(None)

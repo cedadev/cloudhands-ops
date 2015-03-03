@@ -59,7 +59,7 @@ class OnboardingTests(unittest.TestCase):
             "--email", eMail,
             "--surname", surname,
             "--group", grpName,
-            "--number", grpNumber,
+            "--number", str(grpNumber),
             "--verbose",
             "--log", logFile.name])
         rv = cloudhands.ops.grpadmin.main(args)
@@ -70,12 +70,8 @@ class OnboardingTests(unittest.TestCase):
         self.assertTrue("Supplying args" in next(contents))
         self.assertTrue("Sending from" in next(contents))
         self.assertTrue("user" in next(contents))
-        self.assertTrue("provider" in next(contents))
-        self.assertTrue("subscription" in next(contents))
-        self.assertTrue("provider" in next(contents))
-        self.assertTrue("subscription" in next(contents))
-        self.assertTrue("organisation" in next(contents))
-        self.assertTrue("membership" in next(contents))
+        self.assertTrue("group" in next(contents))
+        self.assertTrue("access" in next(contents))
         self.assertTrue("registration" in next(contents))
         outFile.close()
         logFile.close()
