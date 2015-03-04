@@ -26,6 +26,7 @@ created along with its administrator account.
 
     * Access to your on-site email account.
     * A running portal with a fresh database.
+    * LDAP cleared of any previous test data.
 
 1. Verify guest access
 ----------------------
@@ -58,7 +59,7 @@ created along with its administrator account.
         --account=bcumberbat \
         --email=<your_email_address> \
         --surname=Cumberbatch \
-        --organisation=STFCdemo1-M \
+        --organisation=stfc-managed-m \
         --public=172.26.9.70/31 \
         --activator=/usr/local/bin/activator.sh \
         --providers=cloudhands.jasmin.vcloud.ref-portalTest-M.cfg
@@ -69,7 +70,7 @@ created along with its administrator account.
         2014-09-29 15:43:08,565 INFO    cloudhands.ops.orgadmin|('user', '1fe4d56051ba48ed86f3b21ce878775d', 'bcumberbat')
         2014-09-29 15:43:08,696 INFO    cloudhands.ops.orgadmin|('provider', '0460735f622247b198b7e3f60c9e9379', 'cloudhands.jasmin.vcloud.ref-portalTest-M.cfg')
         2014-09-29 15:43:08,696 INFO    cloudhands.ops.orgadmin|('subscription', '6dd7ff10e8f14f308ac39c367b82d51b')
-        2014-09-29 15:43:08,696 INFO    cloudhands.ops.orgadmin|('organisation', '3c26b7c8b3b44428988c310d2de877da', 'STFCdemo1-M')
+        2014-09-29 15:43:08,696 INFO    cloudhands.ops.orgadmin|('organisation', '3c26b7c8b3b44428988c310d2de877da', 'stfc-managed-m')
         2014-09-29 15:43:08,725 INFO    cloudhands.ops.orgadmin|('membership', 'e805f7939a8a4418a0261ed6d6cb5fab', 'admin')
         2014-09-29 15:43:08,752 INFO    cloudhands.ops.orgadmin|('registration', '5f84cc5d9863447a9b38a5e16ab9b90e')
         2014-09-29 15:43:08,758 INFO    cloudhands.ops.orgadmin|('subscription', '6dd7ff10e8f14f308ac39c367b82d51b', 'maintenance', 'org.orgadmin', [])
@@ -93,7 +94,7 @@ created along with its administrator account.
     * The linked page redirects you to a resource under
       https://jasmin-cloud.jc.rl.ac.uk/registration. The page is entitled
       `bcumberbat`.
-    * The `Organisations` menu has the entry `STFCdemo1-M`.
+    * The `Organisations` menu has the entry `stfc-managed-m`.
     * A form is displayed with the title `Set your password`.
       It has a `Password` field and a `Change` button.
 
@@ -165,9 +166,9 @@ This procedure tests various paths through the user registration process.
 2. Successful invitation
 ------------------------
 
-1. From the `Organisations` dropdown, select `STFCdemo1-M`.
+1. From the `Organisations` dropdown, select `stfc-managed-m`.
 
-    * You are sent to the STFCdemo1-M JVO page.
+    * You are sent to the stfc-managed-m JVO page.
     * A form is displayed with three fields and a `Create` button.
       The fields are `Username`, `Surname`, and `Email`.
     * The Username field is styled red and asks for a name 8 - 10 characters
@@ -209,7 +210,7 @@ This procedure tests various paths through the user registration process.
     * The linked page redirects you to a resource under
       https://jasmin-cloud.jc.rl.ac.uk/registration. The page is entitled
       `denderby`.
-    * The `Organisations` menu has the entry `STFCdemo1-M`.
+    * The `Organisations` menu has the entry `stfc-managed-m`.
     * A form is displayed with the title `Set your password`.
       It has a `Password` field and a `Change` button.
 
@@ -383,9 +384,9 @@ is only available in the `Ref` environment.
 0. Prerequisites
     * `1. Login (demo user)`_.
 
-1. From the `Organisations` dropdown, select `STFCdemo1-M`.
+1. From the `Organisations` dropdown, select `stfc-managed-m`.
 
-    * You are sent to the STFCdemo1-M JVO page.
+    * You are sent to the stfc-managed-m JVO page.
 
 2. From the breadcrumb menu, select `Catalogue`.
 
@@ -406,7 +407,7 @@ is only available in the `Ref` environment.
 
 5. Click the button `OK`.
 
-    * You are redirected to the STFCdemo1-M JVO page.
+    * You are redirected to the stfc-managed-m JVO page.
 
 3. Monitor the appliance lifecycle
 ----------------------------------
