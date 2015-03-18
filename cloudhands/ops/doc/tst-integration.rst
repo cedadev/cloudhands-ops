@@ -312,21 +312,23 @@ This procedure tests various paths through the user registration process.
       vary)::
 
         cn=denderby,ou=jasmin2,ou=People,o=hpc,dc=rl,dc=ac,dc=uk
-        objectClass: top
-        objectClass: person
-        objectClass: inetOrgPerson
-        objectClass: organizationalPerson
-        objectClass: posixAccount
-        description: JASMIN2 vCloud registration
-        sn: UNKNOWN
-        cn: denderby
-        uid: denderby
-        uidNumber: 7010003
-        gidNumber: 7010003
-        homeDirectory: /home/denderby
         mail: dominic.enderby@contractor.net
-        userPassword: {SSHA}Psxobi4ydMILrlSjufFzlyi/4d6Bo8ko
-
+        objectClass: organizationalPerson
+        objectClass: inetOrgPerson
+        objectClass: person
+        objectClass: top
+        objectClass: posixAccount
+        description: cluster:jasmin-login
+        description: jvo:stfc-managed-m
+        cn: denderby
+        sn: Enderby
+        userPassword: {SSHA}JHLH0mEzaxDCFlzk4h55Vpeqp06lyHCK
+        homeDirectory: /home/denderby
+        uid: denderby
+        gecos: denderby <dominic.enderby@contractor.net>
+        gidNumber: 7010002
+        uidNumber: 7010002
+        loginShell: /bin/bash
 
 7. Successful key add to account
 --------------------------------
