@@ -1,0 +1,24 @@
+{
+name="ssh_bastion"
+description="Headless VM for admin tasks"
+note="""
+    <p>This VM runs OpenSSH on RedHat 6.6.
+    It is used for administration and monitoring tasks.</p>
+"""
+logo="headless"
+organisation="stfc-managed-m"
+natrouted=True
+uuid="1f0475ac3b584199ba9a34b2e6f3f499"
+}
+{
+name="sci_analysis"
+description="Headless VM for file transfer operations"
+note="""
+    <p>This VM runs RedHat 6.6 with a number of installed
+    packages for Scientific Analysis.</p>
+"""
+logo="headless"
+organisation="stfc-managed-m"
+natrouted=False
+uuid="d829a8c452de498db996844e4225cbcb"
+}

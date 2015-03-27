@@ -52,6 +52,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
+            "cloudhands-catalogadmin = cloudhands.ops.catalogadmin:run",
             "cloudhands-orgadmin = cloudhands.ops.orgadmin:run",
         ],
     },
