@@ -323,7 +323,7 @@ This procedure tests various paths through the user registration process.
         cn: denderby
         sn: Enderby
         userPassword: {SSHA}JHLH0mEzaxDCFlzk4h55Vpeqp06lyHCK
-        homeDirectory: /home/denderby
+        homeDirectory: /home/users/denderby
         uid: denderby
         gecos: denderby <dominic.enderby@contractor.net>
         gidNumber: 7010002
