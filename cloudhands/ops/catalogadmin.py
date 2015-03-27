@@ -38,8 +38,8 @@ eg::
     cloudhands-catalogadmin \\
     --host=jasmin-cloud.jc.rl.ac.uk --identity=~/.ssh/id_rsa-jasminvm \\
     --db=/home/jasminuser/jasmin-web.sl3 \\
-    --organisation=STFCloud \\
-    --providers=cloudhands.jasmin.vcloud.phase04.cfg
+    --organisation=stfc-managed-m \\
+    --path=cloudhands/ops/test/demo.rson
 
 Help for each option is printed on the command::
 
@@ -232,26 +232,11 @@ def parser(description=__doc__):
         help="Specify the path to a SSH public key authorised on the host")
 
     rv.add_argument(
-        "--account", required=True,
-        help="Set the account name for the administrator")
-    rv.add_argument(
-        "--email", required=True,
-        help="Set the email address of the administrator")
-    rv.add_argument(
-        "--surname", required=True,
-        help="Set the surname of the administrator")
-    rv.add_argument(
         "--organisation", required=True,
         help="Set the name of the organisation to be created")
     rv.add_argument(
-        "--activator", required=True,
-        help="Specify the path to the appliance activator script.")
-    rv.add_argument(
-        "--providers", nargs="+", required=True,
-        help="Set one or more subscribed providers")
-    rv.add_argument(
-        "--public", required=False,
-        help="Specify a public IP address network")
+        "--path", default="",
+        help="Specify the path to an RSON file containing catalogue metadata")
 
     rv.add_argument(
         "--version", action="store_true", default=False,
@@ -288,9 +273,10 @@ if __name__ == "__channelexec__":
     session = Registry().connect(sqlite3, args["db"]).session
     initialise(session)
 
-    admin = cloudhands.common.factories.user(
-        session, args["account"], args["surname"])
-    channel.send((admin.typ, admin.uuid, admin.handle))
+    with open(args["path"], 'r') as input_:
+        objs = rson.loads(input_.read())
+        for obj in objs:
+            channel.send(str(obj))
 
     org = None
     actions = subscriptions(
