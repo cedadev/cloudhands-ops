@@ -26,6 +26,8 @@ import cloudhands.common.factories
 from cloudhands.common.schema import CatalogueItem
 from cloudhands.common.schema import Organisation
 
+import rson
+
 __doc__ = """
 
 This command-line utility enables remote creation of Catalogue Items.
