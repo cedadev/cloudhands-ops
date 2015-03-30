@@ -51,8 +51,6 @@ DFLT_DB = ":memory:"
 DFLT_USER = "jasminportal"
 DFLT_VENV = "jasmin-py3.3"
 
-TouchRecord = namedtuple(
-    "Touch", ["fsm", "artifact", "state", "actor", "resources"])
 
 def subscriptions(session, orgName, public, providers, version):
     actor = session.merge(cloudhands.common.factories.component(
@@ -276,30 +274,33 @@ if __name__ == "__channelexec__":
     session = Registry().connect(sqlite3, args["db"]).session
     initialise(session)
 
-    with open(args["path"], 'r') as input_:
-        objs = rson.loads(input_.read())
-        for obj in objs:  # Debug
-            channel.send(str(obj))
-
     org = session.query(Organisation).filter(
         Organisation.name == args["organisation"]).first()
     if org is None:
         channel.send("No org named {}".format(args["organisation"]))
         channel.send(None)
+    else:
+        channel.send(("organisation", org.uuid, org.name))
 
-    channel.send(("organisation", org.uuid, org.name))
-
-    mship = membership(session, admin, org, args["version"])
-    channel.send((mship.typ, mship.uuid, mship.role))
-
-    reg = cloudhands.common.factories.registration(
-        session, admin, args["email"], args["version"])
-    if reg is not None:
-        channel.send((reg.typ, reg.uuid))
-
-    for act in acts:
-        channel.send(tuple(TouchRecord(
-        act.state.fsm, act.artifact.uuid, act.state.name,
-        act.actor.handle, [(r.typ, r.value) for r in act.resources])))
+        with open(args["path"], 'r') as input_:
+            objs = rson.loads(input_.read())
+            for obj in objs:  # Debug
+                channel.send(str(obj))
+                try:
+                    session.add(
+                        CatalogueItem(
+                            name=obj["name"].strip(),
+                            description=obj["description"].strip(),
+                            note=obj["note"].strip(),
+                            logo="headless",
+                            organisation=org,
+                            natrouted=obj["natrouted"],
+                            uuid=obj["natrouted"],
+                        ))
+                except Exception as e:
+                    channel.send(str(e))
+                    session.rollback()
+                finally:
+                    session.flush()
 
     channel.send(None)
