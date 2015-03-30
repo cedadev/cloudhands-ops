@@ -194,7 +194,10 @@ def main(args):
 
         msg = ch.receive()
         while msg is not None:
-            log.info(msg)
+            if isinstance(msg, str):
+                log.error(msg)
+            else:
+                log.info(msg)
             msg = ch.receive()
 
     except OSError as e:
@@ -266,7 +269,7 @@ if __name__ == "__main__":
     run()
 
 if __name__ == "__channelexec__":
-    channel.send("Sending from {}.".format(platform.node()))
+    channel.send((logging.INFO, "Sending from {}.".format(platform.node())))
 
     args = channel.receive()
 
@@ -275,25 +278,14 @@ if __name__ == "__channelexec__":
 
     with open(args["path"], 'r') as input_:
         objs = rson.loads(input_.read())
-        for obj in objs:
+        for obj in objs:  # Debug
             channel.send(str(obj))
 
-    org = None
-    actions = subscriptions(
-        session, args["organisation"], args["public"],
-        args["providers"], args["version"])
-
-    acts = []
-    while True:
-        try:
-            acts.append(next(actions))
-        except StopIteration as final:
-            for subs in final.value:
-                org = session.merge(subs.organisation)
-                channel.send(
-                    ("provider", subs.provider.uuid, subs.provider.name))
-                channel.send((subs.typ, subs.uuid))
-            break
+    org = session.query(Organisation).filter(
+        Organisation.name == args["organisation"]).first()
+    if org is None:
+        channel.send("No org named {}".format(args["organisation"]))
+        channel.send(None)
 
     channel.send(("organisation", org.uuid, org.name))
 
