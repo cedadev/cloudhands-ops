@@ -7,7 +7,7 @@ note: """
 """,
 logo: "headless",
 organisation: "stfc-managed-m",
-natrouted: True,
+natrouted: true,
 uuid: "1f0475ac3b584199ba9a34b2e6f3f499"
 }
 {
@@ -19,6 +19,6 @@ note: """
 """,
 logo: "headless",
 organisation: "stfc-managed-m",
-natrouted: False,
+natrouted: false,
 uuid: "d829a8c452de498db996844e4225cbcb"
 }

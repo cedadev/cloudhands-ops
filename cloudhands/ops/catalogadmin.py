@@ -297,6 +297,7 @@ if __name__ == "__channelexec__":
                             natrouted=obj["natrouted"],
                             uuid=obj["natrouted"],
                         ))
+                    session.commit()
                 except Exception as e:
                     channel.send(str(e))
                     session.rollback()
