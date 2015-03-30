@@ -153,7 +153,7 @@ def membership(session, user, org, version, role="admin"):
 
 
 def main(args):
-    log = logging.getLogger("cloudhands.ops.orgadmin")
+    log = logging.getLogger("cloudhands.ops.catalogadmin")
 
     log.setLevel(args.log_level)
 
@@ -284,8 +284,7 @@ if __name__ == "__channelexec__":
 
         with open(args["path"], 'r') as input_:
             objs = rson.loads(input_.read())
-            for obj in objs:  # Debug
-                channel.send(str(obj))
+            for obj in objs:
                 try:
                     session.add(
                         CatalogueItem(
@@ -295,9 +294,10 @@ if __name__ == "__channelexec__":
                             logo="headless",
                             organisation=org,
                             natrouted=obj["natrouted"],
-                            uuid=obj["natrouted"],
+                            uuid=obj["uuid"],
                         ))
                     session.commit()
+                    channel.send((obj["uuid"], obj["name"].strip()))
                 except Exception as e:
                     channel.send(str(e))
                     session.rollback()
