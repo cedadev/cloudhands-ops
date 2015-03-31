@@ -9,12 +9,6 @@ and integrated with other subsystems. The integration tests should be
 performed in the Reference environment and are a gate to promotion into
 Production.
 
-.. note::
-
-   You can perform these tests in the development environment, but all URLs
-   will have their root at http://jasmin-cloud.jc.rl.ac.uk:8080, not as
-   specified below.
-
 JVO Onboarding
 ~~~~~~~~~~~~~~
 
@@ -78,7 +72,23 @@ created along with its administrator account.
         2014-09-29 15:43:08,763 INFO    cloudhands.ops.orgadmin|('subscription', '6dd7ff10e8f14f308ac39c367b82d51b', 'maintenance', 'org.orgadmin', [('ipaddress', '170.16.151.71')])
         2014-09-29 15:43:08,765 INFO    cloudhands.ops.orgadmin|('subscription', '6dd7ff10e8f14f308ac39c367b82d51b', 'unchecked', 'org.orgadmin', [])
 
-3. Activate the administrator account
+3. Create catalogue items for available OS templates
+----------------------------------------------------
+
+.. note::
+
+   This step is highly specific to the test environment and subject to change.
+   At the time of writing the correct settings are stored in the file
+   `cloudhands/ops/test/demo.rson`.
+
+1. Invoke the `catalogadmin` to create catalogue items for the new JVO, supplying an RSON file   with the correct metadata::
+
+        ~/pyops-3.3/bin/cloudhands-catalogadmin \
+        --db=/home/jasminportal/jasmin-web.sl3 \
+        --organisation=stfc-managed-m \
+        --path=cloudhands/ops/test/demo.rson
+
+4. Activate the administrator account
 -------------------------------------
 
 1. Visit your email account and check the Inbox
