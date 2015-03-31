@@ -36,14 +36,19 @@ setup(
         "cloudhands.ops",
         "cloudhands.ops.test"
     ],
-    package_data={"cloudhands.ops": [
-                    "doc/*.rst",
-                    "doc/_templates/*.css",
-                    "doc/html/*.html",
-                    "doc/html/*.js",
-                    "doc/html/_sources/*",
-                    "doc/html/_static/*",
-                    ]},
+    package_data={
+        "cloudhands.ops": [
+            "doc/*.rst",
+            "doc/_templates/*.css",
+            "doc/html/*.html",
+            "doc/html/*.js",
+            "doc/html/_sources/*",
+            "doc/html/_static/*",
+        ],
+        "cloudhands.ops.test": [
+            "*.rson",
+        ],
+    },
     install_requires=[
         "sphinxcontrib-seqdiag>=0.7.2",
         "execnet>=1.2.0",

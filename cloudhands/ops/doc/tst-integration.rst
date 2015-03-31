@@ -81,7 +81,7 @@ created along with its administrator account.
    At the time of writing the correct settings are stored in the file
    `cloudhands/ops/test/demo.rson`.
 
-1. Invoke the `catalogadmin` to create catalogue items for the new JVO, supplying an RSON file   with the correct metadata::
+1. Invoke the `catalogadmin` script to create catalogue items for the new JVO, supplying an RSON file   with the correct metadata::
 
         ~/pyops-3.3/bin/cloudhands-catalogadmin \
         --db=/home/jasminportal/jasmin-web.sl3 \
