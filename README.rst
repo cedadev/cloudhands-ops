@@ -39,29 +39,39 @@ To do this, run the following commands in the root directory of the ``cloudhands
 
 .. code:: bash
 
-    $ PYENV=~/jasmin-venv                         # Directory where venv will live
-    $ python3.4 -m venv --clear $PYENV            # Create a new venv
-    $ $PYENV/bin/pip install -r requirements.txt  # Install Cloudhands dependencies
+    # Directory where venv will live
+    $ PYENV=~/jasmin-venv
+
+    # Create a new venv
+    $ python3.4 -m venv --clear $PYENV
+
+    # Install Cloudhands dependencies
+    $ $PYENV/bin/pip install -r requirements.txt
     
     
-Adding Cloudhands to the ``PYTHONPATH`` for the venv
-====================================================
+Installing Cloudhands in development mode
+=========================================
 
-This method is used during development to allow changes to the Cloudhands source to be picked up.
+This section assumes that all the Cloudhands projects are cloned as sub-directories in
+the current working directory.
 
-We assume that all the Cloudhands projects are cloned as sub-directories under a common parent,
-referred to as ``$PARENT``.
+Installing Cloudhands in development mode, via setuptools, ensures that entry points are set up
+properly, but instead of copying files to `site-packages` it creates `egg-link` files that act
+like symbolic links. This ensures that changes we make to the source code are instantly picked
+up by the venv.
 
 .. code:: bash
 
-    $ CH_PARENT=$(readlink -e $PARENT)  # Make sure we have the full path to $PARENT
-    $ cat << EOF > $PYENV/lib/python3.4/site-packages/cloudhands.pth  # Write a .pth file
-    $CH_PARENT/cloudhands-burst
-    $CH_PARENT/cloudhands-common
-    $CH_PARENT/cloudhands-jasmin
-    $CH_PARENT/cloudhands-ops
-    $CH_PARENT/cloudhands-web
-    EOF
+    # Activate the venv
+    $ source $PYENV/bin/activate
+    
+    # Install each cloudhands project in development mode
+    $ for proj in `ls cloudhands-*`; do
+        python setup.py develop
+    done
+    
+    # Deactivate the venv
+    $ deactivate
 
 
 Building the documentation
@@ -69,10 +79,18 @@ Building the documentation
 
 .. code:: bash
 
-    $ cd cloudhands-ops/cloudhands/ops/doc  # Navigate to the docs directory
-    $ source $PYENV/bin/activate            # Activate the venv
-    $ make html                             # Build the HTML docs
-    $ firefox _build/html/index.html        # View the docs
+    # Activate the venv
+    $ source $PYENV/bin/activate
+
+    # Navigate to the docs directory
+    $ cd cloudhands-ops/cloudhands/ops/doc
+    # Build the HTML docs
+    $ make html
+    # View the docs
+    $ firefox _build/html/index.html
+
+    # Deactivate the venv
+    $ deactivate
 
 
 Roadmap
