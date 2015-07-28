@@ -5,44 +5,71 @@ Cloudhands is a `Platform as a Service` (PaaS) framework. It gives you the
 software necessary to run a private computing cloud for your business or
 organisation. A key objective is support for multiple back-end providers.
 
+
 This release
 ::::::::::::
 
-Cloudhands is a very young project. As of Autumn 2014, it is under
-heavy development and features are added daily. 
+Cloudhands is a very young project. It is currently under heavy development,
+with fixes and features added daily. 
 
 You are welcome to give `cloudhands` a try, but be aware that some parts
 of the codebase lack the test coverage of a finished product. Improvements
 to documentation are ongoing.
 
+
 Requirements
 ::::::::::::
 
-Cloudhands requires Python 3.3 or above. It uses setuptools_ for installation.
+The reference platform is Centos 6.6 with Python 3.4. To install Python 3.4 on
+a clean Centos 6.6 installation, the following can be used:
 
-The reference platform is RHEL 6.5 with Python 3.3 from RPMs. This is assumed
-by some of the deployment scripts. However, the main codebase is written always
-to track the latest version of Python.
+    $ yum install https://dl.iuscommunity.org/pub/ius/stable/CentOS/6/x86_64/ius-release-1.0-14.ius.centos6.noarch.rpm
+    $ yum install python34u python34u-devel python34u-pip
 
-Quick start
-:::::::::::
 
-Download and unpack the source distribution (version numbers will differ)::
+Creating a venv
+:::::::::::::::
 
-    $ tar -xzvf cloudhands-ops-0.001.tar.gz
-    $ cd cloudhands-ops-0.001
+The safest way to ensure that Cloudhands is using the correct Python version and libraries
+is to use a `Python virtual environment (venv) <https://docs.python.org/3/library/venv.html>`_.
 
-Run the `check` script to establish a working environment::
+To do this, run the following commands in the root directory of the `cloudhands-ops` directory:
 
-    $ check.sh --nolint --nopep8 --notest
+.. code:: bash
 
-Run the `build` script to create the documentation::
+    $ PYENV=~/jasmin-venv                         # Directory where venv will live
+    $ python3.4 -m venv --clear $PYENV            # Create a new venv
+    $ $PYENV/bin/pip install -r requirements.txt  # Install Cloudhands dependencies
+    
+    
+Adding Cloudhands to the `PYTHONPATH` for the venv
+==================================================
 
-    $ build.sh --novenv --nopush --nosign
+This method is used during development to allow changes to the Cloudhands source to be picked up.
 
-Consult the documentation::
+We assume that all the Cloudhands projects are cloned as sub-directories under a common parent,
+referred to as `$PARENT`.
 
-    $ firefox cloudhands/ops/doc/html/index.html
+.. code:: bash
+
+    $ CH_PARENT=$(readlink -e $PARENT)  # Make sure we have the full path to $PARENT
+    $ cat << EOF > $PYENV/lib/python3.4/site-packages/cloudhands.pth  # Write a .pth file
+    $CH_PARENT/cloudhands-burst
+    $CH_PARENT/cloudhands-common
+    $CH_PARENT/cloudhands-jasmin
+    $CH_PARENT/cloudhands-ops
+    $CH_PARENT/cloudhands-web
+    EOF
+
+
+Building the documentation
+::::::::::::::::::::::::::
+
+    $ cd cloudhands-ops/cloudhands/ops/doc  # Navigate to the docs directory
+    $ source $PYENV/bin/activate            # Activate the venv
+    $ make html                             # Build the HTML docs
+    $ firefox _build/html/index.html        # View the docs
+
 
 Roadmap
 :::::::
@@ -55,6 +82,7 @@ It is developed in the UK and released to the public under a `BSD licence`_.
 The API may change significantly as the project proceeds. At this early stage,
 you should only use the latest release, which may not be compatible with
 previous versions.
+
 
 Can you help?
 =============

@@ -1,6 +1,2 @@
-# Eclipse project files
-.project
-.pydevproject
-
-# Compiled python files
-*.pyc
+# Docs build files
+cloudhands/ops/doc/_build
