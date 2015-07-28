@@ -23,7 +23,7 @@ Requirements
 The reference platform is Centos 6.6 with Python 3.4. To install Python 3.4 on
 a clean Centos 6.6 installation, the following can be used:
 
-..code:: bash
+.. code:: bash
 
     $ yum install https://dl.iuscommunity.org/pub/ius/stable/CentOS/6/x86_64/ius-release-1.0-14.ius.centos6.noarch.rpm
     $ yum install python34u python34u-devel python34u-pip
