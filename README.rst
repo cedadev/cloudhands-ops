@@ -50,7 +50,7 @@ To do this, run the following commands in the root directory of the ``cloudhands
     
     
 Installing Cloudhands in development mode
-=========================================
+:::::::::::::::::::::::::::::::::::::::::
 
 This section assumes that all the Cloudhands projects are cloned as sub-directories in
 the current working directory.
@@ -74,6 +74,23 @@ up by the venv.
     
     # Deactivate the venv
     $ deactivate
+    
+    
+Starting the Cloudhands services
+::::::::::::::::::::::::::::::::
+
+.. code:: bash
+
+    # Activate the venv
+    $ source $PYENV/bin/activate
+    
+    # Start each service in the correct order
+    $ cloud-index -v --interval=15 --index=jasmin-index.wsh --log=cloud-index.log  &
+    $ cloud-webserve -v --db jasmin-web.sl3 --index jasmin-index.wsh --log cloud-webserve.log  &
+    $ cloud-identity -v --interval=20 --db jasmin-web.sl3 --log cloud-identity.log  &
+    $ cloud-burst -v --interval=6 --db=jasmin-web.sl3 --log=cloud-burst.log  &
+    
+The portal should now be accessible through a web browser at localhost:8080.
 
 
 Building the documentation
