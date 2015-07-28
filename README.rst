@@ -66,9 +66,11 @@ up by the venv.
     $ source $PYENV/bin/activate
     
     # Install each cloudhands project in development mode
-    $ for proj in `ls cloudhands-*`; do
-        python setup.py develop
-    done
+    $ for prj in common burst web ops jasmin; do
+    >     cd cloudhands-$prj
+    >     python setup.py develop
+    >     cd -
+    > done
     
     # Deactivate the venv
     $ deactivate
