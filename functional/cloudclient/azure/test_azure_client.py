@@ -120,9 +120,9 @@ class AzureTestCloudClient(unittest.TestCase):
         appl_name = 'philtest05' # won't accept '-' '_' symbols?
 
         # Create node with minimum set of parameters
-        log.info('Creating vApp %r ...', appl_name)
+        log.info('Creating App %r ...', appl_name)
         
-        # FIXME: fudge for now - the image arg should be type NodeImage 
+        # FIXME: fudge for now - the image should be type NodeImage 
         node = self.driver.create_node(
                        name=appl_name, 
                        image=image.id, 
@@ -139,13 +139,13 @@ class AzureTestCloudClient(unittest.TestCase):
         self._check_node(node)
                  
         # Destroy the node
-        log.info('Destroying vApp %r ...', vapp_name)
+        log.info('Destroying vApp %r ...', appl_name)
         self.driver.destroy_node(node)
-        log.info('Destroyed vApp %r ...', vapp_name)
+        log.info('Destroyed vApp %r ...', appl_name)
         
               
 if __name__ == "__main__":
-    import sys;sys.argv = [
-        '', 
-        'AzureTestCloudClient.test05_create_and destroy_node']
+#     import sys;sys.argv = [
+#         '', 
+#         'AzureTestCloudClient.test05_create_and destroy_node']
     unittest.main()
