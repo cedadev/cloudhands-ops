@@ -1,6 +1,10 @@
 ..  Titling
     ##++::==~~--''``
 
+DEPRECATED
+::::::::::
+*This code is no longer supported*
+
 Cloudhands is a `Platform as a Service` (PaaS) framework. It gives you the
 software necessary to run a private computing cloud for your business or
 organisation. A key objective is support for multiple back-end providers.
